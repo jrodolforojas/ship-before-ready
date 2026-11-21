@@ -47,7 +47,7 @@ Open only `screen-1-375x667.png` and `screen-1-1440x900.png`. From what is visib
 
 1. Who is this for? One phrase.
 2. What does it promise them? One phrase.
-3. What draws the eye first, second and third? Rank by prominence: size, weight, contrast and filled area. When two elements are close, the one nearer the headline comes first.
+3. What draws the eye first, second and third? Rank by prominence: size, weight, contrast and filled area. Only when you cannot tell which of two draws the eye more, the one nearer the headline comes first.
 
 It fails when you cannot answer 1 or 2 with something specific ("people", "a better way" are not specific), or when the first three are not the headline, then the button, then the subtitle: for example when the brand, a decorative motif or a list outranks one of them, or the button is not second. Write your two phrases in the output: the skill compares them with the brief, which you have not read.
 
@@ -65,7 +65,7 @@ Name the image and the elements of each failure. Judge only what is inside the i
 
 ### Notes
 
-After the audience and promise lines you may add up to five lines that start with `note: `, about things visibly broken in any image that R6 and R7 do not cover: text drawn over a decorative motif, a single word alone on the last line of the headline, elements touching or overlapping, something cut at an edge. Notes do not change the status of a row.
+After the audience and promise lines you may add up to five lines that start with `note: `, about things visibly broken in any image that R6 and R7 do not cover: text drawn over a decorative motif, a single word alone on the last line of the headline or of a screen title (running text may end in one word), elements touching or overlapping, something cut at the left or right edge of the window (the bottom of the first view is not an edge). Notes do not change the status of a row.
 
 ## Output
 
