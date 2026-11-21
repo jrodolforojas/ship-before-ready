@@ -1,0 +1,12 @@
+---
+import { copy } from '../lib/copy';
+import FilledButton from './FilledButton.astro';
+---
+
+<div class="flex flex-col items-center gap-group text-center">
+  <div class="flex flex-col items-center gap-item">
+    <h1 data-sbr="title" id="title" class="font-display text-title text-balance text-ink">{copy.hero.title}</h1>
+    <p data-sbr="subtitle" class="max-w-prose font-body text-lead text-pretty text-ink-muted">{copy.hero.subtitle}</p>
+  </div>
+  <FilledButton hook="cta" label={copy.cta} />
+</div>

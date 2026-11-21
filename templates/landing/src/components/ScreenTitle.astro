@@ -1,0 +1,15 @@
+---
+interface Props {
+  hook: string;
+  text: string;
+}
+
+const { hook, text } = Astro.props;
+---
+
+<h2
+  data-sbr={hook}
+  id={hook}
+  tabindex="-1"
+  class="font-display text-heading text-balance text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+>{text}</h2>

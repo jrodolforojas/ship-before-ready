@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+import { fontData } from 'astro:assets';
+import { copy } from '../lib/copy';
+import { fontFileUrls, tokenStyles } from '../lib/token-styles';
+import { tokens } from '../lib/tokens';
+
+const fontFaces = {
+  display: fontData['--font-display'] ?? [],
+  body: fontData['--font-body'] ?? [],
+};
+---
+
+<!doctype html>
+<html lang={copy.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{copy.meta.title}</title>
+    <meta name="description" content={copy.meta.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={copy.meta.title} />
+    <meta property="og:description" content={copy.meta.description} />
+    <meta property="og:site_name" content={copy.brand} />
+    <meta name="theme-color" content={tokens.color.canvas} />
+    <meta name="color-scheme" content={tokens.scheme} />
+    <link rel="icon" href="data:," />
+    {fontFileUrls(fontFaces).map((url) => <link rel="preload" as="font" type="font/woff2" href={url} crossorigin />)}
+    <style is:inline set:html={tokenStyles(tokens, fontFaces)}></style>
+  </head>
+  <body
+    data-sbr="page"
+    data-composition={tokens.composition}
+    data-scheme={tokens.scheme}
+    data-decor={tokens.decor}
+    data-screen="1"
+    class="flex min-h-dvh flex-col bg-canvas font-body text-body text-ink"
+  >
+    <slot />
+  </body>
+</html>

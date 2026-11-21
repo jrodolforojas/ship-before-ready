@@ -1,0 +1,106 @@
+@import "tailwindcss" source(none);
+
+@source "../components";
+@source "../layouts";
+@source "../pages";
+
+@theme {
+  --*: initial;
+  --breakpoint-md: 48rem;
+
+  --color-canvas: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-ink: #1C1C1C;
+  --color-ink-muted: #5C5C5C;
+  --color-accent: #2E2E2E;
+  --color-on-accent: #FFFFFF;
+  --color-line: #858585;
+  --color-focus: #1C1C1C;
+  --color-danger: #B3261E;
+
+  --font-display: "Public Sans", sans-serif;
+  --font-body: "Public Sans", sans-serif;
+
+  --text-title: 2.1875rem;
+  --text-title--line-height: 1.1;
+  --text-title--font-weight: 700;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: 1.75rem;
+  --text-heading--line-height: 1.2;
+  --text-heading--font-weight: 700;
+  --text-heading--letter-spacing: -0.01em;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.5;
+  --text-lead--font-weight: 400;
+  --text-lead--letter-spacing: 0em;
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.55;
+  --text-body--font-weight: 400;
+  --text-body--letter-spacing: 0em;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-small--font-weight: 400;
+  --text-small--letter-spacing: 0em;
+  --text-button: 1.125rem;
+  --text-button--line-height: 1.2;
+  --text-button--font-weight: 600;
+  --text-button--letter-spacing: 0em;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 400;
+  --text-label--letter-spacing: 0em;
+
+  --spacing-section: 6rem;
+  --spacing-block: 3rem;
+  --spacing-group: 1.5rem;
+  --spacing-item: 0.5rem;
+
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+
+  --container-prose: 62ch;
+  --container-page: 70rem;
+
+  --line-width: 1px;
+  --default-border-width: var(--line-width);
+  --motion-duration: 200ms;
+  --default-transition-duration: var(--motion-duration);
+}
+
+@layer theme {
+  :root {
+    --shadow-card: 0px 1px 2px rgb(0 0 0 / 0.08);
+  }
+}
+
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+    }
+  }
+}
+
+/* A shadow declared in @theme is inlined as a literal, so :root could not override it. */
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Template measures that no token covers: the 44 px touch target (R18) and the 300 to 500 px form (R20). */
+@utility touch-target {
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+}
+
+@utility form-column {
+  inline-size: 100%;
+  max-inline-size: 28rem;
+}
+
+@utility dock-bottom {
+  position: sticky;
+  inset-block-end: 0;
+}
