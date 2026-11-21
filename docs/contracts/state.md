@@ -30,7 +30,7 @@ Edit this file only on `main`.
 
 - JSON keys and header keys are `snake_case`, in English.
 - Timestamps are ISO 8601 in UTC (`2026-11-21T03:12:45Z`); dates are `YYYY-MM-DD`.
-- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3]`). Only two keys are nested, indented two spaces: `questions` in the brief and `scripts` in the video scripts.
+- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3, bio]`). Only two keys are nested, indented two spaces: `questions` in the brief and `scripts` in the video scripts.
 - `<locale>` matches `^[a-z]{2}(-[A-Z]{2})?$`; the default is `es`.
 
 ## `.sbr/connections.json`
@@ -85,7 +85,7 @@ The thresholds live in the header. The defaults come from the design document; t
 | `signup_rate_gray_min` | `0.038` | Lower bound of the gray zone, which ends at `signup_rate_pass` |
 | `no_evidence_visitors` | `300` | Cold visitors with no qualified lead that mean no evidence in this angle |
 | `calls_scheduled_pass` | `3` | Calls scheduled with strangers that mean evidence to continue |
-| `cold_sources` | `[v1, v2, v3]` | Values of `source` that count as cold traffic ([events.md](events.md#source)) |
+| `cold_sources` | `[v1, v2, v3, bio]` | Values of `source` that count as cold traffic ([events.md](events.md#source)) |
 | `verdict_date` | None | Date the verdict is due |
 | `sealed` | Absent until sealed | Date of the seal |
 
@@ -152,16 +152,23 @@ The body carries the numbers, every rate next to its raw count. Step 6 fixes the
 ---
 reviewer: pending
 locale: es
+bio_link: "<landing url>?src=bio"
 friends_link: "<landing url>?src=friends"
 scripts:
   - id: v1
-    angle: <identifier>
+    angle: pain
+    smp: "<one sentence>"
+    keyword: <word>
     link: "<landing url>?src=v1"
   - id: v2
-    angle: <identifier>
+    angle: top3
+    smp: "<one sentence>"
+    keyword: <word>
     link: "<landing url>?src=v2"
   - id: v3
-    angle: <identifier>
+    angle: founder
+    smp: "<one sentence>"
+    keyword: <word>
     link: "<landing url>?src=v3"
 ---
 
@@ -178,10 +185,13 @@ Script in the builder's language.
 |---|---|
 | `reviewer` | `pending` or `approved`. It becomes `approved` only when `script-reviewer` answers `approved` ([reviewers.md](reviewers.md)) |
 | `locale` | Language of the scripts |
+| `bio_link` | The landing URL with `?src=bio`: the one link for the builder's profile |
 | `friends_link` | The landing URL with `?src=friends` |
 | `scripts` | List of exactly three items, in the order `v1`, `v2`, `v3` |
 | `id` | `v1`, `v2` or `v3`. It is also the `src` of its link ([events.md](events.md#source)) |
-| `angle` | An identifier in English. The three are different |
+| `angle` | `pain` for `v1`, `top3` for `v2`, `founder` for `v3` |
+| `smp` | The single idea of the video, in one sentence |
+| `keyword` | The word a viewer comments to receive the link of that video |
 | `link` | The landing URL with `?src=<id>` |
 
 The landing URL is `url` in `.sbr/landing.json`. The body has one section per script, titled with its `id`.

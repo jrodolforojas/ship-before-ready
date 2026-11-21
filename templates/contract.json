@@ -1223,7 +1223,7 @@
   "url_params": [
     {
       "name": "src",
-      "values": ["v1", "v2", "v3", "friends", "test"],
+      "values": ["v1", "v2", "v3", "bio", "friends", "test"],
       "fallback": "untagged"
     },
     {
@@ -1237,7 +1237,7 @@
     }
   ],
   "sources": {
-    "cold": ["v1", "v2", "v3"],
+    "cold": ["v1", "v2", "v3", "bio"],
     "friends": ["friends"],
     "test": ["test"],
     "untagged": "untagged"
@@ -1287,7 +1287,7 @@
     },
     "source": {
       "type": "string",
-      "values": ["v1", "v2", "v3", "friends", "test", "untagged"]
+      "values": ["v1", "v2", "v3", "bio", "friends", "test", "untagged"]
     },
     "place": {
       "type": "string",

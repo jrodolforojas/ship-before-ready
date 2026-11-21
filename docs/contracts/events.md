@@ -42,6 +42,7 @@ Property names are the `name` of the form fields ([landing.md](landing.md#fields
 | `?src=` | `source` | Counts as |
 |---|---|---|
 | `v1`, `v2`, `v3` | The same value | Cold traffic, one per video script |
+| `bio` | `bio` | Cold traffic: the link in the builder's profile, which cannot tell the videos apart |
 | `friends` | `friends` | Friends and community, counted apart |
 | `test` | `test` | Test visits. `verdict` excludes them |
 | Missing, empty or anything else | `untagged` | Counted apart; not cold traffic |

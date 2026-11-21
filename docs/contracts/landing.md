@@ -206,7 +206,7 @@ Without `config.json` nothing is sent: previews never pollute the verdict.
 
 | Parameter | Values | Effect |
 |---|---|---|
-| `src` | `v1`, `v2`, `v3`, `friends`, `test` | Source of the visit, sent as `source` on every event. Missing or any other value counts as `untagged`. `test` is reserved for test visits and `verdict` excludes it |
+| `src` | `v1`, `v2`, `v3`, `bio`, `friends`, `test` | Source of the visit, sent as `source` on every event. Missing or any other value counts as `untagged`. `test` is reserved for test visits and `verdict` excludes it |
 | `debug` | `1` | Shows `debug-panel` |
 | `screen` | `1` to `4` | Opens that screen directly. Only works without `config.json` |
 

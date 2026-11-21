@@ -27,16 +27,16 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 |---|---|---|
 | 0 | Repo y esqueleto del plugin | Hecho el 2026-11-20, `main` en `9e67083` |
 | 0b | Contratos, convenciones y renombres a inglés | Hecho el 2026-11-20, `main` en `00c8e9c` |
-| 0c | Composiciones bocetadas en Claude Design | En curso |
-| 1 | Plantilla de la landing en Astro | En curso |
-| 1b | Reglas del sistema de diseño y verificador | En curso |
+| 0c | Composiciones bocetadas en Claude Design | Tarjeta lista; la inicia el usuario |
+| 1 | Plantilla de la landing en Astro | PR #1 abierto; falta la prueba del usuario |
+| 1b | Reglas del sistema de diseño y verificador | Tarjeta lista; la inicia el usuario |
 | 1c | Las tres composiciones en código | Espera a 0c y 1 |
 | 2 | Página propia en línea, versión 0 | Espera a 1 |
-| 3 | Skills `connect`, `interview` y `rules` | Aprobado; espera a 0b |
+| 3 | Skills `connect`, `interview` y `rules` | PR #2 abierto; falta la prueba del usuario |
 | 4a | Skill `design` | Espera a 0c y 1b |
 | 4b | Skill `landing` | Espera a 1, 1b, 1c y 2 |
 | 4c | Página propia con el flujo completo | Espera a 4a y 4b |
-| 5 | Skill `video-scripts` | Por detallar |
+| 5 | Skill `video-scripts` | Aprobado; en curso |
 | 6 | Skill `verdict` | Por detallar |
 | 7 | Gate | Por detallar |
 | 8 | Empaque y entrega | Por detallar |
@@ -633,7 +633,9 @@ Las reglas se reescriben y se listan en `ATTRIBUTIONS.md` con su licencia: gstac
 2. Vercel: si falta la CLI, ofrece instalarla con el gestor elegido; comprueba la sesión con `vercel whoami` y, si falta, dice el comando y espera. Propone el nombre del proyecto.
 3. PostHog, sin llaves: comprueba si hay sesión; si no, le dice al builder cómo iniciarla (`/mcp`, elegir PostHog, seguir el navegador) y espera. Con la sesión lista, lista sus proyectos, él elige uno, y la skill lee de ahí la región y la llave pública.
 4. Prueba: publica una página mínima y comprueba que responde; envía un evento de prueba y lo busca con una consulta por la misma sesión.
-5. Escribe `.sbr/connections.json`, sin secretos.
+5. Escribe `.sbr/connections.json`, sin secretos, con la URL de la página de prueba en `probe_url`.
+
+Nombres fijados en `main` el 2026-11-21 (`872bf2c`): el servidor se llama `posthog`; el evento de prueba es `sbr_probe`; las frases fijas van en `locales/<locale>/<skill>.json`, un archivo por skill; los revisores responden `approved` o `rejected` y una línea por hallazgo. Donde este plan y los contratos difieran, mandan los contratos.
 
 El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su propio `.mcp.json`, así el builder no necesita instalar el plugin de PostHog. Si ya lo tiene, se usa esa sesión.
 
@@ -647,7 +649,7 @@ El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su p
 **`rules`**
 1. Muestra las varas del documento de diseño con su fuente y deja ajustarlas antes de sellar.
 2. Pregunta la fecha de veredicto.
-3. Escribe `.sbr/rules.md` y lo sella con un commit; guarda fecha y commit.
+3. Escribe `.sbr/rules.md` y lo sella con un commit; guarda fecha y commit en `.sbr/seal.json`.
 4. Si se vuelve a correr después de sellar, no cambia nada en silencio: cualquier cambio es un commit nuevo que `verdict` va a mostrar.
 
 **Aceptación (prueba de 10 minutos, en una carpeta vacía)**
@@ -666,4 +668,64 @@ El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su p
 - Las vistas previas de Vercel pueden pedir autenticación, así que la página de prueba se publica en producción con un "pronto".
 - El texto de las preguntas se adapta de gstack (MIT) con atribución.
 - Las consultas las hace el modelo con una herramienta, no un script: es un poco menos predecible, a cambio de cero secretos.
+
+### Paso 5 · Skill `video-scripts` (aprobado)
+
+**Objetivo:** tres guiones de video, cada uno con una sola idea, escritos con la estructura de Guillie Collado y revisados por un agente sin contexto. El builder los graba y los publica él mismo.
+
+**Archivos (dueño):** `skills/video-scripts/*`, `agents/script-reviewer.md`, `locales/es/video-scripts.json`.
+
+**Principios**
+- **Un video, una idea (SMP).** Antes de escribir se fija el SMP 1, una sola frase sin adornos que dice de qué va el video; si necesita dos oraciones, son dos videos. Y el SMP 2, la lista corta de lo único que se va a decir.
+- **El video habla del problema.** El producto es el medio y aparece solo en la llamada a la acción.
+- **Sin duración objetivo.** El video dura lo que su SMP necesite. Si un guion se alarga, hay dos videos ahí.
+
+**Estructura de cada guion**
+1. **Reveal**, con tres piezas: el visual que llama la atención, el titular escrito en pantalla como si fuera el H1 del video, y la frase que dice la persona. El titular deja claro de qué va en menos de un segundo.
+2. **Build up:** construye la necesidad o la tensión. El valor no aparece aquí.
+3. **Value:** todo lo que resuelve, dentro del SMP 2.
+4. **Call to action:** registrarse en la landing. Único lugar donde se nombra el producto, siempre como acceso anticipado.
+
+**Los tres videos**
+
+| Video | Ángulo | Qué evidencia | Sale de |
+|---|---|---|---|
+| `v1` | `pain` | "¿Le ha pasado que…?": el problema real y cómo se resuelve | Dolor del brief |
+| `v2` | `top3` | Tres errores, problemas o causas comunes de ese dolor | Arreglo actual del brief |
+| `v3` | `founder` | El builder a cámara, en su voz, sobre por qué le importa | Promesa del brief y su historia |
+
+**Lo que acompaña a cada guion**
+- Subtítulos siempre y texto dentro de la zona segura.
+- La descripción del video escrita para el SEO social, con palabras clave de la persona y del problema.
+- Su llamada a la acción en dos formas: "link en mi perfil", y una palabra clave para comentar con el mensaje que lleva el link de ese video, por si el builder usa ManyChat. La skill no configura ManyChat.
+
+**Links**
+- El link del perfil usa `?src=bio` y cuenta como tráfico frío, porque un solo link no distingue videos.
+- Cada video tiene además su link propio (`?src=v1`, `v2`, `v3`) para el mensaje por palabra clave o para anuncios.
+- Un link con `?src=friends` para amigos y comunidad, que el veredicto cuenta aparte.
+
+**Procedimiento**
+1. Precondiciones: brief aprobado y `.sbr/landing.json` con la URL publicada.
+2. Fija SMP 1 y SMP 2 de cada video y los muestra al builder antes de escribir.
+3. Escribe los tres guiones.
+4. `script-reviewer`, agente sin contexto, rechaza si: el SMP 1 no cabe en una frase; el guion dice algo fuera del SMP 2; falta una pieza del reveal; el valor aparece antes del build up; el producto aparece antes del cierre; o hay precios, cifras inventadas o un "ya disponible". A la tercera ronda se detiene y muestra lo que falta.
+5. Escribe `.sbr/video-scripts.md` en el idioma del brief, con una nota final de fuentes.
+6. Si se vuelve a correr después de publicar, muestra las visitas por link consultando PostHog por la sesión iniciada. Es lo primero que se recorta.
+
+**Aceptación (prueba de 10 minutos, con el brief de ejemplo y una URL de prueba)**
+1. Muestra el SMP de cada video antes de escribir.
+2. Entrega tres guiones con las cuatro partes, el titular en pantalla y la descripción con palabras clave.
+3. El producto no aparece antes de la llamada a la acción en ninguno.
+4. Si se le pide a propósito que diga "ya disponible" o un precio, el revisor lo rechaza.
+5. Existe `.sbr/video-scripts.md` con los links `bio`, `v1`, `v2`, `v3` y `friends`.
+
+**Dependencias:** 0b. En paralelo con todo lo demás.
+
+**Fuentes y por verificar**
+- Estructura (SMP; reveal, build up, value, call to action) y los tres tipos de video: enseñados por Guillie Collado al autor. No verificados en fuente pública; se acreditan en el repo.
+- Respaldado por guías oficiales: abrir dejando claro de qué va (TikTok: propuesta en los primeros 3 segundos), cerrar con una llamada a la acción clara (TikTok, Meta, Google), vertical 9:16 y con sonido.
+- Desviación deliberada: Meta recomienda mostrar la marca en los primeros 5 segundos; aquí no hay marca todavía y el producto va solo al cierre.
+- Por confirmar con el usuario: que citar la estructura de Guillie Collado en un repo público no sea problema.
+
+**Fuera de este paso, por decisión previa:** renderizar video, publicar y configurar ManyChat de forma automática.
 

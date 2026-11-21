@@ -42,9 +42,11 @@ Each code is the header key of the brief that falls short.
 
 | Code | Finding |
 |---|---|
-| `duplicate_angle` | Two scripts share an angle |
+| `smp_not_one_sentence` | The single idea of a video (`smp`) does not fit in one sentence |
+| `outside_smp` | A script says something outside the short list fixed for that video |
+| `reveal_incomplete` | The reveal lacks one of its three pieces: the visual, the on-screen headline or the spoken line |
+| `value_before_build_up` | The value appears before the build-up |
+| `product_before_cta` | The product is named before the call to action |
 | `claims_it_exists` | A script speaks as if the product already existed |
 | `price` | A script mentions a price |
-| `invented_figure` | A script uses a figure or a testimonial that nobody measured or said |
-| `unclear_audience` | It is not clear who the script is for |
-| `unclear_action` | It is not clear what the viewer should do next |
+| `invented_figure` | A script uses a figure that nobody measured |

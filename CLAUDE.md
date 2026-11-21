@@ -57,7 +57,7 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 4a | `skills/design/*` |
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |
-| 5 | `skills/video-scripts/*`, `agents/script-reviewer.md` |
+| 5 | `skills/video-scripts/*`, `agents/script-reviewer.md`, `locales/es/video-scripts.json` |
 
 Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6.
 
