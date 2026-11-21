@@ -1,0 +1,1358 @@
+{
+  "version": 1,
+  "note": "Machine-readable copy of docs/contracts/*.md. Edit only on main, together with those files.",
+  "hook_attribute": "data-sbr",
+  "desktop_breakpoint_px": 768,
+  "viewports": {
+    "first_view": [
+      {
+        "width": 375,
+        "height": 667
+      },
+      {
+        "width": 1440,
+        "height": 900
+      }
+    ],
+    "overflow_widths": [375, 768, 1024, 1440]
+  },
+  "screens": [
+    {
+      "number": 1,
+      "name": "promise",
+      "hook": "screen-promise"
+    },
+    {
+      "number": 2,
+      "name": "email",
+      "hook": "screen-email"
+    },
+    {
+      "number": 3,
+      "name": "questions",
+      "hook": "screen-questions"
+    },
+    {
+      "number": 4,
+      "name": "done",
+      "hook": "screen-done"
+    }
+  ],
+  "page_attributes": {
+    "data-composition": ["centered", "split", "editorial"],
+    "data-scheme": ["light", "dark"],
+    "data-decor": ["none", "shapes", "grid"],
+    "data-screen": ["1", "2", "3", "4"]
+  },
+  "hooks": [
+    {
+      "name": "page",
+      "group": "structure",
+      "element": "body",
+      "screens": [],
+      "required": true,
+      "attributes": ["data-composition", "data-scheme", "data-decor", "data-screen"]
+    },
+    {
+      "name": "brand",
+      "group": "structure",
+      "element": "p",
+      "screens": [1, 2, 3],
+      "required": true,
+      "text": "brand"
+    },
+    {
+      "name": "progress",
+      "group": "structure",
+      "element": "div",
+      "screens": [2, 3],
+      "required": true,
+      "contains": ["brand", "progress", "questions.saved"]
+    },
+    {
+      "name": "figure",
+      "group": "structure",
+      "element": "div",
+      "screens": [1],
+      "required": false,
+      "present_when": "decor != none"
+    },
+    {
+      "name": "decor-1",
+      "group": "structure",
+      "element": "div",
+      "screens": [1],
+      "required": false,
+      "present_when": "decor != none",
+      "inside": "figure"
+    },
+    {
+      "name": "decor-2",
+      "group": "structure",
+      "element": "div",
+      "screens": [1],
+      "required": false,
+      "present_when": "decor != none",
+      "inside": "figure"
+    },
+    {
+      "name": "footer",
+      "group": "structure",
+      "element": "footer",
+      "screens": [1],
+      "required": true,
+      "contains": ["footer.author", "footer.privacy"]
+    },
+    {
+      "name": "debug-panel",
+      "group": "structure",
+      "element": "aside",
+      "screens": [],
+      "required": true,
+      "hidden_until": "debug=1"
+    },
+    {
+      "name": "screen-promise",
+      "group": "promise",
+      "element": "section",
+      "screens": [1],
+      "required": true
+    },
+    {
+      "name": "title",
+      "group": "promise",
+      "element": "h1",
+      "screens": [1],
+      "required": true,
+      "text": "hero.title"
+    },
+    {
+      "name": "subtitle",
+      "group": "promise",
+      "element": "p",
+      "screens": [1],
+      "required": true,
+      "text": "hero.subtitle"
+    },
+    {
+      "name": "cta",
+      "group": "promise",
+      "element": "button",
+      "screens": [1],
+      "required": true,
+      "text": "cta",
+      "filled": true
+    },
+    {
+      "name": "pains",
+      "group": "promise",
+      "element": "ul",
+      "screens": [1],
+      "required": true,
+      "contains": ["pains"]
+    },
+    {
+      "name": "steps",
+      "group": "promise",
+      "element": "ol",
+      "screens": [1],
+      "required": true,
+      "contains": ["steps"]
+    },
+    {
+      "name": "closing",
+      "group": "promise",
+      "element": "h2",
+      "screens": [1],
+      "required": true,
+      "text": "closing"
+    },
+    {
+      "name": "cta-closing",
+      "group": "promise",
+      "element": "button",
+      "screens": [1],
+      "required": true,
+      "text": "cta",
+      "filled": true
+    },
+    {
+      "name": "screen-email",
+      "group": "email",
+      "element": "section",
+      "screens": [2],
+      "required": true
+    },
+    {
+      "name": "email-title",
+      "group": "email",
+      "element": "h2",
+      "screens": [2],
+      "required": true,
+      "text": "email.title"
+    },
+    {
+      "name": "email-form",
+      "group": "email",
+      "element": "form",
+      "screens": [2],
+      "required": true
+    },
+    {
+      "name": "email-field",
+      "group": "email",
+      "element": "input",
+      "screens": [2],
+      "required": true
+    },
+    {
+      "name": "privacy",
+      "group": "email",
+      "element": "p",
+      "screens": [2],
+      "required": true,
+      "text": "email.privacy"
+    },
+    {
+      "name": "email-submit",
+      "group": "email",
+      "element": "button",
+      "screens": [2],
+      "required": true,
+      "text": "email.submit",
+      "text_while_sending": "status.sending",
+      "filled": true
+    },
+    {
+      "name": "email-error",
+      "group": "email",
+      "element": "p",
+      "screens": [2],
+      "required": true,
+      "text": "email.error",
+      "hidden_until": "error"
+    },
+    {
+      "name": "screen-questions",
+      "group": "questions",
+      "element": "section",
+      "screens": [3],
+      "required": true
+    },
+    {
+      "name": "questions-title",
+      "group": "questions",
+      "element": "h2",
+      "screens": [3],
+      "required": true,
+      "text": "questions.title"
+    },
+    {
+      "name": "questions-form",
+      "group": "questions",
+      "element": "form",
+      "screens": [3],
+      "required": true
+    },
+    {
+      "name": "field-current-solution",
+      "group": "questions",
+      "element": "textarea",
+      "screens": [3],
+      "required": true
+    },
+    {
+      "name": "field-last-time",
+      "group": "questions",
+      "element": "textarea",
+      "screens": [3],
+      "required": true
+    },
+    {
+      "name": "field-wants-call",
+      "group": "questions",
+      "element": "input",
+      "screens": [3],
+      "required": true
+    },
+    {
+      "name": "call-group",
+      "group": "questions",
+      "element": "div",
+      "screens": [3],
+      "required": true,
+      "hidden_until": "wants_call"
+    },
+    {
+      "name": "field-whatsapp",
+      "group": "questions",
+      "element": "input",
+      "screens": [3],
+      "required": true,
+      "inside": "call-group"
+    },
+    {
+      "name": "field-time-slot",
+      "group": "questions",
+      "element": "input",
+      "screens": [3],
+      "required": true,
+      "inside": "call-group"
+    },
+    {
+      "name": "questions-submit",
+      "group": "questions",
+      "element": "button",
+      "screens": [3],
+      "required": true,
+      "text": "questions.submit",
+      "text_while_sending": "status.sending",
+      "filled": true
+    },
+    {
+      "name": "questions-error",
+      "group": "questions",
+      "element": "p",
+      "screens": [3],
+      "required": true,
+      "text": "questions.error",
+      "hidden_until": "error"
+    },
+    {
+      "name": "screen-done",
+      "group": "done",
+      "element": "section",
+      "screens": [4],
+      "required": true
+    },
+    {
+      "name": "done-title",
+      "group": "done",
+      "element": "h2",
+      "screens": [4],
+      "required": true,
+      "text": "done.title"
+    },
+    {
+      "name": "notice",
+      "group": "done",
+      "element": "p",
+      "screens": [4],
+      "required": true,
+      "text": "done.notice"
+    },
+    {
+      "name": "next-steps",
+      "group": "done",
+      "element": "p",
+      "screens": [4],
+      "required": true,
+      "text": "done.next"
+    }
+  ],
+  "fields": [
+    {
+      "hook": "email-field",
+      "name": "email",
+      "label": "email.label",
+      "placeholder": "email.placeholder",
+      "element": "input",
+      "type": "email",
+      "required": true,
+      "autocomplete": "email",
+      "inputmode": "email",
+      "maxlength": 254,
+      "attributes": {
+        "spellcheck": "false",
+        "autocapitalize": "none",
+        "autocorrect": "off"
+      }
+    },
+    {
+      "hook": "field-current-solution",
+      "name": "current_solution",
+      "label": "questions.current_solution",
+      "element": "textarea",
+      "required": true,
+      "autocomplete": "off",
+      "maxlength": 500,
+      "attributes": {
+        "rows": "3"
+      }
+    },
+    {
+      "hook": "field-last-time",
+      "name": "last_time",
+      "label": "questions.last_time",
+      "element": "textarea",
+      "required": true,
+      "autocomplete": "off",
+      "maxlength": 500,
+      "attributes": {
+        "rows": "3"
+      }
+    },
+    {
+      "hook": "field-wants-call",
+      "name": "wants_call",
+      "label": "questions.wants_call",
+      "element": "input",
+      "type": "checkbox",
+      "required": false
+    },
+    {
+      "hook": "field-whatsapp",
+      "name": "whatsapp",
+      "label": "questions.whatsapp",
+      "element": "input",
+      "type": "tel",
+      "required": "while wants_call",
+      "autocomplete": "tel",
+      "inputmode": "tel",
+      "maxlength": 30
+    },
+    {
+      "hook": "field-time-slot",
+      "name": "time_slot",
+      "label": "questions.time_slot",
+      "element": "input",
+      "type": "text",
+      "required": false,
+      "autocomplete": "off",
+      "maxlength": 80
+    }
+  ],
+  "copy": {
+    "locale_pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+    "length_unit": "unicode code points",
+    "keys": [
+      {
+        "key": "lang",
+        "type": "string",
+        "equals": "locale"
+      },
+      {
+        "key": "brand",
+        "type": "string",
+        "max": 30
+      },
+      {
+        "key": "hero.title",
+        "type": "string",
+        "max": 70,
+        "requirement": "R2"
+      },
+      {
+        "key": "hero.subtitle",
+        "type": "string",
+        "max": 160,
+        "requirement": "R2"
+      },
+      {
+        "key": "cta",
+        "type": "string",
+        "max": 24,
+        "requirement": "R2"
+      },
+      {
+        "key": "pains",
+        "type": "list",
+        "items_min": 1,
+        "items_max": 3,
+        "max": 90,
+        "requirement": "R2"
+      },
+      {
+        "key": "steps",
+        "type": "list",
+        "items_min": 3,
+        "items_max": 3,
+        "max": 90,
+        "requirement": "R2"
+      },
+      {
+        "key": "closing",
+        "type": "string",
+        "max": 70
+      },
+      {
+        "key": "footer.author",
+        "type": "string",
+        "max": 80
+      },
+      {
+        "key": "footer.privacy",
+        "type": "string",
+        "max": 160
+      },
+      {
+        "key": "progress",
+        "type": "string",
+        "max": 30,
+        "placeholders": ["{current}", "{total}"]
+      },
+      {
+        "key": "status.sending",
+        "type": "string",
+        "max": 24
+      },
+      {
+        "key": "email.title",
+        "type": "string",
+        "max": 70
+      },
+      {
+        "key": "email.label",
+        "type": "string",
+        "max": 40
+      },
+      {
+        "key": "email.placeholder",
+        "type": "string",
+        "max": 40
+      },
+      {
+        "key": "email.submit",
+        "type": "string",
+        "max": 24,
+        "requirement": "R2"
+      },
+      {
+        "key": "email.privacy",
+        "type": "string",
+        "max": 160,
+        "requirement": "R26"
+      },
+      {
+        "key": "email.error",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "questions.title",
+        "type": "string",
+        "max": 70
+      },
+      {
+        "key": "questions.saved",
+        "type": "string",
+        "max": 90
+      },
+      {
+        "key": "questions.current_solution",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "questions.last_time",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "questions.wants_call",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "questions.whatsapp",
+        "type": "string",
+        "max": 40
+      },
+      {
+        "key": "questions.time_slot",
+        "type": "string",
+        "max": 40
+      },
+      {
+        "key": "questions.submit",
+        "type": "string",
+        "max": 24,
+        "requirement": "R2"
+      },
+      {
+        "key": "questions.error",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "done.title",
+        "type": "string",
+        "max": 70
+      },
+      {
+        "key": "done.notice",
+        "type": "string",
+        "max": 200
+      },
+      {
+        "key": "done.next",
+        "type": "string",
+        "max": 120
+      },
+      {
+        "key": "meta.title",
+        "type": "string",
+        "max": 60,
+        "requirement": "R30"
+      },
+      {
+        "key": "meta.description",
+        "type": "string",
+        "max": 160,
+        "min": 70,
+        "requirement": "R30"
+      }
+    ]
+  },
+  "tokens": {
+    "keys": ["name", "scheme", "composition", "decor", "palette_source", "fonts", "color", "text", "spacing", "shape", "measure"],
+    "optional_keys": ["palette_source"],
+    "enums": {
+      "scheme": ["light", "dark"],
+      "composition": ["centered", "split", "editorial"],
+      "decor": ["none", "shapes", "grid"],
+      "palette_source": ["derived", "builder"],
+      "font_fallback": ["sans-serif", "serif", "monospace"]
+    },
+    "name_max": 40,
+    "color_pattern": "^#[0-9A-Fa-f]{6}$",
+    "colors": [
+      {
+        "token": "canvas",
+        "role": "Page background",
+        "utilities": ["bg-canvas"]
+      },
+      {
+        "token": "surface",
+        "role": "Raised background: fields, cards, debug panel",
+        "utilities": ["bg-surface"]
+      },
+      {
+        "token": "ink",
+        "role": "Primary text",
+        "utilities": ["text-ink"]
+      },
+      {
+        "token": "ink-muted",
+        "role": "Secondary text and placeholders",
+        "utilities": ["text-ink-muted", "placeholder:text-ink-muted"]
+      },
+      {
+        "token": "accent",
+        "role": "Fill of the filled button, native checkbox, decor",
+        "utilities": ["bg-accent", "accent-accent", "border-accent", "fill-accent", "stroke-accent"]
+      },
+      {
+        "token": "on-accent",
+        "role": "Text on accent",
+        "utilities": ["text-on-accent"]
+      },
+      {
+        "token": "line",
+        "role": "Borders, dividers, decor lines",
+        "utilities": ["border-line", "stroke-line"]
+      },
+      {
+        "token": "focus",
+        "role": "Focus ring",
+        "utilities": ["outline-focus"]
+      },
+      {
+        "token": "danger",
+        "role": "Error text and border of an invalid field",
+        "utilities": ["text-danger", "border-danger"]
+      }
+    ],
+    "color_pairs": [
+      {
+        "foreground": "ink",
+        "background": "canvas",
+        "min": 7
+      },
+      {
+        "foreground": "ink",
+        "background": "surface",
+        "min": 7
+      },
+      {
+        "foreground": "ink-muted",
+        "background": "canvas",
+        "min": 4.5
+      },
+      {
+        "foreground": "ink-muted",
+        "background": "surface",
+        "min": 4.5
+      },
+      {
+        "foreground": "on-accent",
+        "background": "accent",
+        "min": 4.5
+      },
+      {
+        "foreground": "danger",
+        "background": "canvas",
+        "min": 4.5
+      },
+      {
+        "foreground": "danger",
+        "background": "surface",
+        "min": 4.5
+      },
+      {
+        "foreground": "line",
+        "background": "canvas",
+        "min": 3
+      },
+      {
+        "foreground": "line",
+        "background": "surface",
+        "min": 3
+      },
+      {
+        "foreground": "focus",
+        "background": "canvas",
+        "min": 3
+      },
+      {
+        "foreground": "focus",
+        "background": "surface",
+        "min": 3
+      },
+      {
+        "foreground": "accent",
+        "background": "canvas",
+        "min": 3
+      },
+      {
+        "foreground": "accent",
+        "background": "surface",
+        "min": 3
+      }
+    ],
+    "color_rules": {
+      "ink_forbidden": "#000000",
+      "violet": {
+        "hue_min": 250,
+        "hue_max": 300,
+        "saturation_min": 0.15,
+        "allowed_when": "palette_source == builder"
+      }
+    },
+    "fonts": {
+      "roles": ["display", "body"],
+      "keys": ["family", "weights", "fallback"],
+      "families_max": 2,
+      "family_weight_pairs_max": 4,
+      "weight_step": 100,
+      "weight_min": 100,
+      "weight_max": 900,
+      "styles": ["normal"],
+      "subsets": ["latin"]
+    },
+    "text_styles": [
+      {
+        "name": "title",
+        "family": "display",
+        "color": "ink",
+        "used_by": ["title"],
+        "ranges": {
+          "size": [28, 36],
+          "size_desktop": [36, 64],
+          "line_height": [1.05, 1.25],
+          "font_weight": [400, 900],
+          "letter_spacing": [-0.04, 0.02]
+        }
+      },
+      {
+        "name": "heading",
+        "family": "display",
+        "color": "ink",
+        "used_by": ["closing", "email-title", "questions-title", "done-title"],
+        "ranges": {
+          "size": [20, 32],
+          "size_desktop": [22, 40],
+          "line_height": [1.05, 1.25],
+          "font_weight": [400, 900],
+          "letter_spacing": [-0.04, 0.02]
+        }
+      },
+      {
+        "name": "lead",
+        "family": "body",
+        "color": "ink-muted",
+        "used_by": ["subtitle"],
+        "ranges": {
+          "size": [16, 20],
+          "size_desktop": [16, 24],
+          "line_height": [1.45, 1.65],
+          "font_weight": [300, 500],
+          "letter_spacing": [-0.01, 0.02]
+        }
+      },
+      {
+        "name": "body",
+        "family": "body",
+        "color": "ink",
+        "used_by": ["pains", "steps", "notice", "next-steps", "email-field", "field-current-solution", "field-last-time", "field-whatsapp", "field-time-slot"],
+        "ranges": {
+          "size": [16, 18],
+          "size_desktop": [16, 20],
+          "line_height": [1.45, 1.65],
+          "font_weight": [300, 500],
+          "letter_spacing": [-0.01, 0.02]
+        }
+      },
+      {
+        "name": "small",
+        "family": "body",
+        "color": "ink-muted",
+        "used_by": ["privacy", "footer", "progress", "email-error", "questions-error", "debug-panel"],
+        "color_overrides": {
+          "email-error": "danger",
+          "questions-error": "danger"
+        },
+        "ranges": {
+          "size": [14, 16],
+          "size_desktop": [14, 16],
+          "line_height": [1.45, 1.65],
+          "font_weight": [300, 500],
+          "letter_spacing": [-0.01, 0.02]
+        }
+      },
+      {
+        "name": "button",
+        "family": "body",
+        "color": "on-accent",
+        "used_by": ["cta", "cta-closing", "email-submit", "questions-submit", "brand"],
+        "color_overrides": {
+          "brand": "ink"
+        },
+        "ranges": {
+          "size": [16, 18],
+          "size_desktop": [16, 20],
+          "line_height": [1, 1.5],
+          "font_weight": [500, 800],
+          "letter_spacing": [-0.01, 0.08]
+        }
+      },
+      {
+        "name": "label",
+        "family": "body",
+        "color": "ink-muted",
+        "used_by": [],
+        "used_by_elements": ["label"],
+        "ranges": {
+          "size": [14, 16],
+          "size_desktop": [14, 16],
+          "line_height": [1.2, 1.5],
+          "font_weight": [400, 600],
+          "letter_spacing": [-0.01, 0.08]
+        }
+      }
+    ],
+    "text_style_keys": ["size", "size_desktop", "line_height", "font_weight", "letter_spacing"],
+    "scale": {
+      "ratios": [1.25, 1.333],
+      "tolerance": 0.04,
+      "applies_to": "styles larger than body",
+      "title_to_body_min": {
+        "size": 1.75,
+        "size_desktop": 2
+      }
+    },
+    "size_order": ["title > every other style", "lead >= body", "small < body", "label < body", "size_desktop >= size"],
+    "title_weight": "highest of the seven, ties allowed",
+    "spacing": {
+      "order": ["section", "block", "group", "item"],
+      "multiple_of": 4,
+      "ranges": {
+        "section": [64, 128],
+        "block": [32, 64],
+        "group": [16, 32],
+        "item": [4, 16]
+      }
+    },
+    "shape": {
+      "ranges": {
+        "radius_control": [0, 24],
+        "radius_card": [0, 32],
+        "line_width": [1, 4]
+      },
+      "shadow_card": {
+        "keys": ["x", "y", "blur", "opacity"],
+        "ranges": {
+          "x": [0, 12],
+          "y": [0, 24],
+          "blur": [0, 48],
+          "opacity": [0, 1]
+        },
+        "opacity_max_when_blurred": 0.25
+      }
+    },
+    "measure": {
+      "ranges": {
+        "prose": [45, 75],
+        "page": [960, 1280],
+        "motion_duration": [0, 400]
+      }
+    },
+    "formats": {
+      "hex": "the string as is",
+      "font_stack": "\"<family>\", <fallback>",
+      "rem": "px / 16, four decimals, trailing zeros removed, then \"rem\"",
+      "number": "the number",
+      "em": "<number>em",
+      "px": "<number>px",
+      "ch": "<number>ch",
+      "ms": "<number>ms",
+      "shadow": "<x>px <y>px <blur>px rgb(0 0 0 / <opacity>)"
+    },
+    "variables": [
+      {
+        "variable": "--color-canvas",
+        "path": "color.canvas",
+        "format": "hex",
+        "utilities": ["bg-canvas"]
+      },
+      {
+        "variable": "--color-surface",
+        "path": "color.surface",
+        "format": "hex",
+        "utilities": ["bg-surface"]
+      },
+      {
+        "variable": "--color-ink",
+        "path": "color.ink",
+        "format": "hex",
+        "utilities": ["text-ink"]
+      },
+      {
+        "variable": "--color-ink-muted",
+        "path": "color.ink_muted",
+        "format": "hex",
+        "utilities": ["text-ink-muted", "placeholder:text-ink-muted"]
+      },
+      {
+        "variable": "--color-accent",
+        "path": "color.accent",
+        "format": "hex",
+        "utilities": ["bg-accent", "accent-accent", "border-accent", "fill-accent", "stroke-accent"]
+      },
+      {
+        "variable": "--color-on-accent",
+        "path": "color.on_accent",
+        "format": "hex",
+        "utilities": ["text-on-accent"]
+      },
+      {
+        "variable": "--color-line",
+        "path": "color.line",
+        "format": "hex",
+        "utilities": ["border-line", "stroke-line"]
+      },
+      {
+        "variable": "--color-focus",
+        "path": "color.focus",
+        "format": "hex",
+        "utilities": ["outline-focus"]
+      },
+      {
+        "variable": "--color-danger",
+        "path": "color.danger",
+        "format": "hex",
+        "utilities": ["text-danger", "border-danger"]
+      },
+      {
+        "variable": "--font-display",
+        "path": "fonts.display",
+        "format": "font_stack",
+        "utilities": ["font-display"]
+      },
+      {
+        "variable": "--font-body",
+        "path": "fonts.body",
+        "format": "font_stack",
+        "utilities": ["font-body"]
+      },
+      {
+        "variable": "--text-title",
+        "path": "text.title.size",
+        "path_desktop": "text.title.size_desktop",
+        "format": "rem",
+        "utilities": ["text-title"]
+      },
+      {
+        "variable": "--text-title--line-height",
+        "path": "text.title.line_height",
+        "format": "number",
+        "utilities": ["text-title"]
+      },
+      {
+        "variable": "--text-title--font-weight",
+        "path": "text.title.font_weight",
+        "format": "number",
+        "utilities": ["text-title"]
+      },
+      {
+        "variable": "--text-title--letter-spacing",
+        "path": "text.title.letter_spacing",
+        "format": "em",
+        "utilities": ["text-title"]
+      },
+      {
+        "variable": "--text-heading",
+        "path": "text.heading.size",
+        "path_desktop": "text.heading.size_desktop",
+        "format": "rem",
+        "utilities": ["text-heading"]
+      },
+      {
+        "variable": "--text-heading--line-height",
+        "path": "text.heading.line_height",
+        "format": "number",
+        "utilities": ["text-heading"]
+      },
+      {
+        "variable": "--text-heading--font-weight",
+        "path": "text.heading.font_weight",
+        "format": "number",
+        "utilities": ["text-heading"]
+      },
+      {
+        "variable": "--text-heading--letter-spacing",
+        "path": "text.heading.letter_spacing",
+        "format": "em",
+        "utilities": ["text-heading"]
+      },
+      {
+        "variable": "--text-lead",
+        "path": "text.lead.size",
+        "path_desktop": "text.lead.size_desktop",
+        "format": "rem",
+        "utilities": ["text-lead"]
+      },
+      {
+        "variable": "--text-lead--line-height",
+        "path": "text.lead.line_height",
+        "format": "number",
+        "utilities": ["text-lead"]
+      },
+      {
+        "variable": "--text-lead--font-weight",
+        "path": "text.lead.font_weight",
+        "format": "number",
+        "utilities": ["text-lead"]
+      },
+      {
+        "variable": "--text-lead--letter-spacing",
+        "path": "text.lead.letter_spacing",
+        "format": "em",
+        "utilities": ["text-lead"]
+      },
+      {
+        "variable": "--text-body",
+        "path": "text.body.size",
+        "path_desktop": "text.body.size_desktop",
+        "format": "rem",
+        "utilities": ["text-body"]
+      },
+      {
+        "variable": "--text-body--line-height",
+        "path": "text.body.line_height",
+        "format": "number",
+        "utilities": ["text-body"]
+      },
+      {
+        "variable": "--text-body--font-weight",
+        "path": "text.body.font_weight",
+        "format": "number",
+        "utilities": ["text-body"]
+      },
+      {
+        "variable": "--text-body--letter-spacing",
+        "path": "text.body.letter_spacing",
+        "format": "em",
+        "utilities": ["text-body"]
+      },
+      {
+        "variable": "--text-small",
+        "path": "text.small.size",
+        "path_desktop": "text.small.size_desktop",
+        "format": "rem",
+        "utilities": ["text-small"]
+      },
+      {
+        "variable": "--text-small--line-height",
+        "path": "text.small.line_height",
+        "format": "number",
+        "utilities": ["text-small"]
+      },
+      {
+        "variable": "--text-small--font-weight",
+        "path": "text.small.font_weight",
+        "format": "number",
+        "utilities": ["text-small"]
+      },
+      {
+        "variable": "--text-small--letter-spacing",
+        "path": "text.small.letter_spacing",
+        "format": "em",
+        "utilities": ["text-small"]
+      },
+      {
+        "variable": "--text-button",
+        "path": "text.button.size",
+        "path_desktop": "text.button.size_desktop",
+        "format": "rem",
+        "utilities": ["text-button"]
+      },
+      {
+        "variable": "--text-button--line-height",
+        "path": "text.button.line_height",
+        "format": "number",
+        "utilities": ["text-button"]
+      },
+      {
+        "variable": "--text-button--font-weight",
+        "path": "text.button.font_weight",
+        "format": "number",
+        "utilities": ["text-button"]
+      },
+      {
+        "variable": "--text-button--letter-spacing",
+        "path": "text.button.letter_spacing",
+        "format": "em",
+        "utilities": ["text-button"]
+      },
+      {
+        "variable": "--text-label",
+        "path": "text.label.size",
+        "path_desktop": "text.label.size_desktop",
+        "format": "rem",
+        "utilities": ["text-label"]
+      },
+      {
+        "variable": "--text-label--line-height",
+        "path": "text.label.line_height",
+        "format": "number",
+        "utilities": ["text-label"]
+      },
+      {
+        "variable": "--text-label--font-weight",
+        "path": "text.label.font_weight",
+        "format": "number",
+        "utilities": ["text-label"]
+      },
+      {
+        "variable": "--text-label--letter-spacing",
+        "path": "text.label.letter_spacing",
+        "format": "em",
+        "utilities": ["text-label"]
+      },
+      {
+        "variable": "--spacing-section",
+        "path": "spacing.section",
+        "format": "rem",
+        "utilities": ["*-section"]
+      },
+      {
+        "variable": "--spacing-block",
+        "path": "spacing.block",
+        "format": "rem",
+        "utilities": ["*-block"]
+      },
+      {
+        "variable": "--spacing-group",
+        "path": "spacing.group",
+        "format": "rem",
+        "utilities": ["*-group"]
+      },
+      {
+        "variable": "--spacing-item",
+        "path": "spacing.item",
+        "format": "rem",
+        "utilities": ["*-item"]
+      },
+      {
+        "variable": "--radius-control",
+        "path": "shape.radius_control",
+        "format": "rem",
+        "utilities": ["rounded-control"]
+      },
+      {
+        "variable": "--radius-card",
+        "path": "shape.radius_card",
+        "format": "rem",
+        "utilities": ["rounded-card"]
+      },
+      {
+        "variable": "--shadow-card",
+        "path": "shape.shadow_card",
+        "format": "shadow",
+        "utilities": ["shadow-card"]
+      },
+      {
+        "variable": "--line-width",
+        "path": "shape.line_width",
+        "format": "px",
+        "utilities": ["border", "border-t", "border-r", "border-b", "border-l", "border-x", "border-y"]
+      },
+      {
+        "variable": "--container-prose",
+        "path": "measure.prose",
+        "format": "ch",
+        "utilities": ["max-w-prose"]
+      },
+      {
+        "variable": "--container-page",
+        "path": "measure.page",
+        "format": "rem",
+        "utilities": ["max-w-page"]
+      },
+      {
+        "variable": "--motion-duration",
+        "path": "measure.motion_duration",
+        "format": "ms",
+        "utilities": ["transition-opacity", "transition-transform"]
+      }
+    ],
+    "fixed_utilities": ["outline-2", "outline-offset-2"],
+    "forbidden_utilities": ["text-accent", "text-canvas", "text-surface", "text-line", "text-focus", "border-<number>", "duration-*", "delay-*", "ease-*", "leading-*", "tracking-*", "font-<weight>", "*-[<arbitrary>]"]
+  },
+  "url_params": [
+    {
+      "name": "src",
+      "values": ["v1", "v2", "v3", "friends", "test"],
+      "fallback": "untagged"
+    },
+    {
+      "name": "debug",
+      "values": ["1"]
+    },
+    {
+      "name": "screen",
+      "values": ["1", "2", "3", "4"],
+      "only_without": "src/data/config.json"
+    }
+  ],
+  "sources": {
+    "cold": ["v1", "v2", "v3"],
+    "friends": ["friends"],
+    "test": ["test"],
+    "untagged": "untagged"
+  },
+  "events": [
+    {
+      "name": "$pageview",
+      "when": "page load",
+      "properties": ["source"],
+      "blocking": false
+    },
+    {
+      "name": "sbr_cta_click",
+      "when": "click on cta or cta-closing",
+      "properties": ["source", "place"],
+      "blocking": false
+    },
+    {
+      "name": "sbr_signup",
+      "when": "email form submitted and valid",
+      "properties": ["source", "email"],
+      "blocking": true
+    },
+    {
+      "name": "sbr_answers",
+      "when": "questions form submitted and valid",
+      "properties": ["source", "current_solution", "last_time", "wants_call", "whatsapp", "time_slot"],
+      "blocking": true
+    },
+    {
+      "name": "sbr_done",
+      "when": "screen 4 shown",
+      "properties": ["source"],
+      "blocking": false
+    }
+  ],
+  "event_properties": {
+    "source": {
+      "type": "string",
+      "values": ["v1", "v2", "v3", "friends", "test", "untagged"]
+    },
+    "place": {
+      "type": "string",
+      "values": ["hero", "closing"]
+    },
+    "email": {
+      "type": "string"
+    },
+    "current_solution": {
+      "type": "string"
+    },
+    "last_time": {
+      "type": "string"
+    },
+    "wants_call": {
+      "type": "boolean"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "time_slot": {
+      "type": "string"
+    }
+  },
+  "distinct_id_storage_key": "sbr_distinct_id",
+  "config_keys": ["posthog_key", "capture_path"],
+  "landing_files": {
+    "folder": "landing",
+    "per_builder": ["src/i18n/<locale>.json", "src/data/tokens.json", "src/data/config.json", "vercel.json"],
+    "not_compared_with_template": ["src/data/", "src/i18n/", "vercel.json", "lockfile"],
+    "package_scripts": ["dev", "build", "preview"],
+    "build_output": "dist",
+    "built_page": "dist/index.html"
+  },
+  "package_managers": ["bun", "pnpm", "npm", "yarn"],
+  "default_package_manager": "bun",
+  "scripts": [
+    {
+      "name": "fill-artboards.mjs",
+      "usage": "fill-artboards.mjs <tokens.json> <copy.json> <output>",
+      "owner": "0c"
+    },
+    {
+      "name": "copy-template.mjs",
+      "usage": "copy-template.mjs <destination> [--pm <manager>] [--example]",
+      "owner": "1"
+    },
+    {
+      "name": "verify-design.mjs",
+      "usage": "verify-design.mjs <tokens.json> <copy.json>",
+      "owner": "1b"
+    },
+    {
+      "name": "verify-landing.mjs",
+      "usage": "verify-landing.mjs <folder>",
+      "owner": "1b"
+    },
+    {
+      "name": "capture.mjs",
+      "usage": "capture.mjs <url> <output> [--measure] [--gray]",
+      "owner": "1b"
+    },
+    {
+      "name": "configure-landing.mjs",
+      "usage": "configure-landing.mjs <folder> --connections <json>",
+      "owner": "2"
+    }
+  ],
+  "exit_codes": {
+    "ok": 0,
+    "requirement_failed": 1,
+    "usage_or_environment": 2,
+    "no_chrome": 3
+  },
+  "requirement_ids": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26", "R27", "R28", "R29", "R30", "R31", "R32"],
+  "requirement_statuses": ["pass", "fail", "skip"],
+  "verdict_results": ["insufficient_sample", "iterate_promise", "no_evidence", "evidence_to_continue"]
+}
