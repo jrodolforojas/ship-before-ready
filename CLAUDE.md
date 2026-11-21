@@ -56,8 +56,9 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 4a | `skills/design/*` |
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |
+| 5 | `skills/video-scripts/*`, `agents/script-reviewer.md` |
 
-Not detailed in the plan yet: step 5 fills `skills/video-scripts/*`; step 6 `skills/verdict/*`; step 7 `hooks/`. Only steps 0 and 8 touch `.claude-plugin/`.
+Not detailed in the plan yet: step 6 fills `skills/verdict/*`; step 7 `hooks/`. Only steps 0 and 8 touch `.claude-plugin/`.
 
 To try a skill before merging, open Claude Code with `claude --plugin-dir <worktree>`.
 

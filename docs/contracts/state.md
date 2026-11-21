@@ -24,6 +24,7 @@ Edit this file only on `main`.
 - The gate never blocks edits inside `.sbr/` or `landing/`.
 - State is never stored in `CLAUDE_PLUGIN_ROOT`: that path changes with every plugin update.
 - `.sbr/` is committed with the repo and holds no secrets. It is never published: `landing` deploys with `--cwd landing`.
+- PostHog is read through the builder's sign-in, never with a key: the plugin declares PostHog's MCP server in its `.mcp.json`, and `connect` and `verdict` read through that session. No personal API key exists anywhere, and there is no `.env` file in `.sbr/`.
 
 ## Conventions
 
@@ -38,7 +39,7 @@ Edit this file only on `main`.
 |---|---|
 | `package_manager` | `bun`, `pnpm`, `npm` or `yarn`. `bun` is the recommended one and the default |
 | `posthog_region` | `us` or `eu` |
-| `posthog_public_key` | Public project key (`phc_…`) |
+| `posthog_public_key` | Public project key (`phc_…`). `connect` reads it from the signed-in PostHog session; the builder never pastes it |
 | `posthog_project_id` | Project id, as a string |
 | `vercel_project` | Name of the Vercel project |
 | `vercel_team` | Team slug, or `null` for a personal account |
