@@ -13,8 +13,10 @@ const { step, savedNote } = Astro.props;
 const stepText = copy.progress.replace('{current}', String(step)).replace('{total}', String(TOTAL_STEPS));
 ---
 
-<div data-sbr="progress" class="flex flex-col gap-item">
-  <Brand />
-  <p class="font-body text-small text-ink-muted">{stepText}</p>
+<div data-sbr="progress" class="flex flex-col gap-item pt-group">
+  <div class="flex flex-wrap items-baseline justify-between gap-x-group gap-y-item">
+    <Brand />
+    <p class="font-body text-small text-ink-muted">{stepText}</p>
+  </div>
   {savedNote && <p class="font-body text-small text-ink-muted">{savedNote}</p>}
 </div>

@@ -1,0 +1,39 @@
+{
+  "name": "Contraste",
+  "scheme": "dark",
+  "composition": "split",
+  "decor": "grid",
+  "palette_source": "derived",
+  "fonts": {
+    "display": { "family": "Fraunces", "weights": [700], "fallback": "serif" },
+    "body": { "family": "JetBrains Mono", "weights": [400, 600], "fallback": "monospace" }
+  },
+  "color": {
+    "canvas": "#101214",
+    "surface": "#1A1D21",
+    "ink": "#F2F0EA",
+    "ink_muted": "#A8A49A",
+    "accent": "#F5B83D",
+    "on_accent": "#101214",
+    "line": "#6E7379",
+    "focus": "#F2F0EA",
+    "danger": "#FF8A80"
+  },
+  "text": {
+    "title": { "size": 31, "size_desktop": 57, "line_height": 1.15, "font_weight": 700, "letter_spacing": -0.01 },
+    "heading": { "size": 25, "size_desktop": 32, "line_height": 1.2, "font_weight": 700, "letter_spacing": 0 },
+    "lead": { "size": 20, "size_desktop": 24, "line_height": 1.5, "font_weight": 400, "letter_spacing": 0 },
+    "body": { "size": 16, "size_desktop": 18, "line_height": 1.6, "font_weight": 400, "letter_spacing": 0 },
+    "small": { "size": 14, "size_desktop": 14, "line_height": 1.5, "font_weight": 400, "letter_spacing": 0 },
+    "button": { "size": 16, "size_desktop": 18, "line_height": 1.2, "font_weight": 600, "letter_spacing": 0.02 },
+    "label": { "size": 14, "size_desktop": 14, "line_height": 1.4, "font_weight": 400, "letter_spacing": 0.04 }
+  },
+  "spacing": { "section": 112, "block": 56, "group": 28, "item": 12 },
+  "shape": {
+    "radius_control": 0,
+    "radius_card": 0,
+    "shadow_card": { "x": 0, "y": 0, "blur": 0, "opacity": 0 },
+    "line_width": 2
+  },
+  "measure": { "prose": 52, "page": 1280, "motion_duration": 0 }
+}

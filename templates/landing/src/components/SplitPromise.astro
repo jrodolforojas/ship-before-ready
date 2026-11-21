@@ -1,0 +1,32 @@
+---
+import Brand from './Brand.astro';
+import Closing from './Closing.astro';
+import Figure from './Figure.astro';
+import Footer from './Footer.astro';
+import Hero from './Hero.astro';
+import Pains from './Pains.astro';
+import PromiseScreen from './PromiseScreen.astro';
+import Steps from './Steps.astro';
+
+const BAND = 'pb-block md:pb-section';
+---
+
+<PromiseScreen>
+  <header class="pt-group">
+    <Brand />
+  </header>
+  <div class="flex flex-col gap-block py-block md:py-section lg:grid lg:grid-cols-split lg:items-center">
+    <Hero />
+    <div class="flex flex-col gap-block lg:gap-group">
+      <Figure class="w-full" />
+      <Pains />
+    </div>
+  </div>
+  <div class={BAND}>
+    <Steps />
+  </div>
+  <div class={BAND}>
+    <Closing />
+  </div>
+  <Footer />
+</PromiseScreen>

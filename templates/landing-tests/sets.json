@@ -1,0 +1,11 @@
+[
+  { "name": "approved-centered", "tokens": "../neutral-design/tokens.json", "copy": "../example/es.json", "override": { "composition": "centered", "decor": "none" } },
+  { "name": "approved-split", "tokens": "../neutral-design/tokens.json", "copy": "../example/es.json", "override": { "composition": "split", "decor": "shapes" } },
+  { "name": "approved-editorial", "tokens": "../neutral-design/tokens.json", "copy": "../example/es.json", "override": { "composition": "editorial", "decor": "grid" } },
+  { "name": "limits-centered", "tokens": "limits/tokens.json", "copy": "limits/es.json", "override": { "composition": "centered", "decor": "grid" } },
+  { "name": "limits-split", "tokens": "limits/tokens.json", "copy": "limits/es.json", "override": { "composition": "split", "decor": "grid" } },
+  { "name": "limits-editorial", "tokens": "limits/tokens.json", "copy": "limits/es.json", "override": { "composition": "editorial", "decor": "grid" } },
+  { "name": "elasticity-brisa", "tokens": "elasticity/brisa.json", "copy": "../example/es.json" },
+  { "name": "elasticity-contraste", "tokens": "elasticity/contraste.json", "copy": "../example/es.json" },
+  { "name": "elasticity-gaceta", "tokens": "elasticity/gaceta.json", "copy": "../example/es.json" }
+]

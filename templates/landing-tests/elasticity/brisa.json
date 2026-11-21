@@ -1,0 +1,39 @@
+{
+  "name": "Brisa",
+  "scheme": "light",
+  "composition": "centered",
+  "decor": "shapes",
+  "palette_source": "derived",
+  "fonts": {
+    "display": { "family": "Space Grotesk", "weights": [700], "fallback": "sans-serif" },
+    "body": { "family": "DM Sans", "weights": [400, 600], "fallback": "sans-serif" }
+  },
+  "color": {
+    "canvas": "#F2F7F6",
+    "surface": "#FFFFFF",
+    "ink": "#10201D",
+    "ink_muted": "#45574F",
+    "accent": "#0B6E63",
+    "on_accent": "#FFFFFF",
+    "line": "#6F827D",
+    "focus": "#0B6E63",
+    "danger": "#B3261E"
+  },
+  "text": {
+    "title": { "size": 31, "size_desktop": 57, "line_height": 1.1, "font_weight": 700, "letter_spacing": -0.03 },
+    "heading": { "size": 25, "size_desktop": 32, "line_height": 1.2, "font_weight": 700, "letter_spacing": -0.02 },
+    "lead": { "size": 20, "size_desktop": 24, "line_height": 1.5, "font_weight": 400, "letter_spacing": 0 },
+    "body": { "size": 16, "size_desktop": 18, "line_height": 1.6, "font_weight": 400, "letter_spacing": 0 },
+    "small": { "size": 14, "size_desktop": 14, "line_height": 1.5, "font_weight": 400, "letter_spacing": 0 },
+    "button": { "size": 16, "size_desktop": 18, "line_height": 1.2, "font_weight": 600, "letter_spacing": 0.01 },
+    "label": { "size": 14, "size_desktop": 14, "line_height": 1.4, "font_weight": 400, "letter_spacing": 0.01 }
+  },
+  "spacing": { "section": 80, "block": 40, "group": 20, "item": 8 },
+  "shape": {
+    "radius_control": 24,
+    "radius_card": 32,
+    "shadow_card": { "x": 0, "y": 8, "blur": 24, "opacity": 0.12 },
+    "line_width": 1
+  },
+  "measure": { "prose": 60, "page": 1120, "motion_duration": 200 }
+}
