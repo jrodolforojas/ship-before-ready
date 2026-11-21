@@ -1,0 +1,56 @@
+{
+  "intro": "Son tres preguntas, una a la vez. Sirven las respuestas concretas: una persona, un caso, un costo.",
+  "resume": {
+    "approved": "Ya hay un brief aprobado en .sbr/brief.md. ¿Quiere rehacerlo? Si lo cambia, vuelve a pasar por el revisor.",
+    "pending": "Hay un brief sin aprobar en .sbr/brief.md. Sigo desde ahí."
+  },
+  "questions": {
+    "persona": {
+      "ask": "¿Quién exactamente tiene este problema? Deme una persona real o un caso real: quién es, qué hace y qué le pasa si el problema no se resuelve.",
+      "push": "\"{vague}\" es una categoría, no una persona: a una categoría no se le puede escribir un correo. Nombre a una persona o un caso real que usted conozca: quién es, qué hace y cuándo le pasó esto."
+    },
+    "current_solution": {
+      "ask": "¿Qué hace hoy esa persona para resolverlo, aunque sea mal? ¿Qué le cuesta ese arreglo: horas, dinero, errores?",
+      "push": "Eso todavía no me dice qué hace hoy ni qué le cuesta. Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. Describa el arreglo actual, por malo que sea, y un costo que se pueda contar."
+    },
+    "promise": {
+      "ask": "¿Qué cambia para esa persona? Dígalo en una frase que ella misma repetiría, con sus palabras y no con las de un folleto.",
+      "push": "\"{vague}\" es cómo lo diría quien lo vende, no quien lo usa. ¿Qué diría esa persona al contárselo a un colega? Una frase, sin lista de funciones."
+    }
+  },
+  "brief": {
+    "title": "Brief: {name}",
+    "sections": {
+      "persona": "Persona",
+      "pain": "Dolor",
+      "current_solution": "Arreglo actual",
+      "promise": "Promesa",
+      "questions": "Preguntas para el visitante",
+      "limits": "Límites"
+    },
+    "limits": [
+      "Todavía no existe: la landing lo dice.",
+      "No fija, sugiere ni prueba precios.",
+      "No decide por el builder: con el veredicto y su propio criterio, él decide si sigue."
+    ],
+    "written": "Escribí el brief en .sbr/brief.md. Ahora lo lee un revisor que no sabe nada de esta conversación."
+  },
+  "review": {
+    "rejected": "El revisor leyó solo el brief y no pudo decir esto:",
+    "fields": {
+      "persona": "Quién es el usuario",
+      "pain": "Qué le duele",
+      "current_solution": "Qué hace hoy y qué le cuesta",
+      "promise": "Qué promete el producto",
+      "questions": "Qué preguntan las tres preguntas para el visitante"
+    },
+    "ask_again": "Se lo pregunto de nuevo, una cosa a la vez.",
+    "stopped": "El revisor rechazó el brief tres veces, así que me detengo. El brief queda sin aprobar y esto es lo que falta:",
+    "stopped_next": "Cuando tenga esas respuestas, vuelva a correr /ship-before-ready:interview."
+  },
+  "done": {
+    "title": "Brief aprobado",
+    "detail": "El revisor, sin más contexto que el brief, pudo decir quién es el usuario, qué le duele y qué hace hoy.",
+    "next": "Lo que sigue: /ship-before-ready:rules."
+  }
+}

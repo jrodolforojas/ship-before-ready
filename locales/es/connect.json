@@ -18,6 +18,75 @@
         "label": "yarn",
         "description": "Su archivo de bloqueo se genera en la primera instalación."
       }
-    }
+    },
+    "missing": "No encontré {manager} en esta máquina. Instálelo y avíseme, o elija otro gestor."
+  },
+  "node": {
+    "too_old": "La landing necesita Node 22.23.4 o superior y esta máquina tiene {version}. Actualice Node y avíseme para seguir.",
+    "missing": "No encontré Node en esta máquina. Instale Node 22.23.4 o superior y avíseme para seguir."
+  },
+  "vercel": {
+    "install_question": "No encontré la CLI de Vercel. ¿La instalo con {manager}?",
+    "install_options": {
+      "install": {
+        "label": "Sí, instalarla",
+        "description": "Corro {command} en esta máquina."
+      },
+      "skip": {
+        "label": "No, la instalo yo",
+        "description": "Instálela por su cuenta y avíseme para seguir."
+      }
+    },
+    "sign_in": "No hay sesión de Vercel en esta máquina. Escriba `! vercel login` aquí mismo (o corra `vercel login` en otra terminal), siga el navegador y avíseme cuando termine.",
+    "team_question": "¿En cuál equipo de Vercel publico?",
+    "project_question": "¿Qué nombre le pongo al proyecto en Vercel?",
+    "project_options": {
+      "proposed": {
+        "label": "{name}",
+        "description": "Sale del nombre de esta carpeta."
+      }
+    },
+    "project_invalid": "Ese nombre no sirve para Vercel: use minúsculas, números y guiones, hasta 100 caracteres.",
+    "landing_live": "Ya hay una landing publicada en {url}, así que no publico la página de prueba encima. Solo compruebo la sesión."
+  },
+  "posthog": {
+    "sign_in": "No hay sesión de PostHog en Claude Code. Escriba `/mcp`, elija el servidor `{server}` y siga el navegador para iniciar sesión. Si `/mcp` no aparece, como pasa en la app de escritorio, corra `claude mcp login {server}` en una terminal (o escriba `! claude mcp login {server}` aquí mismo). Avíseme cuando termine. No hace falta crear ni pegar ninguna llave.",
+    "no_projects": "Su sesión de PostHog no tiene proyectos. Cree uno en posthog.com y avíseme para seguir.",
+    "project_question": "¿Qué proyecto de PostHog recibe los eventos de esta idea?",
+    "single_project": "Uso su único proyecto de PostHog: {name}.",
+    "saved_project": "Sigo con el proyecto de PostHog que ya estaba guardado: {name}.",
+    "empty_project": "Uso el proyecto {name} de su organización {organization}: todavía no ha recibido eventos.",
+    "busy_question": "Todos sus proyectos de PostHog ya reciben eventos. ¿Dónde guardo los de esta idea?",
+    "busy_options": {
+      "new_organization": {
+        "label": "Organización nueva (recomendado)",
+        "description": "La crea usted en el navegador en un minuto. Así esta idea no se mezcla con otro producto."
+      },
+      "existing": {
+        "label": "{name} ({organization})",
+        "description": "Ya recibe eventos. Elíjalo solo si es de esta misma idea."
+      }
+    },
+    "create_organization": "Abra {url} en su navegador, póngale a la organización el nombre de esta idea y acepte el proyecto que PostHog propone. Va aparte porque el plan gratuito de PostHog permite un proyecto por organización. Avíseme cuando termine.",
+    "organization_missing": "Todavía no veo en su sesión de PostHog un proyecto que no haya recibido eventos. Revise que la organización se haya creado en {url} y avíseme.",
+    "shared_project": "Uso {name}. Los eventos de esta idea quedan junto a los que ese proyecto ya recibe.",
+    "key_not_needed": "No pegue llaves aquí: no las necesito y no las guardo. Si esa llave es personal (empieza con phx_), revóquela en PostHog, porque quedó escrita en esta conversación."
+  },
+  "probe": {
+    "publishing": "Publico una página mínima que dice \"Pronto\" para comprobar la conexión con Vercel.",
+    "page_failed": "La página de prueba no respondió en {url}. Revise en vercel.com que el proyecto {project} exista y que su dominio de producción sea público, y avíseme para reintentar.",
+    "event_sent": "Envié el evento de prueba sbr_probe a PostHog. Lo busco con su sesión.",
+    "event_missing": "PostHog recibió el evento de prueba pero todavía no aparece en el proyecto {name}. Puede tardar un par de minutos; avíseme y lo vuelvo a buscar."
+  },
+  "done": {
+    "title": "Conexiones verificadas",
+    "page": "La página de prueba responde en {url}.",
+    "event": "El evento de prueba apareció en el proyecto {name} de PostHog.",
+    "saved": "Guardé las conexiones en .sbr/connections.json, sin secretos.",
+    "next": "Lo que sigue: /ship-before-ready:interview."
+  },
+  "probe_page": {
+    "title": "Pronto",
+    "message": "Esta página todavía no está lista."
   }
 }
