@@ -1,0 +1,19 @@
+{
+  "deny": "Ship Before Ready: este proyecto todavía no tiene evidencia para escribir código de producto. Falta: {missing}\n\nNo edite {file} todavía. Pregúntele al builder por qué quiere escribir código ahora y espere su respuesta; no invente la razón. Si da una, regístrela con:\n\nnode \"{bypass_script}\" --session \"{session_id}\" --file \"{file}\" --reason \"<la razón del builder, en sus palabras>\"\n\nCon la razón registrada, las ediciones pasan durante el resto de esta sesión. Si el builder prefiere seguir el proceso, retome la fase que falta.",
+  "missing": {
+    "interview": "aprobar el brief con /ship-before-ready:interview.",
+    "rules": "sellar las reglas del veredicto con /ship-before-ready:rules.",
+    "design": "aprobar el diseño de la landing con /ship-before-ready:design.",
+    "landing": "publicar la landing con /ship-before-ready:landing.",
+    "video_scripts": "escribir los tres guiones con /ship-before-ready:video-scripts.",
+    "verdict": "leer los números y emitir el veredicto con /ship-before-ready:verdict.",
+    "insufficient_sample": "el veredicto fue «Muestra insuficiente»: falta tráfico frío antes de juzgar la idea.",
+    "iterate_promise": "el veredicto fue «Iterar la promesa»: hay que reescribir la promesa y volver a medir.",
+    "no_evidence": "el veredicto fue «Sin evidencia en este ángulo»: hay que probar otro ángulo antes de construir."
+  },
+  "bypass": {
+    "recorded": "Razón registrada en .sbr/bypass.log. Las ediciones pasan durante el resto de esta sesión.",
+    "usage": "Uso: node bypass.mjs --session <id> --file <archivo> --reason \"<razón>\"",
+    "no_project": "No hay un proyecto de Ship Before Ready aquí: falta .sbr/brief.md."
+  }
+}
