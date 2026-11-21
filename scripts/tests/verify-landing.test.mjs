@@ -58,7 +58,7 @@ const PAGE_DEFECTS = [
   { name: 'no reduced-motion rule', ids: ['R23'], css: PAGE_CSS.replace(/@media \(prefers-reduced-motion:reduce\)\{[^}]*\}\}/, '') },
   { name: 'a submit button disabled from the start', ids: ['R24'], ...edited('data-sbr="email-submit" type="submit"', 'data-sbr="email-submit" disabled type="submit"') },
   { name: 'a notice in small text', ids: ['R25'], ...edited('data-sbr="notice" class="font-body text-body text-ink"', 'data-sbr="notice" class="font-body text-small text-ink"') },
-  { name: 'a script from another domain', ids: ['R29'], ...edited('<script type="module" src="./_astro/flow.js">', '<script src="https://cdn.example.com/widget.js"></script><script type="module" src="./_astro/flow.js">') },
+  { name: 'a script from another domain', ids: ['R29'], ...edited('<script defer src="./_astro/flow.js">', '<script src="https://cdn.example.com/widget.js"></script><script defer src="./_astro/flow.js">') },
   { name: 'a request to another domain from the script', ids: ['R29'], script: `${PAGE_SCRIPT}fetch('https://us.i.posthog.com/i/v0/e/');` },
   { name: 'more than 100 KB of own code', ids: ['R29'], script: `${PAGE_SCRIPT}// ${'x'.repeat(101 * 1024)}` },
   { name: 'a theme-color that is not the canvas', ids: ['R30'], ...edited('name="theme-color" content="#FAFAFA"', 'name="theme-color" content="#FFFFFF"') },

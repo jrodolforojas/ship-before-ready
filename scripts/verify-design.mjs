@@ -45,7 +45,7 @@ export const CHECKED_BY = {
   R29: ['landing'],
   R30: ['design', 'landing'],
   R31: ['reviewer'],
-  R32: ['design', 'landing', 'capture'],
+  R32: ['design', 'landing'],
 };
 
 export const BANNED_PHRASES = [

@@ -245,7 +245,7 @@ ${questionsScreen(copy)}
 ${doneScreen(copy)}
 </main>
 <aside data-sbr="debug-panel" hidden class="border-t border-line bg-surface p-group font-body text-small text-ink-muted"><ol class="flex flex-col gap-item"></ol></aside>
-<script type="module" src="./_astro/flow.js"></script>
+<script defer src="./_astro/flow.js"></script>
 </body>
 </html>
 `;
