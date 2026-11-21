@@ -37,7 +37,7 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 | 4b | Skill `landing` | Espera a 1, 1b, 1c y 2 |
 | 4c | Página propia con el flujo completo | Espera a 4a y 4b |
 | 5 | Skill `video-scripts` | Aprobado; en curso |
-| 6 | Skill `verdict` | Por detallar |
+| 6 | Skill `verdict` | Aprobado; en curso |
 | 7 | Gate | Aprobado; en curso |
 | 8 | Empaque y entrega | Por detallar |
 
@@ -761,4 +761,44 @@ El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su p
 - Los campos que recibe el hook y la forma exacta de negar con una razón se comprueban en la documentación antes de escribir.
 - Si el hook tarda de más, Claude Code no frena: el script debe ser instantáneo.
 - Lo que el agente escribe desde la terminal no se detecta de forma confiable. Es un freno, no un candado.
+
+### Paso 6 · Skill `verdict` (aprobado)
+
+**Objetivo:** leer los números de PostHog, aplicar las varas selladas y entregar una de las cuatro respuestas del documento de diseño, con cada tasa junto a su conteo crudo. Informa; no decide por el builder.
+
+**Archivos (dueño):** `skills/verdict/*`, `agents/verdict-reviewer.md`, `locales/es/verdict.json`.
+
+**Procedimiento**
+
+1. **Precondiciones:** `.sbr/rules.md` sellado, `.sbr/landing.json` con la URL y sesión de PostHog iniciada. Si falta algo, nombra la skill o el paso que lo resuelve.
+2. **Integridad de las reglas:** muestra si cambiaron después del sello, con `git log` desde el commit de `.sbr/seal.json`. Si cambiaron, lo dice antes de cualquier número.
+3. **Consulta:** por la sesión de PostHog, visitantes únicos, clics, registros y respuestas por cada valor de `src`, excluyendo `test`.
+4. **Separación de tráfico:** frío (`v1`, `v2`, `v3`, `bio`), amigos y sin etiqueta. Solo el frío decide.
+5. **Leads y llamadas:** leads calificados son quienes respondieron las dos preguntas con un caso real y dejaron contacto. Llamadas agendadas: las que dejaron WhatsApp y horario. Las realizadas las declara el builder y se anotan aparte, como dato declarado.
+6. **Escalera:** da una de las cuatro respuestas: muestra insuficiente, iterar la promesa, sin evidencia en este ángulo o evidencia para seguir.
+7. **Revisión:** `verdict-reviewer`, agente sin contexto, recibe solo los números y las varas, y comprueba que sostienen la respuesta. Si no, la skill corrige o lo dice.
+8. **Salida:** `.sbr/verdict.md` con la respuesta, la tabla de números por origen y la lista de lo que el veredicto no mide (disposición a pagar, entre otras).
+9. **Cierre:** una línea que recuerda que la decisión de seguir y el precio son del builder.
+
+**Aceptación (prueba de 10 minutos)**
+
+1. Con la página propia y la visita de prueba del paso 2, da "muestra insuficiente" y no cuenta la visita `test`.
+2. Con números de prueba en un archivo, cada una de las cuatro respuestas sale cuando corresponde.
+3. Si se editan las reglas después del sello, el veredicto lo muestra primero.
+4. Ninguna tasa aparece sin su conteo crudo.
+
+**Dependencias**
+
+0b, 3 (sello y conexiones) y 2 (datos reales). Se desarrolla ya contra números de prueba; la prueba real espera al paso 2.
+
+**Riesgos y por verificar**
+
+- La consulta exacta en PostHog: el paso 3 ya identificó las herramientas del servidor; la consulta queda escrita como plantilla, no improvisada en cada corrida.
+- Qué cuenta como "caso real" en las respuestas es juicio del modelo. El revisor sin contexto lo audita y el builder ve las respuestas crudas.
+- Los números de prueba deben poder inyectarse sin PostHog, para probar las cuatro respuestas.
+
+**Decisión tomada por el plan**
+
+Las llamadas realizadas no se pueden medir en PostHog: la skill se las pregunta al builder y las anota como dato declarado, aparte de los medidos.
+
 

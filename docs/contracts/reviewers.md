@@ -1,13 +1,14 @@
 # Reviewers contract
 
-Context-free agents of the plugin. Each one reads a single file, knows nothing else, and answers in a fixed format that its skill parses.
+Context-free agents of the plugin. Each one receives only what its row says, knows nothing else, and answers in a fixed format that its skill parses.
 
 Edit this file only on `main`.
 
-| Agent | File | Reads | Called by | Owner |
+| Agent | File | Receives | Called by | Owner |
 |---|---|---|---|---|
 | `brief-reviewer` | `agents/brief-reviewer.md` | `.sbr/brief.md` | `interview` | Step 3 |
 | `script-reviewer` | `agents/script-reviewer.md` | `.sbr/video-scripts.md` | `video-scripts` | Step 5 |
+| `verdict-reviewer` | `agents/verdict-reviewer.md` | Only the numbers and the thresholds of the verdict | `verdict` | Step 6 |
 
 `design-reviewer` (`agents/design-reviewer.md`) is defined by step 1b and is not covered here.
 
@@ -24,7 +25,7 @@ current_solution: <one sentence>
 - A `rejected` answer has at least one finding, so the skill can tell the builder what is missing.
 - `<code>` is one of the codes of that agent, below. No other code is allowed.
 
-The skill writes `reviewer: approved` in the header of the reviewed file only after an `approved` answer ([state.md](state.md)). After `rejected` the file stays `reviewer: pending`.
+The skill writes `reviewer: approved` in the header of its file (`.sbr/brief.md`, `.sbr/video-scripts.md`, `.sbr/verdict.md`) only after an `approved` answer ([state.md](state.md)). After `rejected` the file stays `reviewer: pending`.
 
 ## Codes of `brief-reviewer`
 
@@ -50,3 +51,13 @@ Each code is the header key of the brief that falls short.
 | `claims_it_exists` | A script speaks as if the product already existed |
 | `price` | A script mentions a price |
 | `invented_figure` | A script uses a figure that nobody measured |
+
+## Codes of `verdict-reviewer`
+
+| Code | Finding |
+|---|---|
+| `result_not_supported` | The numbers and the thresholds do not lead to the result given |
+| `rate_without_count` | A rate appears without its raw count |
+| `non_cold_counted` | Traffic that is not cold was counted toward the result |
+| `test_counted` | A `test` visit was counted |
+| `rules_changed_not_shown` | The rules changed after the seal and the verdict does not say so |

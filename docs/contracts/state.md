@@ -33,7 +33,7 @@ Edit this file only on `main`.
 
 - JSON keys and header keys are `snake_case`, in English.
 - Timestamps are ISO 8601 in UTC (`2026-11-21T03:12:45Z`); dates are `YYYY-MM-DD`.
-- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3, bio]`). Only two keys are nested, indented two spaces: `questions` in the brief and `scripts` in the video scripts.
+- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3, bio]`). Only three keys are nested, indented two spaces per level: `questions` in the brief, `scripts` in the video scripts and `counts` in the verdict.
 - `<locale>` matches `^[a-z]{2}(-[A-Z]{2})?$`; the default is `es`.
 
 ## `.sbr/connections.json`
@@ -138,7 +138,63 @@ Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `
 
 ## `.sbr/verdict.md`
 
-Header key `result`, one of:
+```markdown
+---
+result: insufficient_sample
+computed_at: 2026-11-22T18:00:00Z
+rules_commit: <sha>
+rules_changed_after_seal: false
+reviewer: pending
+counts:
+  cold:
+    visitors: 0
+    cta_clicks: 0
+    signups: 0
+    answers: 0
+    qualified_leads: 0
+    calls_scheduled: 0
+  friends:
+    visitors: 0
+    cta_clicks: 0
+    signups: 0
+    answers: 0
+    qualified_leads: 0
+    calls_scheduled: 0
+  untagged:
+    visitors: 0
+    cta_clicks: 0
+    signups: 0
+    answers: 0
+    qualified_leads: 0
+    calls_scheduled: 0
+calls_held_declared: 0
+---
+
+Body in the builder's language.
+```
+
+| Header key | Value |
+|---|---|
+| `result` | One of the four results below; the same list as `verdict_results` in `templates/contract.json` |
+| `computed_at` | Timestamp of this verdict |
+| `rules_commit` | SHA of the commit of `.sbr/rules.md` whose thresholds this verdict applied |
+| `rules_changed_after_seal` | `true` when a commit touched `.sbr/rules.md` after the `commit` of `.sbr/seal.json`; `false` otherwise |
+| `reviewer` | `pending` or `approved`. It becomes `approved` only when `verdict-reviewer` answers `approved` ([reviewers.md](reviewers.md)) |
+| `counts` | One group per kind of traffic: `cold` (the `cold_sources` of the rules), `friends` and `untagged`. `test` is never counted |
+| `calls_held_declared` | Calls that took place, as declared by the builder. Not measured, so it stays outside `counts` |
+
+Every group of `counts` has the same six keys:
+
+| Key | Counts |
+|---|---|
+| `visitors` | Unique visitors |
+| `cta_clicks` | `sbr_cta_click` |
+| `signups` | `sbr_signup` |
+| `answers` | `sbr_answers` |
+| `qualified_leads` | Visitors who answered both questions with a real case and left a contact |
+| `calls_scheduled` | Visitors who left WhatsApp and a time slot |
+
+Only `cold` decides the result.
 
 | `result` | Phrase in `locales/<locale>/verdict.json` |
 |---|---|
@@ -147,7 +203,7 @@ Header key `result`, one of:
 | `no_evidence` | `results.no_evidence` |
 | `evidence_to_continue` | `results.evidence_to_continue` |
 
-The body carries the numbers, every rate next to its raw count. Step 6 fixes the rest of this file on `main` when it is detailed.
+The body carries the result, the table of numbers per source with every rate next to its raw count, and the list of what the verdict does not measure. If the rules changed after the seal, the body says so before any number.
 
 ## `.sbr/video-scripts.md`
 

@@ -36,7 +36,7 @@ No React, no Preact, no form library. The builder picks the package manager amon
 - [docs/contracts/tokens.md](docs/contracts/tokens.md): design variables, their Tailwind utilities, the `tokens.json` schema, color pair rules.
 - [docs/contracts/state.md](docs/contracts/state.md): state files in the builder's repo.
 - [docs/contracts/events.md](docs/contracts/events.md): PostHog events, properties and `src` values.
-- [docs/contracts/reviewers.md](docs/contracts/reviewers.md): answer format and codes of `brief-reviewer` and `script-reviewer`.
+- [docs/contracts/reviewers.md](docs/contracts/reviewers.md): answer format and codes of `brief-reviewer`, `script-reviewer` and `verdict-reviewer`.
 - [templates/contract.json](templates/contract.json): the same names in a file that scripts read.
 
 **Contracts are edited only on `main`.** If a contract falls short, stop and report it; do not change it on your branch. Do not rename a file, hook, key, token, event or property without updating the contract.
@@ -58,11 +58,12 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |
 | 5 | `skills/video-scripts/*`, `agents/script-reviewer.md`, `locales/es/video-scripts.json` |
+| 6 | `skills/verdict/*`, `agents/verdict-reviewer.md`, `locales/es/verdict.json` |
 | 7 | `hooks/hooks.json`, `hooks/gate.mjs`, `scripts/bypass.mjs`, `locales/es/gate.json` |
 
 Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6. The gate is not a skill but has its own file, `gate.json`, owned by step 7.
 
-Not detailed in the plan yet: step 6 fills `skills/verdict/*`. Only steps 0 and 8 touch `.claude-plugin/`.
+Only steps 0 and 8 touch `.claude-plugin/`.
 
 To try a skill before merging, open Claude Code with `claude --plugin-dir <worktree>`.
 
