@@ -10,6 +10,7 @@ export const SCRIPTS = {
   design: join(REPO_ROOT, 'scripts/verify-design.mjs'),
   landing: join(REPO_ROOT, 'scripts/verify-landing.mjs'),
   capture: join(REPO_ROOT, 'scripts/capture.mjs'),
+  copyTemplate: join(REPO_ROOT, 'scripts/copy-template.mjs'),
 };
 
 const readRepoJson = (path) => JSON.parse(readFileSync(join(REPO_ROOT, path), 'utf8'));

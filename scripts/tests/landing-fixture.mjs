@@ -1,5 +1,6 @@
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { contract, exampleCopy, neutralTokens, tempDir, writeFiles } from './helpers.mjs';
+import { REPO_ROOT, contract, exampleCopy, neutralTokens, tempDir, writeFiles } from './helpers.mjs';
 
 const ROOT_FONT_SIZE_PX = 16;
 const FOCUS_RING = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
@@ -268,16 +269,30 @@ export function writeTemplate(root = tempDir('sbr-template-'), files = {}) {
   return writeFiles(root, { ...SKELETON_FILES, 'bun.lock': 'template lock\n', ...files });
 }
 
-export function writeLanding({ tokens = neutralTokens(), copy = exampleCopy(), html, css = PAGE_CSS, script = PAGE_SCRIPT, files = {} } = {}) {
-  const root = tempDir('sbr-landing-');
-  return writeFiles(root, {
+const PLUGIN_FILES_OF_THE_LANDING_VERIFIER = ['scripts/verify-design.mjs', 'scripts/verify-landing.mjs', 'templates/contract.json'];
+
+export function landingVerifierWithFixtureTemplate() {
+  const pluginRoot = tempDir('sbr-plugin-');
+  writeTemplate(join(pluginRoot, 'templates/landing'));
+  writeFiles(pluginRoot, Object.fromEntries(PLUGIN_FILES_OF_THE_LANDING_VERIFIER.map((path) => [path, readFileSync(join(REPO_ROOT, path))])));
+  return join(pluginRoot, 'scripts/verify-landing.mjs');
+}
+
+export function builtFiles({ tokens = neutralTokens(), copy = exampleCopy(), html, css = PAGE_CSS, script = PAGE_SCRIPT } = {}) {
+  return {
+    'dist/index.html': html ?? renderPage({ tokens, copy }),
+    'dist/_astro/index.css': css,
+    'dist/_astro/flow.js': script,
+  };
+}
+
+export function writeLanding({ tokens = neutralTokens(), copy = exampleCopy(), html, css, script, files = {} } = {}) {
+  return writeFiles(tempDir('sbr-landing-'), {
     ...SKELETON_FILES,
     'bun.lock': 'builder lock\n',
     'src/data/tokens.json': tokens,
     [`src/i18n/${copy.lang}.json`]: copy,
-    'dist/index.html': html ?? renderPage({ tokens, copy }),
-    'dist/_astro/index.css': css,
-    'dist/_astro/flow.js': script,
+    ...builtFiles({ tokens, copy, html, css, script }),
     ...files,
   });
 }
