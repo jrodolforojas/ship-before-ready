@@ -18,6 +18,7 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 - Cada paso corre en su propia subsesión iniciada desde la sesión del plan, y solo con luz verde del usuario.
 - Los pasos 0 y 0b trabajan directo en `main`. Los demás corren cada uno en su propio git worktree y terminan en un PR hacia `main` con una prueba de 10 minutos.
 - Un paso no arranca hasta que su dependencia esté en `main`.
+- Aprobar un paso es también la luz verde para lanzarlo en cuanto sus dependencias estén listas (acordado el 2026-11-20).
 - Los contratos solo se editan en `main`.
 
 ## Mapa de pasos
@@ -25,10 +26,10 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 | Paso | Qué es | Estado |
 |---|---|---|
 | 0 | Repo y esqueleto del plugin | Hecho el 2026-11-20, `main` en `9e67083` |
-| 0b | Contratos, convenciones y renombres a inglés | Luz verde |
-| 0c | Composiciones bocetadas en Claude Design | Luz verde, tras 0b |
-| 1 | Plantilla de la landing en Astro | Luz verde, tras 0b |
-| 1b | Reglas del sistema de diseño y verificador | Luz verde, tras 0b |
+| 0b | Contratos, convenciones y renombres a inglés | Hecho el 2026-11-20, `main` en `00c8e9c` |
+| 0c | Composiciones bocetadas en Claude Design | En curso |
+| 1 | Plantilla de la landing en Astro | En curso |
+| 1b | Reglas del sistema de diseño y verificador | En curso |
 | 1c | Las tres composiciones en código | Espera a 0c y 1 |
 | 2 | Página propia en línea, versión 0 | Espera a 1 |
 | 3 | Skills `connect`, `interview` y `rules` | Aprobado; espera a 0b |
@@ -43,6 +44,7 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 ## Registro
 
 - **Paso 0** (2026-11-20): <https://github.com/jrodolforojas/ship-before-ready>, público, `main` en `9e67083`. `claude plugin validate` pasa; `plugin.json` y `marketplace.json` conviven en la raíz con `"source": "./"`. Se creó con nombres en español (skills `conectar`, `interrogar`, `reglas`, `landing`, `guiones`, `veredicto`; `docs/contratos/`); el paso 0b los pasa a inglés.
+- **Paso 0b** (2026-11-20): `main` en `00c8e9c`. Skills y contratos en inglés (`docs/contracts/`), `templates/contract.json`, diseño neutro, texto y brief de ejemplo, `locales/es.json` y copia del plan en `docs/plan.md`. Comprobado contra este plan: están los 29 tokens, los 38 ganchos, los eventos, las claves de estado y los seis scripts. La lista cerrada de `decor` quedó en `none`, `shapes` y `grid`. `claude plugin validate` pasa con dos advertencias (ícono ausente y `CLAUDE.md` en la raíz) que se resuelven en el paso 8.
 - **Cuentas:** la cuenta activa de `gh` es `jrodolforojas`; la llave SSH de `github.com` autentica como `jrodolforojas`.
 - **PostHog sin llaves** (decidido el 2026-11-20): el builder inicia sesión en PostHog desde Claude Code y no pega ninguna llave. `connect` y `verdict` leen por el servidor MCP de PostHog (`https://mcp.posthog.com/mcp`, con inicio de sesión en el navegador), que el plugin declara en su propio `.mcp.json`. Verificado en el plugin oficial de PostHog instalado en esta máquina: se autentica con `/mcp` y expone `execute-sql`.
 
