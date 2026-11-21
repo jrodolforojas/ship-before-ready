@@ -1,0 +1,158 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
+
+const PLUGIN_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+const SCRIPT = join(PLUGIN_ROOT, 'skills/design/scripts/design.mjs');
+const NEUTRAL = join(PLUGIN_ROOT, 'templates/neutral-design/tokens.json');
+const CONTRAST = join(PLUGIN_ROOT, 'templates/canvas/fixtures/contrast-tokens.json');
+const EXAMPLE_COPY = join(PLUGIN_ROOT, 'templates/example/es.json');
+const EXAMPLE_BRIEF = join(PLUGIN_ROOT, 'templates/example/brief.md');
+
+const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
+const writeJson = (path, value) => writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+
+function run(repo, ...args) {
+  const result = spawnSync(process.execPath, [SCRIPT, ...args], { cwd: repo, encoding: 'utf8' });
+  const json = result.stdout.trim().startsWith('{') ? JSON.parse(result.stdout) : null;
+  return { code: result.status, json, stderr: result.stderr };
+}
+
+function thirdDirection() {
+  const tokens = readJson(NEUTRAL);
+  tokens.name = 'Verde';
+  tokens.composition = 'editorial';
+  tokens.fonts.display.family = 'Archivo';
+  tokens.fonts.body.family = 'Archivo';
+  tokens.color.accent = '#1F6F4A';
+  return tokens;
+}
+
+function makeRepo() {
+  const repo = mkdtempSync(join(tmpdir(), 'sbr-design-'));
+  mkdirSync(join(repo, '.sbr/design'), { recursive: true });
+  for (const letter of ['a', 'b', 'c']) mkdirSync(join(repo, '.sbr/sketches', letter), { recursive: true });
+  writeFileSync(join(repo, '.sbr/brief.md'), readFileSync(EXAMPLE_BRIEF, 'utf8').replace('reviewer: pending', 'reviewer: approved'));
+  copyFileSync(EXAMPLE_COPY, join(repo, '.sbr/design/copy.es.json'));
+  copyFileSync(NEUTRAL, join(repo, '.sbr/sketches/a/tokens.json'));
+  copyFileSync(CONTRAST, join(repo, '.sbr/sketches/b/tokens.json'));
+  writeJson(join(repo, '.sbr/sketches/c/tokens.json'), thirdDirection());
+  return repo;
+}
+
+const sketches = ['a', 'b', 'c'].map((letter) => `.sbr/sketches/${letter}/tokens.json`);
+
+test('status reads the brief and finds nothing approved', () => {
+  const repo = makeRepo();
+  const { code, json } = run(repo, 'status');
+  assert.equal(code, 0);
+  assert.deepEqual(json.brief, { exists: true, approved: true, locale: 'es' });
+  assert.equal(json.copy, '.sbr/design/copy.es.json');
+  assert.equal(json.choice, null);
+  assert.equal(json.landing, false);
+});
+
+test('distinct passes three different directions', () => {
+  const { code, json } = run(makeRepo(), 'distinct', ...sketches);
+  assert.equal(code, 0);
+  assert.deepEqual(json.problems, []);
+});
+
+test('distinct names a repeated composition, a repeated pair and close accents', () => {
+  const repo = makeRepo();
+  const close = readJson(join(repo, sketches[0]));
+  close.color.accent = '#1F6A55';
+  writeJson(join(repo, sketches[2]), close);
+  const { code, json } = run(repo, 'distinct', ...sketches);
+  assert.equal(code, 1);
+  assert.match(json.problems.join('\n'), /compositions must be different/);
+  assert.match(json.problems.join('\n'), /a and c repeat the pair Public Sans \+ Public Sans/);
+});
+
+test('distinct exempts the palette when the builder brought it', () => {
+  const repo = makeRepo();
+  for (const path of sketches) {
+    const tokens = readJson(join(repo, path));
+    tokens.palette_source = 'builder';
+    tokens.color.accent = '#1F6F4A';
+    tokens.scheme = 'light';
+    writeJson(join(repo, path), tokens);
+  }
+  const { json } = run(repo, 'distinct', ...sketches);
+  assert.equal(json.builder_palette, true);
+  assert.ok(json.problems.every((problem) => !/accents/.test(problem)));
+});
+
+test('distinct checks which direction follows and which departs from the market', () => {
+  const repo = makeRepo();
+  const market = ['--market-color', '#2E7D4F', '--market-scheme', 'light'];
+  assert.equal(run(repo, 'distinct', ...sketches, ...market, '--follows', 'c', '--departs', 'b').code, 0);
+  const wrong = run(repo, 'distinct', ...sketches, ...market, '--follows', 'b', '--departs', 'c');
+  assert.equal(wrong.code, 1);
+  assert.equal(wrong.json.problems.length, 2);
+});
+
+test('canvas draws six artboards, then one direction whole, removing the others', () => {
+  const repo = makeRepo();
+  const work = join(repo, 'work');
+  const three = run(repo, 'canvas', work, '.sbr/design/copy.es.json', ...sketches, '--title', 'Prueba');
+  assert.equal(three.code, 0);
+  assert.equal(three.json.entry, 'project/Main.dc.html');
+  assert.equal(three.json.rest.length, 5);
+  const index = readJson(join(work, 'project/canvas.json'));
+  assert.equal(index.title, 'Prueba');
+  assert.deepEqual(Object.keys(index.notes), ['direction-a', 'direction-b', 'direction-c']);
+
+  const one = run(repo, 'canvas', work, '.sbr/design/copy.es.json', sketches[1], '--title', 'Prueba');
+  assert.equal(one.code, 0);
+  assert.deepEqual(one.json.rest, ['project/Promise-desktop.dc.html', 'project/Email-phone.dc.html', 'project/Questions-phone.dc.html', 'project/Done-phone.dc.html']);
+  assert.deepEqual(one.json.removed, ['project/A-desktop.dc.html', 'project/B-phone.dc.html', 'project/B-desktop.dc.html', 'project/C-phone.dc.html', 'project/C-desktop.dc.html']);
+  assert.equal(existsSync(join(work, 'project/B-phone.dc.html')), false);
+  assert.deepEqual(readJson(join(work, 'project/canvas.json')).createdOnFiles, index.createdOnFiles);
+  assert.match(readFileSync(join(work, 'project/Main.dc.html'), 'utf8'), /#F5B83D/i);
+});
+
+test('canvas refuses two directions', () => {
+  const repo = makeRepo();
+  assert.equal(run(repo, 'canvas', join(repo, 'work'), '.sbr/design/copy.es.json', sketches[0], sketches[1]).code, 2);
+});
+
+test('approve writes the choice with the fingerprint of tokens and copy, and reopen withdraws it', () => {
+  const repo = makeRepo();
+  writeFileSync(join(repo, '.sbr/design/system.md'), '# Sistema\n');
+  const { code, json } = run(repo, 'approve', '--chosen', 'c', '--canvas', 'https://claude.ai/artifact/abc', '--reason', 'Se lee "tranquila": me gusta');
+  assert.equal(code, 0);
+  const expected = createHash('sha256')
+    .update(readFileSync(join(repo, '.sbr/design/tokens.json')))
+    .update(readFileSync(join(repo, '.sbr/design/copy.es.json')))
+    .digest('hex');
+  assert.equal(json.fingerprint, `sha256:${expected}`);
+  const choice = readFileSync(join(repo, '.sbr/design/choice.md'), 'utf8');
+  assert.match(choice, /^---\nchosen: c\napproved: \d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ\ncanvas: "https:\/\/claude.ai\/artifact\/abc"\n/);
+  assert.match(choice, /reason: "Se lee 'tranquila': me gusta"/);
+  assert.equal(run(repo, 'status').json.choice.fingerprint_matches, true);
+
+  writeFileSync(join(repo, '.sbr/design/copy.es.json'), readFileSync(EXAMPLE_COPY, 'utf8').replace('Quiero acceso anticipado', 'Quiero entrar primero'));
+  assert.equal(run(repo, 'status').json.choice.fingerprint_matches, false);
+
+  assert.equal(run(repo, 'reopen').code, 0);
+  assert.equal(run(repo, 'status').json.choice.approved, null);
+});
+
+test('approve refuses a direction that fails the verifier, and one without system.md', () => {
+  const repo = makeRepo();
+  assert.equal(run(repo, 'approve', '--chosen', 'a', '--canvas', 'none', '--reason', 'x').code, 2);
+  writeFileSync(join(repo, '.sbr/design/system.md'), '# Sistema\n');
+  const tokens = readJson(join(repo, sketches[0]));
+  tokens.color.ink_muted = '#BBBBBB';
+  writeJson(join(repo, sketches[0]), tokens);
+  const { code, json } = run(repo, 'approve', '--chosen', 'a', '--canvas', 'none', '--reason', 'x');
+  assert.equal(code, 1);
+  assert.ok(json.failed.some((row) => row.id === 'R12'));
+  assert.equal(existsSync(join(repo, '.sbr/design/choice.md')), false);
+});
