@@ -1,0 +1,12 @@
+[[#if figure.shapes]]
+<div data-sbr="figure" aria-hidden="true" style="position: relative; [[slot]]; aspect-ratio: 16 / 9">
+<div data-sbr="decor-1" style="position: absolute; z-index: 1; left: 0; top: 16.667%; height: 66.667%; aspect-ratio: 1 / 1; border-radius: 50%; background: var(--color-accent); opacity: 0.2"></div>
+<div data-sbr="decor-2" style="position: absolute; top: 0; right: 0; bottom: 0; left: 25%; box-sizing: border-box; border: var(--line-width) solid var(--color-line); border-radius: var(--radius-card)"></div>
+</div>
+[[/if]]
+[[#if figure.grid]]
+<div data-sbr="figure" aria-hidden="true" style="position: relative; [[slot]]; aspect-ratio: 16 / 9; overflow: hidden">
+<div data-sbr="decor-1" style="position: absolute; inset: 0; box-sizing: border-box; border-right: var(--line-width) solid var(--color-line); border-bottom: var(--line-width) solid var(--color-line); background-image: linear-gradient(to right, var(--color-line) var(--line-width), transparent var(--line-width)), linear-gradient(to bottom, var(--color-line) var(--line-width), transparent var(--line-width)); background-size: var(--spacing-block) var(--spacing-block)"></div>
+<div data-sbr="decor-2" style="position: absolute; left: calc(var(--spacing-block) * 2); top: var(--spacing-block); width: var(--spacing-block); height: var(--spacing-block); background: var(--color-accent)"></div>
+</div>
+[[/if]]

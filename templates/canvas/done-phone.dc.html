@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="[[lang]]">
+<head>
+<meta charset="utf-8">
+<title>[[copy.done.title]]</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="[[fonts.href]]" rel="stylesheet">
+<style>
+body{margin:0}
+[[> tokens.css]]
+</style>
+</helmet>
+<div class="sbr" data-sbr="page" data-scheme="[[scheme]]" data-screen="4" style="box-sizing: border-box; width: 390px; min-height: [[frame.height]]px; display: flex; flex-direction: column; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-body)">
+<section data-sbr="screen-done" style="display: flex; flex-direction: column; gap: var(--spacing-group); padding: var(--spacing-section) var(--spacing-group) var(--spacing-block)">
+<h2 data-sbr="done-title" style="margin: 0; font-family: var(--font-display); font-size: var(--text-heading); line-height: var(--text-heading--line-height); font-weight: var(--text-heading--font-weight); letter-spacing: var(--text-heading--letter-spacing); color: var(--color-ink); text-wrap: balance">[[copy.done.title]]</h2>
+<div style="box-sizing: border-box; padding: var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-card); box-shadow: var(--shadow-card)">
+<p data-sbr="notice" style="margin: 0; font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">[[copy.done.notice]]</p>
+</div>
+<p data-sbr="next-steps" style="margin: 0; font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">[[copy.done.next]]</p>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":[[frame.height]]}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

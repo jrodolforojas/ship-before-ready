@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="[[lang]]">
+<head>
+<meta charset="utf-8">
+<title>[[copy.questions.title]]</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="[[fonts.href]]" rel="stylesheet">
+<style>
+body{margin:0}
+[[> tokens.css]]
+.sbr ::placeholder{color:var(--color-ink-muted);opacity:1}
+</style>
+</helmet>
+<div class="sbr" data-sbr="page" data-scheme="[[scheme]]" data-screen="3" style="box-sizing: border-box; width: 390px; min-height: [[frame.height]]px; display: flex; flex-direction: column; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-body)">
+<section data-sbr="screen-questions" style="display: flex; flex-direction: column">
+<div data-sbr="progress" style="display: flex; flex-direction: column; gap: var(--spacing-item); padding: var(--spacing-group) var(--spacing-group) 0">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-group)">
+<p data-sbr="brand" style="margin: 0; font-family: var(--font-body); font-size: var(--text-button); line-height: var(--text-button--line-height); font-weight: var(--text-button--font-weight); letter-spacing: var(--text-button--letter-spacing); color: var(--color-ink)">[[copy.brand]]</p>
+<p style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-ink-muted)">[[progress.questions]]</p>
+</div>
+<p style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.saved]]</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-group); padding: var(--spacing-block) var(--spacing-group)">
+<h2 data-sbr="questions-title" style="margin: 0; font-family: var(--font-display); font-size: var(--text-heading); line-height: var(--text-heading--line-height); font-weight: var(--text-heading--font-weight); letter-spacing: var(--text-heading--letter-spacing); color: var(--color-ink); text-wrap: balance">[[copy.questions.title]]</h2>
+<div data-sbr="questions-form" style="display: flex; flex-direction: column; gap: var(--spacing-group)">
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<label for="current-solution" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.current_solution]]</label>
+<textarea data-sbr="field-current-solution" id="current-solution" name="current_solution" rows="3" style="display: block; box-sizing: border-box; width: 100%; margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink); resize: none"></textarea>
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<label for="last-time" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.last_time]]</label>
+<textarea data-sbr="field-last-time" id="last-time" name="last_time" rows="3" style="display: block; box-sizing: border-box; width: 100%; margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink); resize: none"></textarea>
+</div>
+<div style="display: flex; align-items: center; gap: var(--spacing-item); min-height: var(--spacing-block)">
+<input data-sbr="field-wants-call" id="wants-call" name="wants_call" type="checkbox" checked="checked" style="flex: none; width: var(--spacing-group); height: var(--spacing-group); margin: 0; accent-color: var(--color-accent)">
+<label for="wants-call" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.wants_call]]</label>
+</div>
+<div data-sbr="call-group" style="display: flex; flex-direction: column; gap: var(--spacing-group)">
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<label for="whatsapp" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.whatsapp]]</label>
+<input data-sbr="field-whatsapp" id="whatsapp" name="whatsapp" type="tel" style="box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<label for="time-slot" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.questions.time_slot]]</label>
+<input data-sbr="field-time-slot" id="time-slot" name="time_slot" type="text" style="box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+<p data-sbr="questions-error" role="alert" style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-danger)">[[copy.questions.error]]</p>
+</sc-if>
+<button data-sbr="questions-submit" type="button" style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); border: 0; border-radius: var(--radius-control); background: var(--color-accent); color: var(--color-on-accent); font-family: var(--font-body); font-size: var(--text-button); line-height: var(--text-button--line-height); font-weight: var(--text-button--font-weight); letter-spacing: var(--text-button--letter-spacing); text-align: center; cursor: pointer">[[copy.questions.submit]]</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"error":{"editor":"boolean","default":false,"section":"Estado"},"$preview":{"width":390,"height":[[frame.height]]}}'>
+class Component extends DCLogic {
+renderVals() {
+return { error: this.props.error ?? false };
+}
+}
+</script>
+</body>
+</html>
