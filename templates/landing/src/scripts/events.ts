@@ -1,3 +1,5 @@
+import sources from './sources.json';
+
 interface CaptureConfig {
   posthog_key: string;
   capture_path: string;
@@ -16,8 +18,6 @@ export type Answers = {
   time_slot: string;
 };
 
-const KNOWN_SOURCES = ['v1', 'v2', 'v3', 'friends', 'test'];
-const UNTAGGED_SOURCE = 'untagged';
 const DISTINCT_ID_STORAGE_KEY = 'sbr_distinct_id';
 const SEND_TIMEOUT_MS = 10_000;
 
@@ -60,8 +60,8 @@ async function send(config: CaptureConfig, event: EventName, properties: EventPr
 }
 
 function sourceFrom(src: string | null): string {
-  if (src && KNOWN_SOURCES.includes(src)) return src;
-  return UNTAGGED_SOURCE;
+  if (src && sources.values.includes(src)) return src;
+  return sources.fallback;
 }
 
 function distinctId(): string {

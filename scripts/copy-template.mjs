@@ -10,6 +10,7 @@ const pluginRoot = fileURLToPath(new URL('..', import.meta.url));
 const templateFolder = join(pluginRoot, 'templates', 'landing');
 const neutralTokens = join(pluginRoot, 'templates', 'neutral-design', 'tokens.json');
 const exampleCopy = join(pluginRoot, 'templates', 'example', 'es.json');
+const templateSources = join(templateFolder, 'src', 'scripts', 'sources.json');
 const contract = JSON.parse(readFileSync(join(pluginRoot, 'templates', 'contract.json'), 'utf8'));
 
 const NEVER_COPIED = new Set(['node_modules', 'dist', '.astro', '.vercel', '.DS_Store']);
@@ -64,6 +65,16 @@ function validate({ destination, manager }) {
   return target;
 }
 
+function assertSourcesMatchContract() {
+  const { values, fallback } = contract.url_params.find(({ name }) => name === 'src');
+  const template = JSON.parse(readFileSync(templateSources, 'utf8'));
+  const inSync = JSON.stringify([template.values, template.fallback]) === JSON.stringify([values, fallback]);
+  if (inSync) return;
+  throw new Error(
+    'templates/landing/src/scripts/sources.json does not match the src values of templates/contract.json. Update it on main.',
+  );
+}
+
 function belongsToSkeleton(source, manager) {
   const path = relative(templateFolder, source);
   if (path === '') return true;
@@ -104,6 +115,7 @@ function lockfileReport(manager) {
 function run(argv) {
   const options = parseArguments(argv);
   const target = validate(options);
+  assertSourcesMatchContract();
   cpSync(templateFolder, target, {
     recursive: true,
     force: true,
