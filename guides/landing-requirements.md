@@ -13,6 +13,8 @@ Sources of the rules are in [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).
 | `capture.mjs --measure` | `capture` | The page drawn by Chrome | `node "${CLAUDE_PLUGIN_ROOT}/scripts/capture.mjs" <url> <output> --measure` |
 | `design-reviewer` agent | `reviewer` | What no script can decide: values, copy and `system.md` before drawing; screenshots after building | See [agents/design-reviewer.md](../agents/design-reviewer.md) |
 
+For the reviewer's page mode, run `capture.mjs` twice into the same folder, once without and once with `--gray`, and give it the sixteen images: R6 compares each color screenshot with its gray twin.
+
 ### Reading the output
 
 Each script prints 32 lines to stdout, `R1` to `R32` in order, tab-separated: `<id>`, `<status>`, `<detail>`.

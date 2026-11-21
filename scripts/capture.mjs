@@ -49,7 +49,6 @@ const PIXEL_TOLERANCE = 0.5;
 const FALLBACK_BODY_PX = 16;
 const OVERFLOW_HEIGHTS = { 375: 667, 768: 1024, 1024: 768, 1440: 900 };
 const MEASURED_HOOKS = ['title', 'subtitle', 'cta', 'notice', 'email-form', 'questions-form'];
-const TEST_SOURCE = 'test';
 const SAMPLE_EMAIL = 'prueba@example.com';
 const SAMPLE_ANSWER = 'Respuesta de prueba.';
 
@@ -180,6 +179,11 @@ async function evaluate(client, expression) {
 
 function waitForPaint() {
   return document.fonts.ready.then(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve(true)))));
+}
+
+function dropFocus() {
+  document.activeElement?.blur();
+  return true;
 }
 
 function readScreen() {
@@ -338,10 +342,10 @@ function styleSnapshot(hook) {
   return watched.map((property) => style[property]).join('|');
 }
 
-function urlForScreen(url, number, isMeasuring) {
+function urlForScreen(url, number, testSource) {
   const target = new URL(url);
   target.searchParams.set('screen', String(number));
-  if (isMeasuring) target.searchParams.set('src', TEST_SOURCE);
+  if (testSource) target.searchParams.set('src', testSource);
   return target.href;
 }
 
@@ -354,7 +358,7 @@ async function openScreen(session, number, viewport) {
     mobile: viewport.width < contract.desktop_breakpoint_px,
   });
   const loaded = client.waitFor('Page.loadEventFired');
-  const { errorText } = await client.send('Page.navigate', { url: urlForScreen(options.url, number, options.measure) });
+  const { errorText } = await client.send('Page.navigate', { url: urlForScreen(options.url, number, options.measure && contract.sources.test[0]) });
   if (errorText) throw new UsageError(`cannot open ${options.url}: ${errorText}`);
   await loaded;
   await evaluate(client, inPage(waitForPaint));
@@ -467,6 +471,9 @@ async function captureFirstViews(session) {
   for (const viewport of contract.viewports.first_view) {
     for (const screen of contract.screens) {
       const isLanding = await openScreen(session, screen.number, viewport);
+      // ?screen= focuses the screen title with no user input, so it would be drawn with a focus ring nobody sees after a click.
+      await evaluate(client, inPage(dropFocus));
+      await evaluate(client, inPage(waitForPaint));
       await screenshot(session, screen.number, viewport);
       if (!isLanding) break;
       session.isLanding = true;
