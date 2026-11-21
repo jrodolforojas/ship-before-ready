@@ -177,22 +177,22 @@ Body in the builder's language.
 |---|---|
 | `result` | One of the four results below; the same list as `verdict_results` in `templates/contract.json` |
 | `computed_at` | Timestamp of this verdict |
-| `rules_commit` | SHA of the commit of `.sbr/rules.md` whose thresholds this verdict applied |
-| `rules_changed_after_seal` | `true` when a commit touched `.sbr/rules.md` after the `commit` of `.sbr/seal.json`; `false` otherwise |
+| `rules_commit` | Always the seal commit: the `commit` of `.sbr/seal.json`, whether or not the rules changed afterwards |
+| `rules_changed_after_seal` | `true` when a commit touched `.sbr/rules.md` after `rules_commit`; `false` otherwise. The changes are shown apart, from `git log <rules_commit>..HEAD -- .sbr/rules.md` |
 | `reviewer` | `pending` or `approved`. It becomes `approved` only when `verdict-reviewer` answers `approved` ([reviewers.md](reviewers.md)) |
 | `counts` | One group per kind of traffic: `cold` (the `cold_sources` of the rules), `friends` and `untagged`. `test` is never counted |
 | `calls_held_declared` | Calls that took place, as declared by the builder. Not measured, so it stays outside `counts` |
 
-Every group of `counts` has the same six keys:
+Every group of `counts` has the same six keys. All six count unique visitors (distinct `distinct_id`), never events, so every rate is people over people.
 
-| Key | Counts |
+| Key | Unique visitors |
 |---|---|
-| `visitors` | Unique visitors |
-| `cta_clicks` | `sbr_cta_click` |
-| `signups` | `sbr_signup` |
-| `answers` | `sbr_answers` |
-| `qualified_leads` | Visitors who answered both questions with a real case and left a contact |
-| `calls_scheduled` | Visitors who left WhatsApp and a time slot |
+| `visitors` | Who visited |
+| `cta_clicks` | With at least one `sbr_cta_click` |
+| `signups` | With at least one `sbr_signup` |
+| `answers` | With at least one `sbr_answers` |
+| `qualified_leads` | Who answered both questions with a real case and left a contact |
+| `calls_scheduled` | Who left WhatsApp and a time slot |
 
 Only `cold` decides the result.
 
