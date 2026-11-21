@@ -1,6 +1,6 @@
 ---
 name: landing
-description: Genera y publica la landing del builder a partir del brief. Marcador sin contenido todavía.
+description: Programa y publica la landing a partir del diseño final aprobado. Marcador sin contenido todavía.
 ---
 
-Marcador: esta skill todavía no tiene contenido. La llena el paso 4 del plan de construcción.
+Placeholder: this skill has no content yet. Step 4b of the build plan ([docs/plan.md](../../docs/plan.md)) fills it.
