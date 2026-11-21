@@ -70,7 +70,7 @@ The plugin declares PostHog's MCP server under the name `posthog` in its `.mcp.j
    4. If every project already receives events, the builder uses PostHog for something else. Ask with AskUserQuestion using `posthog.busy_question`. The first option is `posthog.busy_options.new_organization`; after it comes one option per project, up to three, built from `posthog.busy_options.existing`.
       - **New organization.** PostHog's free plan allows one project per organization, and this session cannot create organizations, so the builder creates it in the browser. Get the address with `call generate-app-url {"url": "/create-organization", "params": {}}`, say `posthog.create_organization` with it, and wait. When the builder comes back, read the projects again as in item 1 and use the one that has never received an event; the session sees the new organization without signing in again. If there is none, say `posthog.organization_missing` and wait again.
       - **An existing project.** Use it and say `posthog.shared_project`.
-4. Switch to the organization of the chosen project, then to the project. Its id, as a string of digits, is `posthog_project_id`.
+4. Switch to the chosen project. PostHog moves the conversation to its organization too, so the project's id is enough. That id, as a string of digits, is `posthog_project_id`.
 5. Read the public project key with `call project-get {"id": <id>}`: it is the field `api_token` and must start with `phc_`. `projects-get` does not carry it.
 6. Find the region with the script, which asks both PostHog regions which one accepts that key:
 
