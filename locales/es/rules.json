@@ -1,0 +1,103 @@
+{
+  "intro": "Estas son las varas con las que se va a leer el resultado. Se fijan y se sellan antes de lanzar, para que nadie las mueva después de ver los números.",
+  "no_brief": "Todavía no hay brief en .sbr/brief.md. Puede sellar las reglas igual; el brief sale de /ship-before-ready:interview.",
+  "no_repo": "Esta carpeta no es un repo de git, y el sello es un commit. ¿Corro `git init` aquí?",
+  "table": {
+    "threshold": "Vara",
+    "value": "Valor",
+    "measures": "Qué mide",
+    "source": "Fuente"
+  },
+  "thresholds": {
+    "min_cold_visitors": {
+      "label": "Muestra mínima",
+      "measures": "Visitantes únicos de tráfico frío que hacen falta para opinar sobre tasas.",
+      "source": "Kromatic; cálculo propio"
+    },
+    "signup_rate_pass": {
+      "label": "Filtro de registro",
+      "measures": "Registros sobre visitantes fríos a partir de los cuales el filtro pasa. Es un filtro: nunca basta por sí solo.",
+      "source": "Kromatic; Unbounce"
+    },
+    "signup_rate_gray_min": {
+      "label": "Inicio de la zona gris",
+      "measures": "Desde este valor hasta el filtro, el resultado es gris.",
+      "source": "Unbounce, reporte 2024: mediana de SaaS de 3,8%"
+    },
+    "no_evidence_visitors": {
+      "label": "Sin evidencia",
+      "measures": "Visitantes fríos sin un solo lead calificado que significan que este ángulo no dio evidencia.",
+      "source": "Cálculo propio: con 300 visitantes y cero leads hay 95% de confianza de que menos del 1% se convertiría"
+    },
+    "calls_scheduled_pass": {
+      "label": "Evidencia para seguir",
+      "measures": "Llamadas agendadas con desconocidos.",
+      "source": "The Mom Test, vía reseñas; el número es una propuesta"
+    },
+    "cold_sources": {
+      "label": "Tráfico frío",
+      "measures": "Links que cuentan como tráfico frío, uno por guion de video. Amigos y comunidad se cuentan aparte.",
+      "source": "Regla de credibilidad: solo el tráfico frío decide"
+    }
+  },
+  "adjust": {
+    "question": "¿Sella con estas varas o quiere ajustar alguna?",
+    "options": {
+      "keep": {
+        "label": "Sellar con estas (recomendado)",
+        "description": "Son los valores por defecto, cada uno con su fuente."
+      },
+      "adjust": {
+        "label": "Ajustar una vara",
+        "description": "Usted dice cuál y a qué valor, antes de sellar."
+      }
+    },
+    "which": "¿Cuál vara cambia y a qué valor?",
+    "invalid": "Ese valor no sirve: {problem}"
+  },
+  "verdict_date": {
+    "question": "¿En qué fecha quiere leer el veredicto? Escríbala como AAAA-MM-DD; tiene que ser posterior a hoy.",
+    "invalid": "Esa fecha no sirve: tiene que ir como AAAA-MM-DD y ser posterior a hoy."
+  },
+  "body": {
+    "title": "Reglas del veredicto",
+    "thresholds": "Varas",
+    "verdict_date": "Fecha de veredicto",
+    "verdict_date_detail": "El veredicto se lee el {date}.",
+    "credibility": "Reglas de credibilidad",
+    "credibility_rules": [
+      "Las varas se fijan y se sellan antes de lanzar.",
+      "Amigos y comunidad se cuentan aparte; solo el tráfico frío decide.",
+      "El revisor sin contexto audita que los números sostengan el veredicto.",
+      "Las tasas se muestran siempre con su conteo crudo."
+    ],
+    "not_measured": "Lo que el veredicto no mide",
+    "not_measured_detail": "Disposición a pagar. Aquí no se prueban precios: la evidencia más fuerte que se obtiene es de tiempo (una llamada), no de dinero.",
+    "seal": "Sello",
+    "seal_detail": "Estas reglas se sellaron con un commit, registrado en .sbr/seal.json. Cualquier cambio posterior es un commit nuevo y el veredicto lo muestra."
+  },
+  "sealed": {
+    "title": "Reglas selladas",
+    "detail": "El sello es el commit {commit} y quedó registrado en .sbr/seal.json. El veredicto se lee el {date}.",
+    "next": "Lo que sigue: /ship-before-ready:design."
+  },
+  "already_sealed": {
+    "notice": "Las reglas ya están selladas desde el {date} (commit {commit}). No cambio nada.",
+    "question": "¿Las deja como están o quiere cambiar algo?",
+    "options": {
+      "keep": {
+        "label": "Dejarlas como están (recomendado)",
+        "description": "No se toca ningún archivo."
+      },
+      "change": {
+        "label": "Cambiar una regla",
+        "description": "Queda como un commit nuevo que el veredicto va a mostrar."
+      }
+    },
+    "warning": "Cambiar una regla después del sello no borra el sello: queda un commit nuevo y el veredicto lo va a mostrar junto al resultado.",
+    "which": "¿Qué cambia y a qué valor?",
+    "reason": "¿Por qué la cambia? La razón queda escrita en el commit.",
+    "unchanged": "No cambié nada: las reglas siguen selladas como estaban.",
+    "changed": "El cambio quedó en el commit {commit}. El sello original, {seal_commit}, sigue en .sbr/seal.json y el veredicto va a mostrar este cambio."
+  }
+}
