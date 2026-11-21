@@ -213,15 +213,18 @@ If the builder asks for a line that breaks a rule (that the product is available
 
 Only when the skill runs again over an approved file. It is a courtesy: never block on it, never ask the builder to sign in here, and never judge the numbers; `verdict` does that.
 
-1. Look for PostHog's `exec` tool: `mcp__plugin_ship-before-ready_posthog__exec`, then `mcp__plugin_posthog_posthog__exec`, then `mcp__posthog__exec`. If tools are loaded on demand, search for it with ToolSearch (`posthog exec`). If there is none, or `.sbr/connections.json` is missing, say `visits.unavailable` and go on.
-2. Make the builder's project the active one with `call switch-project {"projectId": <posthog_project_id>}`, the id from `.sbr/connections.json`.
-3. Run:
+1. If `.sbr/connections.json` is missing or has no `posthog_project_id`, say `visits.unavailable` and go on.
+2. Look for PostHog's `exec` tool: `mcp__plugin_ship-before-ready_posthog__exec`, then `mcp__plugin_posthog_posthog__exec`, then `mcp__posthog__exec`. If tools are loaded on demand, search for it with ToolSearch using the server's name as the query (`plugin:ship-before-ready:posthog`, then `plugin:posthog:posthog`). If there is none, say `visits.unavailable` and go on.
+3. `exec` takes `command`, one string, and `context`, a few words on why you call it; `context` is required and never carries names, emails or keys. Its answer brings a `conversation_id`: leave it out on the first call and pass that same `conversation_id` on every later call. Without it PostHog refuses `switch-project`, and the query reads whichever project the builder has open in PostHog. Some clients expose the tools directly instead (`…__organizations-get`, `…__switch-project`, `…__execute-sql`); call them with the same input.
+4. Make these calls in this order:
 
-   ```text
-   call execute-sql {"query": "SELECT properties.source AS source, count(DISTINCT distinct_id) AS visitors FROM events WHERE event = '$pageview' AND properties.source IN ('bio', 'v1', 'v2', 'v3', 'friends') GROUP BY source"}
-   ```
+   | Order | `command` | Why |
+   |---|---|---|
+   | 1 | `call organizations-get` | Only to get the `conversation_id` |
+   | 2 | `call switch-project {"projectId": <posthog_project_id>}` | Reads the project of `.sbr/connections.json`; PostHog moves the conversation to its organization too |
+   | 3 | `call execute-sql {"query": "SELECT properties.source AS source, count(DISTINCT distinct_id) AS visitors FROM events WHERE event = '$pageview' AND properties.source IN ('bio', 'v1', 'v2', 'v3', 'friends') GROUP BY source"}` | The visitors per link |
 
-   If any call fails, say `visits.unavailable` and go on.
-4. Say `visits.title` and one `visits.row` per source, in the order `bio`, `v1`, `v2`, `v3`, `friends`, with the label of `visits.sources` and the raw count; a source with no rows counts 0.
+   If any call fails, or the first one brings no `conversation_id`, say `visits.unavailable` and go on. Never run the query without the switch: it would count the visits of another project.
+5. Say `visits.title` and one `visits.row` per source, in the order `bio`, `v1`, `v2`, `v3`, `friends`, with the label of `visits.sources` and the raw count; a source with no rows counts 0.
 
 The structure of the scripts (SMP; reveal, build up, value, call to action) and the three kinds of video were taught by Guillie Collado to the author of this plugin. It is not verified in a public source.
