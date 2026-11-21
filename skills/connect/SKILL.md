@@ -42,20 +42,36 @@ Leave the builder with a package manager chosen, a Vercel session that can publi
 
 The plugin declares PostHog's MCP server under the name `posthog` in its `.mcp.json`. Its tools are named `mcp__plugin_ship-before-ready_posthog__<tool>`. If the builder also has PostHog's own plugin, Claude Code may connect through that one instead, and the same tools are named `mcp__plugin_posthog_posthog__<tool>`. Use whichever is connected; they are the same server and the same session.
 
-1. Look for the tool `exec` of that server (`mcp__plugin_ship-before-ready_posthog__exec`, then `mcp__plugin_posthog_posthog__exec`, then `mcp__posthog__exec`). If tools are loaded on demand, search for it with ToolSearch (`posthog exec`). If no PostHog tool is available, there is no session: say `posthog.sign_in` and wait. Check again when the builder comes back.
-2. `exec` takes one string, `command`. The commands used here:
+1. Look for the tool `exec` of that server (`mcp__plugin_ship-before-ready_posthog__exec`, then `mcp__plugin_posthog_posthog__exec`, then `mcp__posthog__exec`). If tools are loaded on demand, search for it with ToolSearch, using the server's name as the query (`plugin:ship-before-ready:posthog`, then `plugin:posthog:posthog`). If no PostHog tool is available after searching, there is no session in this conversation, whatever a listing made elsewhere says:
+   - The server's name is the one this session reports as needing authentication. If the session names none, use `plugin:ship-before-ready:posthog`.
+   - Say `posthog.sign_in` with that name as `{server}` and wait. The desktop app has no `/mcp`; there the builder signs in with `claude mcp login <server>`, so the phrase gives both ways.
+   - When the builder comes back, search for the tool again with the server's name: after a sign-in that search is what reconnects the server, without a restart.
+2. `exec` takes `command`, one string, and `context`, a few words on why you call it; `context` is required and never carries names, emails or keys. Its answer brings a `conversation_id`: leave it out on the first call and **pass that same `conversation_id` on every later call.** Without it PostHog refuses `switch-organization` and `switch-project`, and every other call reads whichever project the builder has open in PostHog. A switch only changes this conversation; it does not move the builder inside PostHog. The commands used here:
 
    | Purpose | `command` |
    |---|---|
-   | List the projects of the signed-in user | `call projects-get` |
+   | List the organizations of the signed-in user | `call organizations-get` |
+   | Make one organization the active one | `call switch-organization {"orgId": "<id>"}` |
+   | List the projects of the active organization | `call projects-get` |
    | Make one project the active one | `call switch-project {"projectId": <id>}` |
+   | Read one project, with its public key | `call project-get {"id": <id>}` |
+   | Get the address of a page of the PostHog app | `call generate-app-url {"url": "<path>", "params": {}}` |
    | Run a query | `call execute-sql {"query": "<HogQL>"}` |
    | Read the input of any tool | `info <tool>` |
 
    Some clients expose the tools directly instead of through `exec` (`…__projects-get`, `…__switch-project`, `…__execute-sql`). Then call them with the same input.
-3. List the projects. With none, say `posthog.no_projects` and wait. With one, say `posthog.single_project` and use it. With several, ask which one with `posthog.project_question`, by name. If the builder says the project is in another organization, list them with `call organizations-get`, switch with `call switch-organization` (read its input with `info switch-organization`) and list the projects again.
-4. Switch to the chosen project. Its id, as a string of digits, is `posthog_project_id`.
-5. Read the public project key from the field `api_token` of that project. If `projects-get` did not return it, read it with `call project-get` (see `info project-get`). It must start with `phc_`.
+3. Choose the project that receives this idea's events. Two products never share a project: `verdict` counts every `sbr_` event it finds there.
+   1. Read every project the session reaches: list the organizations and, for each one, switch to it and list its projects. A project carries the id of its organization, not its name; take the name from the list of organizations. Leave out the projects with `is_demo: true`. With no project at all, say `posthog.no_projects` and wait.
+   2. If `.sbr/connections.json` names a `posthog_project_id` that is in that list, say `posthog.saved_project` and use it.
+   3. Otherwise look at `ingested_event`, which stays `false` until a project receives its first event.
+      - One project in all, and it has never received an event: the builder is new to PostHog. Say `posthog.single_project` and use it, without asking.
+      - Several projects, and exactly one has never received an event: say `posthog.empty_project` and use it.
+      - Several that have never received an event: ask which one with `posthog.project_question`, by name and organization.
+   4. If every project already receives events, the builder uses PostHog for something else. Ask with AskUserQuestion using `posthog.busy_question`. The first option is `posthog.busy_options.new_organization`; after it comes one option per project, up to three, built from `posthog.busy_options.existing`.
+      - **New organization.** PostHog's free plan allows one project per organization, and this session cannot create organizations, so the builder creates it in the browser. Get the address with `call generate-app-url {"url": "/create-organization", "params": {}}`, say `posthog.create_organization` with it, and wait. When the builder comes back, read the projects again as in item 1 and use the one that has never received an event; the session sees the new organization without signing in again. If there is none, say `posthog.organization_missing` and wait again.
+      - **An existing project.** Use it and say `posthog.shared_project`.
+4. Switch to the organization of the chosen project, then to the project. Its id, as a string of digits, is `posthog_project_id`.
+5. Read the public project key with `call project-get {"id": <id>}`: it is the field `api_token` and must start with `phc_`. `projects-get` does not carry it.
 6. Find the region with the script, which asks both PostHog regions which one accepts that key:
 
    ```bash
