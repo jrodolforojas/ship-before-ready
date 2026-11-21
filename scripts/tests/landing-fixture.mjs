@@ -8,6 +8,7 @@ const CONTROL = `touch-target w-full rounded-control border border-line bg-surfa
 const SCREEN = 'mx-auto flex form-column flex-col gap-block px-group py-block';
 
 const valueAt = (object, path) => path.split('.').reduce((value, key) => value?.[key], object);
+const SOURCE_VALUES = contract.url_params.find((param) => param.name === 'src').values;
 const rem = (px) => `${Number((px / ROOT_FONT_SIZE_PX).toFixed(4))}rem`;
 
 export function escapeHtml(text) {
@@ -260,7 +261,7 @@ export const SKELETON_FILES = {
   'src/components/Hero.astro': `<h1 data-sbr="title" class="font-display text-title text-balance text-ink">{copy.hero.title}</h1>\n`,
   'src/components/Field.astro': `---\nconst controlClasses = '${CONTROL}';\n---\n<input class={controlClasses} />\n`,
   'src/scripts/flow.ts': "export const show = (button: HTMLElement) => button.classList.toggle('opacity-60');\n",
-  'src/scripts/events.ts': "export const SOURCES = ['v1', 'v2', 'v3', 'friends', 'test'];\n",
+  'src/scripts/events.ts': `export const SOURCES = ${JSON.stringify(SOURCE_VALUES)};\n`,
 };
 
 export function writeTemplate(root = tempDir('sbr-template-'), files = {}) {
