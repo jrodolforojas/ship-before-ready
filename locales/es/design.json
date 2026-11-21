@@ -1,0 +1,119 @@
+{
+  "intro": "Vamos a decidir cómo se ve su landing. Primero cuatro preguntas, después el texto, luego tres direcciones lado a lado. Usted elige una y la ajustamos las veces que haga falta. No se instala ni se programa nada hasta que usted apruebe el diseño final.",
+  "missing": {
+    "brief": "No encuentro .sbr/brief.md. Corra primero /ship-before-ready:interview.",
+    "brief_pending": "El brief todavía no está aprobado por su revisor. Termine /ship-before-ready:interview antes de diseñar."
+  },
+  "resume": {
+    "approved": "Ya hay un diseño aprobado: «{name}», aprobado el {date}. ¿Lo conserva o lo rehace?",
+    "keep": "Conservarlo",
+    "redo": "Rehacerlo",
+    "redo_note": "Al rehacerlo, la aprobación anterior queda retirada hasta que apruebe el nuevo diseño.",
+    "changed": "El diseño aprobado cambió después de aprobarse: sus valores o su texto ya no coinciden con lo que usted aprobó. Hay que revisarlo y aprobarlo de nuevo.",
+    "in_progress": "Hay un diseño a medio camino. Sigo desde {step}."
+  },
+  "mode": {
+    "canvas": "Las tres direcciones se van a dibujar en Claude Design, en un lienzo que usted puede abrir y editar.",
+    "fallback": "No tengo Claude Design en esta sesión, así que le muestro las direcciones una por una sobre la página real, en su navegador."
+  },
+  "questions": {
+    "decide": "Decida usted",
+    "decide_detail": "Lo derivo del brief y lo anoto como derivado.",
+    "brand": {
+      "header": "Marca",
+      "question": "¿Tiene marca o referencias? Colores, logo, un design system de Claude Design o un sitio cuyo aspecto le guste. Si tiene, escríbalos en «Otro».",
+      "none": "Sin marca todavía",
+      "none_detail": "No hay colores ni referencias que respetar."
+    },
+    "memorable": {
+      "header": "Lo memorable",
+      "question": "¿Qué es lo único que alguien debe recordar después de ver la página?"
+    },
+    "personality": {
+      "header": "Personalidad",
+      "question": "¿Qué personalidad tiene, hasta tres? Las opciones son: serio y confiable, cercano y cálido, técnico y preciso, atrevido y enérgico, calmado y mínimo, artesanal y humano. Le propongo las que mejor calzan con el brief; escriba otras en «Otro».",
+      "traits": {
+        "serious": "Serio y confiable",
+        "warm": "Cercano y cálido",
+        "technical": "Técnico y preciso",
+        "bold": "Atrevido y enérgico",
+        "calm": "Calmado y mínimo",
+        "crafted": "Artesanal y humano"
+      }
+    },
+    "tone": {
+      "header": "Tono",
+      "question": "¿Claro u oscuro? Si hay algo a lo que no quiera parecerse, escríbalo en «Otro» junto con el tono.",
+      "light": "Claro",
+      "light_detail": "Fondo claro y texto oscuro.",
+      "dark": "Oscuro",
+      "dark_detail": "Fondo oscuro y texto claro."
+    },
+    "derived_note": "Lo que dejó en mis manos lo saqué del brief:"
+  },
+  "market": {
+    "intro": "Como no trajo paleta, miré cómo se presentan las alternativas que su persona ya usa.",
+    "skipped": "No miré el mercado: {reason}.",
+    "unverified": "No pude ver esas páginas: lo que digo de ellas sale de conocimiento general y no está verificado."
+  },
+  "copy": {
+    "intro": "Este es el texto de la página, sacado del brief. Las tres direcciones van a usar este mismo texto, para que usted compare diseño y no palabras.",
+    "author": "El pie dice quién está detrás. ¿Qué nombre pongo?",
+    "ask": "¿Lo aprueba así, o qué cambio?",
+    "changed": "Cambié el texto y volví a revisarlo."
+  },
+  "concepts": {
+    "intro": "Estas son las tres direcciones, en texto. Cada una difiere de las otras en composición, tipografía y color. Ninguna es la recomendada.",
+    "follows": "Sigue el código de la categoría.",
+    "departs": "Se aparta del código de la categoría a propósito.",
+    "ask": "¿Las dibujo así, o cambio alguna?"
+  },
+  "values": {
+    "working": "Estoy definiendo los valores de cada dirección y pasándolos por el verificador.",
+    "failed": "La dirección {letter} no pasó el verificador después de varios intentos, así que no la dibujo. Falla en: {requirements}."
+  },
+  "canvas": {
+    "title": "{brand} · Diseño",
+    "ready": "Listo el lienzo con las tres direcciones, portada en teléfono y en escritorio: {url}",
+    "private": "El lienzo es privado: solo usted puede abrirlo hasta que lo comparta desde su menú Share.",
+    "choose": {
+      "header": "Dirección",
+      "question": "¿Con cuál dirección seguimos?",
+      "none": "Ninguna",
+      "none_detail": "Volvemos a los conceptos y cambio lo que no le convence."
+    }
+  },
+  "iterate": {
+    "full": "Dibujé «{name}» completa, con las cuatro pantallas: {url}",
+    "ask": "Pida los cambios que quiera, uno o varios a la vez: colores, tipografía, tamaños, espacios, forma, composición, decoración o cualquier texto. Cuando esté conforme, dígame que lo aprueba.",
+    "repainted": "Cambié {changes}. Pasó el verificador y el lienzo ya está repintado.",
+    "verifier_moved": "Para que cumpla {requirement} tuve que ajustar {value}.",
+    "out_of_range": "Eso queda fuera de lo permitido para {what}: el límite es {limit}. Lo dejé en {value}.",
+    "anatomy": "Eso no lo puedo cambiar en el diseño: {reason}. Las cuatro pantallas y sus bloques son fijos; cambia cómo se ven, no qué hay ni en qué orden.",
+    "anatomy_reasons": {
+      "block": "la página siempre tiene marca, portada, dolores, cómo funciona, cierre y pie, en ese orden",
+      "never": "una landing del plugin nunca lleva menú, precios, testimonios, logos de clientes, cifras inventadas, enlaces de salida, ventanas emergentes, chat, carruseles ni video de fondo",
+      "screens": "el registro del correo va en su propia pantalla y las preguntas en otra, porque el veredicto mide cada paso por separado",
+      "cliche": "degradados en texto o botón, brillos y emojis quedan fuera de cualquier diseño"
+    },
+    "hand_edit": "Alguien editó a mano «{artboard}» en el lienzo. Si repinto, esa edición se pierde, porque lo que se programa sale de los valores y el texto. ¿Me dice qué cambió para pasarlo a los valores, o la descarto?"
+  },
+  "approval": {
+    "ask": "Para aprobar, dígame por escrito que aprueba este diseño y, en una línea, por qué eligió esta dirección.",
+    "reviewing": "Antes de cerrar, un revisor que no conoce esta conversación lee el texto, los valores y el design system contra el brief.",
+    "rejected": "El revisor encontró esto:",
+    "done": "Diseño aprobado. Quedó en .sbr/design/: los valores, el texto, el design system y su elección con la huella de lo aprobado.",
+    "next": "Nada se instaló en su repo. Cuando quiera la página publicada, corra /ship-before-ready:landing."
+  },
+  "fallback": {
+    "node": "Para mostrarle la página real necesito Node 22.23.4 o superior y tengo {version}. Actualícelo y vuelva a correr /ship-before-ready:design.",
+    "installing": "Instalo la plantilla en una carpeta temporal fuera de su repo, solo para mostrarle las direcciones.",
+    "showing": "Abra {url}. Ahora ve la dirección {letter}, «{name}».",
+    "next": "Cuando la haya visto, dígame y le muestro la siguiente.",
+    "stopped": "Detuve la vista previa y borré la carpeta temporal."
+  },
+  "choice_file": {
+    "title": "Elección: {name}",
+    "detail": "Diseño aprobado por el builder. Los valores están en tokens.json y el texto en el archivo de idioma; la huella de la cabecera es la de esos dos archivos tal como se aprobaron."
+  }
+}
