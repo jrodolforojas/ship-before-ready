@@ -72,6 +72,29 @@ function fontFaceRules(tokens: Tokens, faces: FontFacesByRole): string[] {
   return [...new Set(rules)];
 }
 
+function coversWeight(face: FontFaceData, weight: number): boolean {
+  const [lightest = Number.NaN, heaviest = lightest] = (face.weight ?? '').split(' ').map(Number);
+  return lightest <= weight && weight <= heaviest;
+}
+
+function missingFonts(tokens: Tokens, faces: FontFacesByRole): string[] {
+  const missing = FONT_ROLES.flatMap((role) =>
+    tokens.fonts[role].weights
+      .filter((weight) => !faces[role].some((face) => coversWeight(face, weight)))
+      .map((weight) => `${tokens.fonts[role].family} ${weight}`),
+  );
+  return [...new Set(missing)];
+}
+
+// Astro only warns when it cannot download a font, and the page would ship in a fallback typeface.
+export function assertFontsDownloaded(tokens: Tokens, faces: FontFacesByRole): void {
+  const missing = missingFonts(tokens, faces);
+  if (missing.length === 0) return;
+  throw new Error(
+    `No font file for ${missing.join(', ')}. Check the network, and that tokens.json names a family and weights from the Google Fonts catalog.`,
+  );
+}
+
 export function fontFileUrls(faces: FontFacesByRole): string[] {
   const urls = FONT_ROLES.flatMap((role) => faces[role].flatMap((face) => face.src.map(({ url }) => url)));
   return [...new Set(urls)];

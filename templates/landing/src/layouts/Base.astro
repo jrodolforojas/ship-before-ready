@@ -2,13 +2,15 @@
 import '../styles/global.css';
 import { fontData } from 'astro:assets';
 import { copy } from '../lib/copy';
-import { fontFileUrls, tokenStyles } from '../lib/token-styles';
+import { assertFontsDownloaded, fontFileUrls, tokenStyles } from '../lib/token-styles';
 import { tokens } from '../lib/tokens';
 
 const fontFaces = {
   display: fontData['--font-display'] ?? [],
   body: fontData['--font-body'] ?? [],
 };
+
+assertFontsDownloaded(tokens, fontFaces);
 ---
 
 <!doctype html>
