@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="[[lang]]">
+<head>
+<meta charset="utf-8">
+<title>[[copy.email.title]]</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="[[fonts.href]]" rel="stylesheet">
+<style>
+body{margin:0}
+[[> tokens.css]]
+.sbr ::placeholder{color:var(--color-ink-muted);opacity:1}
+</style>
+</helmet>
+<div class="sbr" data-sbr="page" data-scheme="[[scheme]]" data-screen="2" style="box-sizing: border-box; width: 390px; min-height: [[frame.height]]px; display: flex; flex-direction: column; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-body)">
+<section data-sbr="screen-email" style="display: flex; flex-direction: column">
+<div data-sbr="progress" style="display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-group); padding: var(--spacing-group) var(--spacing-group) 0">
+<p data-sbr="brand" style="margin: 0; font-family: var(--font-body); font-size: var(--text-button); line-height: var(--text-button--line-height); font-weight: var(--text-button--font-weight); letter-spacing: var(--text-button--letter-spacing); color: var(--color-ink)">[[copy.brand]]</p>
+<p style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-ink-muted)">[[progress.email]]</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: var(--spacing-group); padding: var(--spacing-block) var(--spacing-group)">
+<h2 data-sbr="email-title" style="margin: 0; font-family: var(--font-display); font-size: var(--text-heading); line-height: var(--text-heading--line-height); font-weight: var(--text-heading--font-weight); letter-spacing: var(--text-heading--letter-spacing); color: var(--color-ink); text-wrap: balance">[[copy.email.title]]</h2>
+<div data-sbr="email-form" style="display: flex; flex-direction: column; gap: var(--spacing-group)">
+<div style="display: flex; flex-direction: column; gap: var(--spacing-item)">
+<label for="email" style="font-family: var(--font-body); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: var(--text-label--font-weight); letter-spacing: var(--text-label--letter-spacing); color: var(--color-ink-muted)">[[copy.email.label]]</label>
+<sc-if value="{{ valid }}" hint-placeholder-val="{{ true }}">
+<input data-sbr="email-field" id="email" name="email" type="email" placeholder="[[copy.email.placeholder]]" style="box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-line); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">
+</sc-if>
+<sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+<input data-sbr="email-field" id="email" name="email" type="email" placeholder="[[copy.email.placeholder]]" aria-invalid="true" style="box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); background: var(--color-surface); border: var(--line-width) solid var(--color-danger); border-radius: var(--radius-control); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing); color: var(--color-ink)">
+<p data-sbr="email-error" role="alert" style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-danger)">[[copy.email.error]]</p>
+</sc-if>
+<p data-sbr="privacy" style="margin: 0; font-family: var(--font-body); font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: var(--text-small--font-weight); letter-spacing: var(--text-small--letter-spacing); color: var(--color-ink-muted)">[[copy.email.privacy]]</p>
+</div>
+<button data-sbr="email-submit" type="button" style="display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: 100%; min-height: var(--spacing-block); margin: 0; padding: var(--spacing-item) var(--spacing-group); border: 0; border-radius: var(--radius-control); background: var(--color-accent); color: var(--color-on-accent); font-family: var(--font-body); font-size: var(--text-button); line-height: var(--text-button--line-height); font-weight: var(--text-button--font-weight); letter-spacing: var(--text-button--letter-spacing); text-align: center; cursor: pointer">[[copy.email.submit]]</button>
+</div>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"error":{"editor":"boolean","default":false,"section":"Estado"},"$preview":{"width":390,"height":[[frame.height]]}}'>
+class Component extends DCLogic {
+renderVals() {
+const error = this.props.error ?? false;
+return { error, valid: !error };
+}
+}
+</script>
+</body>
+</html>

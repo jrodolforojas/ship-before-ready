@@ -1,0 +1,14 @@
+.sbr{
+--color-canvas:[[color.canvas]];--color-surface:[[color.surface]];--color-ink:[[color.ink]];--color-ink-muted:[[color.ink_muted]];--color-accent:[[color.accent]];--color-on-accent:[[color.on_accent]];--color-line:[[color.line]];--color-focus:[[color.focus]];--color-danger:[[color.danger]];
+--font-display:[[fonts.display]];--font-body:[[fonts.body]];
+--text-title:[[text.title.size]];--text-title--line-height:[[text.title.line_height]];--text-title--font-weight:[[text.title.font_weight]];--text-title--letter-spacing:[[text.title.letter_spacing]];
+--text-heading:[[text.heading.size]];--text-heading--line-height:[[text.heading.line_height]];--text-heading--font-weight:[[text.heading.font_weight]];--text-heading--letter-spacing:[[text.heading.letter_spacing]];
+--text-lead:[[text.lead.size]];--text-lead--line-height:[[text.lead.line_height]];--text-lead--font-weight:[[text.lead.font_weight]];--text-lead--letter-spacing:[[text.lead.letter_spacing]];
+--text-body:[[text.body.size]];--text-body--line-height:[[text.body.line_height]];--text-body--font-weight:[[text.body.font_weight]];--text-body--letter-spacing:[[text.body.letter_spacing]];
+--text-small:[[text.small.size]];--text-small--line-height:[[text.small.line_height]];--text-small--font-weight:[[text.small.font_weight]];--text-small--letter-spacing:[[text.small.letter_spacing]];
+--text-button:[[text.button.size]];--text-button--line-height:[[text.button.line_height]];--text-button--font-weight:[[text.button.font_weight]];--text-button--letter-spacing:[[text.button.letter_spacing]];
+--text-label:[[text.label.size]];--text-label--line-height:[[text.label.line_height]];--text-label--font-weight:[[text.label.font_weight]];--text-label--letter-spacing:[[text.label.letter_spacing]];
+--spacing-section:[[spacing.section]];--spacing-block:[[spacing.block]];--spacing-group:[[spacing.group]];--spacing-item:[[spacing.item]];
+--radius-control:[[shape.radius_control]];--radius-card:[[shape.radius_card]];--shadow-card:[[shape.shadow_card]];--line-width:[[shape.line_width]];
+--container-prose:[[measure.prose]];--container-page:[[measure.page]];--motion-duration:[[measure.motion_duration]];
+}
