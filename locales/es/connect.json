@@ -50,10 +50,26 @@
     "landing_live": "Ya hay una landing publicada en {url}, así que no publico la página de prueba encima. Solo compruebo la sesión."
   },
   "posthog": {
-    "sign_in": "No hay sesión de PostHog en Claude Code. Escriba `/mcp`, elija el servidor de PostHog (`plugin:ship-before-ready:posthog`; si tiene el plugin oficial de PostHog, `plugin:posthog:posthog`), siga el navegador para iniciar sesión y avíseme cuando termine. No hace falta crear ni pegar ninguna llave.",
+    "sign_in": "No hay sesión de PostHog en Claude Code. Escriba `/mcp`, elija el servidor `{server}` y siga el navegador para iniciar sesión. Si `/mcp` no aparece, como pasa en la app de escritorio, corra `claude mcp login {server}` en una terminal (o escriba `! claude mcp login {server}` aquí mismo). Avíseme cuando termine. No hace falta crear ni pegar ninguna llave.",
     "no_projects": "Su sesión de PostHog no tiene proyectos. Cree uno en posthog.com y avíseme para seguir.",
     "project_question": "¿Qué proyecto de PostHog recibe los eventos de esta idea?",
     "single_project": "Uso su único proyecto de PostHog: {name}.",
+    "saved_project": "Sigo con el proyecto de PostHog que ya estaba guardado: {name}.",
+    "empty_project": "Uso el proyecto {name} de su organización {organization}: todavía no ha recibido eventos.",
+    "busy_question": "Todos sus proyectos de PostHog ya reciben eventos. ¿Dónde guardo los de esta idea?",
+    "busy_options": {
+      "new_organization": {
+        "label": "Organización nueva (recomendado)",
+        "description": "La crea usted en el navegador en un minuto. Así esta idea no se mezcla con otro producto."
+      },
+      "existing": {
+        "label": "{name} ({organization})",
+        "description": "Ya recibe eventos. Elíjalo solo si es de esta misma idea."
+      }
+    },
+    "create_organization": "Abra {url} en su navegador, póngale a la organización el nombre de esta idea y acepte el proyecto que PostHog propone. Va aparte porque el plan gratuito de PostHog permite un proyecto por organización. Avíseme cuando termine.",
+    "organization_missing": "Todavía no veo en su sesión de PostHog un proyecto que no haya recibido eventos. Revise que la organización se haya creado en {url} y avíseme.",
+    "shared_project": "Uso {name}. Los eventos de esta idea quedan junto a los que ese proyecto ya recibe.",
     "key_not_needed": "No pegue llaves aquí: no las necesito y no las guardo. Si esa llave es personal (empieza con phx_), revóquela en PostHog, porque quedó escrita en esta conversación."
   },
   "probe": {
