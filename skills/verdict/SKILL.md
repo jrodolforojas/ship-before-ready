@@ -33,15 +33,20 @@ Check in this order and stop at the first one missing, saying its phrase:
 | `.sbr/landing.json` with a `url` | `preconditions.no_landing` |
 | `.sbr/connections.json` with `posthog_project_id` | `preconditions.no_connections` |
 | A PostHog session | `preconditions.posthog_sign_in`, then wait and check again when the builder comes back |
+| The project of `.sbr/connections.json`, made active in this conversation | `preconditions.posthog_project_unreachable`, with `{project_id}` from that file |
 
-PostHog is read through the builder's sign-in, never with a key. The plugin declares PostHog's MCP server as `posthog`; its tool is `mcp__plugin_ship-before-ready_posthog__exec`. If the builder also has PostHog's own plugin, the same tool may be `mcp__plugin_posthog_posthog__exec`; use whichever is connected. If tools load on demand, search with ToolSearch (`posthog exec`). No PostHog tool means no session. `exec` takes one string, `command`:
+PostHog is read through the builder's sign-in, never with a key, and only in the project of `.sbr/connections.json`.
 
-| Purpose | `command` |
-|---|---|
-| Make the builder's project the active one | `call switch-project {"projectId": <posthog_project_id>}` |
-| Run a query | `call execute-sql {"query": "<HogQL>"}` |
+1. **Find the tool.** The plugin declares PostHog's MCP server as `posthog`; its tool is `mcp__plugin_ship-before-ready_posthog__exec`. If the builder also has PostHog's own plugin, the same tool may be `mcp__plugin_posthog_posthog__exec`, or `mcp__posthog__exec`; use whichever is connected. If tools load on demand, search with ToolSearch using the server's name as the query (`plugin:ship-before-ready:posthog`, then `plugin:posthog:posthog`). No PostHog tool after that search means no session in this conversation: say `preconditions.posthog_sign_in` with `{server}` set to the server this session reports as needing authentication, or `plugin:ship-before-ready:posthog` if it names none, and wait. When the builder comes back, search again with the server's name: that search reconnects the server without a restart.
+2. **Every call carries `context` and, after the first, `conversation_id`.** `exec` takes `command`, one string, and `context`, a few words on why you call it; `context` is required and never carries names, emails, numbers or keys. The answer of the first call brings a `conversation_id`. Pass that same `conversation_id` on every later call of this run. Without it PostHog refuses `switch-project`, and a query reads whichever project the builder has open in PostHog, not the idea's.
+3. **Switch first.** The first call is the switch; PostHog moves the conversation to the project's organization too, so the project id is enough. If the switch fails, or its answer names another project, say `preconditions.posthog_project_unreachable` and stop. Never run a query in a conversation where the switch did not succeed.
 
-Some clients expose `…__switch-project` and `…__execute-sql` directly; call them with the same input. Switch to `posthog_project_id` of `.sbr/connections.json` before any query.
+| Purpose | `command` | `context` |
+|---|---|---|
+| Make the idea's project the active one | `call switch-project {"projectId": <posthog_project_id>}` | `verdict: switch to the idea's project` |
+| Run a query | `call execute-sql {"query": "<HogQL>"}` | `verdict: read landing counts` or `verdict: read landing answers` |
+
+`<posthog_project_id>` is the number in `.sbr/connections.json`, without quotes. `<HogQL>` is the template's text as a JSON string: escape its quotes and line breaks, change nothing else. Some clients expose `…__switch-project` and `…__execute-sql` directly; call them with the same input, `context` and `conversation_id` included.
 
 ## 2. Integrity of the rules
 
@@ -57,13 +62,13 @@ It answers with `rules_commit` (the seal), `rules_changed_after_seal`, `uncommit
 
 ## 3. Counts
 
-Read `${CLAUDE_SKILL_DIR}/queries/counts.sql`, replace `{since}` with `since` from step 2, and run it with `execute-sql`. It returns one row per source with `source`, `visitors`, `cta_clicks`, `signups` and `answers`, each counting unique people (distinct `distinct_id`), each person under the source of their first visit, from the seal on.
+Read `${CLAUDE_SKILL_DIR}/queries/counts.sql`, replace `{since}` with `since` from step 2, and run it with `execute-sql`, with the `conversation_id` of step 1. It returns one row per source with `source`, `visitors`, `cta_clicks`, `signups` and `answers`, each counting unique people (distinct `distinct_id`), each person under the source of their first visit, from the seal on.
 
 Write the rows as they came to `<work>/counts.json`: a JSON list, one object per row, with those five keys. Copy every number exactly; add or drop no row.
 
 ## 4. Answers
 
-Read `${CLAUDE_SKILL_DIR}/queries/answers.sql`, replace `{since}`, and run it. It returns one row per person who answered, with their latest answers: `source`, `has_email`, `current_solution`, `last_time`, `wants_call`, `has_whatsapp`, `has_time_slot`. If it returns 1000 rows, the limit was hit: say so and stop.
+Read `${CLAUDE_SKILL_DIR}/queries/answers.sql`, replace `{since}`, and run it the same way, with the same `conversation_id`. It returns one row per person who answered, with their latest answers: `source`, `has_email`, `current_solution`, `last_time`, `wants_call`, `has_whatsapp`, `has_time_slot`. If it returns 1000 rows, the limit was hit: say so and stop.
 
 For each row decide `real_case`, `true` or `false`. A row is a real case only when both answers are about something that happened to that person:
 

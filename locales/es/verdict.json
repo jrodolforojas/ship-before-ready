@@ -31,7 +31,8 @@
     "no_landing": "Todavía no hay una landing publicada en .sbr/landing.json. Corra primero /ship-before-ready:landing.",
     "no_connections": "Falta .sbr/connections.json con el proyecto de PostHog. Corra primero /ship-before-ready:connect.",
     "not_a_repo": "Esta carpeta no es un repo de git, y el sello de las reglas es un commit. Corra el veredicto en el repo donde selló las reglas.",
-    "posthog_sign_in": "No hay sesión de PostHog en Claude Code. Escriba /mcp, elija PostHog y siga los pasos en el navegador. Avíseme cuando termine.",
+    "posthog_sign_in": "No hay sesión de PostHog en Claude Code. Escriba `/mcp`, elija el servidor `{server}` y siga el navegador para iniciar sesión. Si `/mcp` no aparece, como pasa en la app de escritorio, corra `claude mcp login {server}` en una terminal (o escriba `! claude mcp login {server}` aquí mismo). Avíseme cuando termine. No hace falta crear ni pegar ninguna llave.",
+    "posthog_project_unreachable": "Su sesión de PostHog no llega al proyecto {project_id} de .sbr/connections.json, o PostHog no lo dejó activo. No leo otro proyecto. Corra /ship-before-ready:connect para revisar la conexión.",
     "query_failed": "La consulta a PostHog falló: {problem}. No doy un veredicto sin números."
   },
   "integrity": {
