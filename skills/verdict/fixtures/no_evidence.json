@@ -1,0 +1,60 @@
+{
+  "rules": {
+    "min_cold_visitors": 200,
+    "signup_rate_pass": 0.05,
+    "signup_rate_gray_min": 0.038,
+    "no_evidence_visitors": 300,
+    "calls_scheduled_pass": 3,
+    "cold_sources": [
+      "v1",
+      "v2",
+      "v3",
+      "bio"
+    ]
+  },
+  "counts": {
+    "v1": {
+      "visitors": 150,
+      "cta_clicks": 40,
+      "signups": 9,
+      "answers": 4,
+      "qualified_leads": 0,
+      "calls_scheduled": 0
+    },
+    "v2": {
+      "visitors": 100,
+      "cta_clicks": 25,
+      "signups": 6,
+      "answers": 2,
+      "qualified_leads": 0,
+      "calls_scheduled": 0
+    },
+    "v3": {
+      "visitors": 50,
+      "cta_clicks": 12,
+      "signups": 3,
+      "answers": 1,
+      "qualified_leads": 0,
+      "calls_scheduled": 0
+    },
+    "bio": {
+      "visitors": 20,
+      "cta_clicks": 6,
+      "signups": 2,
+      "answers": 1,
+      "qualified_leads": 0,
+      "calls_scheduled": 0
+    },
+    "friends": {
+      "visitors": 30,
+      "cta_clicks": 20,
+      "signups": 12,
+      "answers": 10,
+      "qualified_leads": 8,
+      "calls_scheduled": 4
+    }
+  },
+  "declared": {
+    "calls_held": 0
+  }
+}

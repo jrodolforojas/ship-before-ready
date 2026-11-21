@@ -2,20 +2,136 @@
   "results": {
     "insufficient_sample": {
       "title": "Muestra insuficiente",
-      "detail": "Menos de 200 visitantes fríos y ningún lead calificado. Es un problema de distribución, no de la idea."
+      "detail": "Menos de {min_cold_visitors} visitantes fríos y ningún lead calificado. Es un problema de distribución, no de la idea."
     },
     "iterate_promise": {
       "title": "Iterar la promesa",
-      "detail": "200 o más visitantes fríos y registro bajo 5%."
+      "detail": "{min_cold_visitors} o más visitantes fríos y registro bajo {signup_rate_pass}."
     },
     "no_evidence": {
       "title": "Sin evidencia en este ángulo",
-      "detail": "300 visitantes fríos y cero leads calificados. Con 95% de confianza, menos del 1% se convertiría en lead."
+      "detail": "{no_evidence_visitors} visitantes fríos y cero leads calificados. Con 95% de confianza, menos del {upper_bound} se convertiría en lead."
     },
     "evidence_to_continue": {
       "title": "Evidencia para seguir",
-      "detail": "Tres llamadas agendadas con desconocidos."
+      "detail": "{calls_scheduled_pass} llamadas agendadas con desconocidos."
     }
   },
+  "reasons": {
+    "calls_scheduled_reached": "Hay {calls_scheduled} llamadas agendadas con desconocidos; la vara es {calls_scheduled_pass}.",
+    "no_qualified_leads": "Llegaron {visitors} visitantes fríos y ninguno es lead calificado; la vara es {no_evidence_visitors}.",
+    "signup_rate_below_gray_zone": "El registro del tráfico frío es {signup_rate}, bajo la zona gris, que va de {signup_rate_gray_min} a {signup_rate_pass}.",
+    "signup_rate_in_gray_zone": "El registro del tráfico frío es {signup_rate}: está en la zona gris, entre {signup_rate_gray_min} y {signup_rate_pass}, y sigue bajo la vara.",
+    "sample_below_minimum": "Llegaron {visitors} de los {min_cold_visitors} visitantes fríos que hacen falta, y ningún lead calificado.",
+    "sample_below_minimum_with_leads": "Leads calificados: {qualified_leads}. Pero hay solo {visitors} de los {min_cold_visitors} visitantes fríos que hacen falta y {calls_scheduled} de {calls_scheduled_pass} llamadas agendadas. Todavía falta distribución para opinar.",
+    "filter_passed_calls_pending": "El registro pasa el filtro ({signup_rate}), pero hay {calls_scheduled} de {calls_scheduled_pass} llamadas agendadas. El registro nunca basta solo: falta distribución para llegar a las llamadas."
+  },
+  "preconditions": {
+    "no_rules": "Todavía no hay reglas selladas. Corra primero /ship-before-ready:rules.",
+    "no_landing": "Todavía no hay una landing publicada en .sbr/landing.json. Corra primero /ship-before-ready:landing.",
+    "no_connections": "Falta .sbr/connections.json con el proyecto de PostHog. Corra primero /ship-before-ready:connect.",
+    "not_a_repo": "Esta carpeta no es un repo de git, y el sello de las reglas es un commit. Corra el veredicto en el repo donde selló las reglas.",
+    "posthog_sign_in": "No hay sesión de PostHog en Claude Code. Escriba /mcp, elija PostHog y siga los pasos en el navegador. Avíseme cuando termine.",
+    "query_failed": "La consulta a PostHog falló: {problem}. No doy un veredicto sin números."
+  },
+  "integrity": {
+    "unchanged": "Las reglas siguen como se sellaron el {date} (commit {commit}).",
+    "changed_title": "Las reglas cambiaron después del sello",
+    "changed_intro": "Se sellaron el {date} con el commit {commit}. Después hubo estos cambios:",
+    "commit_line": "{date} · commit {commit} · razón: {reason}",
+    "no_reason": "sin razón escrita",
+    "uncommitted": ".sbr/rules.md tiene además cambios sin commit.",
+    "key_line": "{label}: sellada en {sealed}, ahora {now}",
+    "applied_sealed": "El veredicto se lee con las varas selladas.",
+    "result_with_rules_now": "Con las varas de ahora, la respuesta sería: {result}."
+  },
+  "early_reading": "Todavía no es la fecha del veredicto ({date}). Esta es una lectura anticipada.",
+  "sections": {
+    "title": "Veredicto",
+    "answer": "Respuesta",
+    "numbers": "Números por origen",
+    "numbers_note": "Cada número cuenta personas distintas, no eventos. Solo el tráfico frío decide; amigos, comunidad y visitas sin etiqueta se muestran aparte. Las visitas de prueba (src=test) no se cuentan.",
+    "rates": "Tasas, cada una con su conteo",
+    "declared": "Dato declarado",
+    "rules": "Varas selladas",
+    "not_measured": "Lo que el veredicto no mide",
+    "review": "Revisión"
+  },
+  "table": {
+    "source": "Origen",
+    "group": "Grupo",
+    "visitors": "Visitantes únicos",
+    "cta_clicks": "Clic en el botón",
+    "signups": "Registros",
+    "answers": "Respuestas",
+    "qualified_leads": "Leads calificados",
+    "calls_scheduled": "Llamadas agendadas",
+    "cold_total": "Total frío",
+    "threshold": "Vara",
+    "value": "Valor"
+  },
+  "groups": {
+    "cold": "Frío",
+    "friends": "Amigos y comunidad",
+    "untagged": "Sin etiqueta",
+    "outside_rules": "Fuera de las reglas selladas"
+  },
+  "sources": {
+    "v1": "v1 (video de dolor)",
+    "v2": "v2 (video de top 3)",
+    "v3": "v3 (video de fundador)",
+    "bio": "bio (link del perfil)",
+    "friends": "friends",
+    "untagged": "sin etiqueta"
+  },
+  "rates": {
+    "cta_click_rate": "Clic sobre visitantes (solo diagnóstico)",
+    "signup_rate": "Registro sobre visitantes",
+    "answer_rate": "Respuestas sobre registros",
+    "format": "{rate} ({count} de {of})",
+    "no_base": "sin base ({count} de {of})",
+    "not_judged": "Las tasas no se juzgan todavía: la muestra no llega a {min_cold_visitors} visitantes fríos."
+  },
+  "thresholds": {
+    "min_cold_visitors": "Muestra mínima (visitantes fríos)",
+    "signup_rate_pass": "Filtro de registro",
+    "signup_rate_gray_min": "Inicio de la zona gris",
+    "no_evidence_visitors": "Sin evidencia (visitantes fríos sin leads)",
+    "calls_scheduled_pass": "Llamadas agendadas para seguir",
+    "cold_sources": "Tráfico frío",
+    "verdict_date": "Fecha de veredicto"
+  },
+  "declared": {
+    "question": "De las {calls_scheduled} llamadas agendadas con desconocidos, ¿cuántas ya hizo? Es un dato que solo usted conoce; lo anoto aparte de lo medido y no cambia la respuesta.",
+    "invalid": "Necesito un número entero entre 0 y {calls_scheduled}.",
+    "calls_held": "Llamadas realizadas: {calls_held}, según el builder. No se mide en PostHog y no cuenta para la respuesta."
+  },
+  "answers_table": {
+    "intro": "Estas son las respuestas, sin correo ni WhatsApp. Marqué cuáles cuentan un caso real; revíselas usted, porque ese juicio es mío y no de PostHog.",
+    "source": "Origen",
+    "current_solution": "Qué usa hoy",
+    "last_time": "Última vez y qué le costó",
+    "real_case": "¿Caso real?",
+    "why": "Por qué",
+    "yes": "Sí",
+    "no": "No",
+    "none": "Todavía no hay respuestas."
+  },
+  "not_measured": [
+    "Disposición a pagar. Aquí no se prueban precios: la evidencia más fuerte que se obtiene es de tiempo (una llamada), no de dinero. Eso se explora en las llamadas.",
+    "Si un mal resultado viene de la landing o del canal. Por eso la respuesta habla del ángulo, no de la idea.",
+    "Ideas que hay que ver funcionando para entenderlas, o con mucho riesgo de producto.",
+    "Ventas a empresas con ciclos largos.",
+    "Audiencias que no se alcanzan en línea en pocos días.",
+    "Si una respuesta cuenta un caso real lo juzga el modelo, no PostHog; el builder ve las respuestas crudas."
+  ],
+  "review": {
+    "approved": "Un revisor sin contexto, que solo vio los números y las varas, confirmó que sostienen la respuesta.",
+    "rejected": "El revisor sin contexto, que solo vio los números y las varas, no confirmó la respuesta:",
+    "finding": "{code}: {sentence}",
+    "retrying": "El revisor encontró un problema en los números; lo corrijo y vuelvo a revisar.",
+    "gave_up": "Tras tres rondas el revisor sigue sin confirmar la respuesta. Queda escrita con lo que encontró, y el veredicto queda como reviewer: pending."
+  },
+  "saved": "Guardé el veredicto en .sbr/verdict.md. No hice commit; usted decide cuándo.",
   "closing": "El veredicto informa; la decisión de seguir y el precio son del builder."
 }
