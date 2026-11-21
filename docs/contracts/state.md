@@ -19,9 +19,12 @@ Edit this file only on `main`.
 | `landing/` and `.sbr/landing.json` | `landing` | `video-scripts`, `verdict` | The Astro project and the record of its publication |
 | `.sbr/video-scripts.md` | `video-scripts` | `verdict` | Three scripts, each with its link |
 | `.sbr/verdict.md` | `verdict` | gate | The result and the numbers with their raw counts |
-| `.sbr/bypass.log` | gate | `verdict` | Date, file and reason of every bypass |
+| `.sbr/bypass.log` | gate | `verdict`, gate | Date, session, file and reason of every bypass |
 
+- The gate acts only in a project that has `.sbr/brief.md`.
 - The gate never blocks edits inside `.sbr/` or `landing/`.
+- The gate lets every edit through, silently, when `.sbr/verdict.md` has `result: evidence_to_continue`.
+- Once a reason is recorded in `.sbr/bypass.log`, the gate lets edits through for the rest of that session.
 - State is never stored in `CLAUDE_PLUGIN_ROOT`: that path changes with every plugin update.
 - `.sbr/` is committed with the repo and holds no secrets. It is never published: `landing` deploys with `--cwd landing`.
 - PostHog is read through the builder's sign-in, never with a key: the plugin declares PostHog's MCP server in its `.mcp.json` under the name `posthog`, and `connect` and `verdict` read through that session. No personal API key exists anywhere, and there is no `.env` file in `.sbr/`.
@@ -198,8 +201,19 @@ The landing URL is `url` in `.sbr/landing.json`. The body has one section per sc
 
 ## `.sbr/bypass.log`
 
-One line per bypass, tab-separated: timestamp, file the builder was about to edit, reason given.
+JSON Lines: one JSON object per line, one line per bypass. `scripts/bypass.mjs` appends the line after the builder gives a reason; nothing rewrites earlier lines.
+
+| Key | Value |
+|---|---|
+| `at` | Timestamp of the bypass |
+| `session_id` | Id of the Claude Code session in which the reason was given. A reason is valid for that whole session, and only for it |
+| `file` | File the agent was about to edit |
+| `reason` | The reason, in the builder's words |
+
+```json
+{"at":"2026-11-21T18:40:00Z","session_id":"<session id>","file":"<path>","reason":"<reason>"}
+```
 
 ## Plugin phrases
 
-Fixed phrases that the skills say to the builder live in the plugin, one file per skill: `locales/<locale>/<skill>.json` (`locales/es/connect.json`). Keys are in English. A skill reads the file of the brief's `locale` and falls back to `locales/es/<skill>.json`. Each file belongs to the step that owns that skill.
+Fixed phrases that the skills say to the builder live in the plugin, one file per skill: `locales/<locale>/<skill>.json` (`locales/es/connect.json`). Keys are in English. A skill reads the file of the brief's `locale` and falls back to `locales/es/<skill>.json`. Each file belongs to the step that owns that skill. The gate is not a skill but follows the same rule with `locales/<locale>/gate.json`, owned by step 7.

@@ -38,7 +38,7 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 | 4c | Página propia con el flujo completo | Espera a 4a y 4b |
 | 5 | Skill `video-scripts` | Aprobado; en curso |
 | 6 | Skill `verdict` | Por detallar |
-| 7 | Gate | Por detallar |
+| 7 | Gate | Aprobado; en curso |
 | 8 | Empaque y entrega | Por detallar |
 
 ## Registro
@@ -728,4 +728,37 @@ El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su p
 - Por confirmar con el usuario: que citar la estructura de Guillie Collado en un repo público no sea problema.
 
 **Fuera de este paso, por decisión previa:** renderizar video, publicar y configurar ManyChat de forma automática.
+
+### Paso 7 · Gate (aprobado)
+
+**Objetivo:** un freno que avisa cuando el builder va a escribir código de producto sin evidencia, y lo deja pasar si da una razón, que queda registrada.
+
+**Archivos (dueño):** `hooks/hooks.json`, `hooks/gate.mjs`, `scripts/bypass.mjs`, `locales/es/gate.json`.
+
+**Cómo se comporta**
+1. Hook `PreToolUse` sobre `Edit|Write|MultiEdit|NotebookEdit`.
+2. Solo actúa en proyectos que tienen `.sbr/brief.md`. En cualquier otra carpeta no hace nada.
+3. Nunca frena ediciones dentro de `.sbr/` ni de `landing/`.
+4. Si `.sbr/verdict.md` dice que hay evidencia para seguir, deja pasar en silencio.
+5. Si no, niega la edición y le explica al agente por qué: todavía no hay evidencia, y qué fase falta.
+6. El agente le pregunta la razón al builder y la registra con `scripts/bypass.mjs`, que escribe fecha, sesión, archivo y razón en `.sbr/bypass.log`.
+7. Con la razón registrada, las ediciones pasan durante el resto de esa sesión.
+
+**Decisiones**
+- El script va en Node, no en shell: leer la entrada del hook sin herramientas extra es frágil, y Node ya es requisito.
+- Una razón vale para toda la sesión: ni una por archivo ni una para siempre.
+
+**Aceptación (prueba de 10 minutos)**
+1. En una carpeta con brief y sin veredicto, pedir un cambio en un archivo de código lo frena con el aviso.
+2. Tras dar una razón, la edición pasa y `bypass.log` tiene la línea.
+3. Editar algo en `.sbr/` o en `landing/` nunca se frena.
+4. En una carpeta sin `.sbr/` no pasa nada.
+5. Con un veredicto de evidencia, pasa en silencio.
+
+**Dependencias:** 0b. En paralelo con todo lo demás.
+
+**Riesgos y por verificar**
+- Los campos que recibe el hook y la forma exacta de negar con una razón se comprueban en la documentación antes de escribir.
+- Si el hook tarda de más, Claude Code no frena: el script debe ser instantáneo.
+- Lo que el agente escribe desde la terminal no se detecta de forma confiable. Es un freno, no un candado.
 
