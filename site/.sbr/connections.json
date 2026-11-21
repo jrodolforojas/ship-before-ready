@@ -1,0 +1,10 @@
+{
+  "package_manager": "bun",
+  "posthog_region": "us",
+  "posthog_public_key": "phc_xq57t5PMjaqV5koo6zUUZFTmXHhWsKECsHhHYpNQHozC",
+  "posthog_project_id": "757910",
+  "vercel_project": "ship-before-ready",
+  "vercel_team": "jrodolforojas-projects",
+  "probe_url": "https://ship-before-ready.vercel.app",
+  "verified_at": "2026-11-21T19:47:42Z"
+}

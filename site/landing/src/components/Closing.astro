@@ -1,0 +1,9 @@
+---
+import { copy } from '../lib/copy';
+import FilledButton from './FilledButton.astro';
+---
+
+<div class="flex flex-col items-center gap-group text-center">
+  <h2 data-sbr="closing" tabindex="-1" class="font-display text-heading text-balance text-ink">{copy.closing}</h2>
+  <FilledButton hook="cta-closing" label={copy.cta} />
+</div>

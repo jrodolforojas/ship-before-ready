@@ -1,0 +1,7 @@
+---
+import { copy } from '../lib/copy';
+---
+
+<ol data-sbr="steps" class="mx-auto flex w-full max-w-prose list-inside list-decimal flex-col gap-group">
+  {copy.steps.map((step) => <li class="font-body text-body text-ink">{step}</li>)}
+</ol>

@@ -1,0 +1,66 @@
+---
+import { copy } from '../lib/copy';
+import Field from './Field.astro';
+import FilledButton from './FilledButton.astro';
+import Progress from './Progress.astro';
+import Screen from './Screen.astro';
+import ScreenTitle from './ScreenTitle.astro';
+---
+
+<Screen hook="screen-questions" titleHook="questions-title">
+  <Progress step={2} savedNote={copy.questions.saved} />
+  <ScreenTitle hook="questions-title" text={copy.questions.title} />
+  <form data-sbr="questions-form" novalidate class="flex flex-col gap-group">
+    <Field
+      hook="field-current-solution"
+      name="current_solution"
+      label={copy.questions.current_solution}
+      multiline
+      required
+      autocomplete="off"
+      maxlength="500"
+      rows="3"
+    />
+    <Field
+      hook="field-last-time"
+      name="last_time"
+      label={copy.questions.last_time}
+      multiline
+      required
+      autocomplete="off"
+      maxlength="500"
+      rows="3"
+    />
+    <div class="flex items-center gap-item">
+      <input
+        data-sbr="field-wants-call"
+        id="field-wants-call"
+        name="wants_call"
+        type="checkbox"
+        class="size-group shrink-0 accent-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+      />
+      <label for="field-wants-call" class="flex touch-target grow items-center font-body text-label text-ink-muted">{copy.questions.wants_call}</label>
+    </div>
+    <div data-sbr="call-group" hidden class="flex flex-col gap-group">
+      <Field
+        hook="field-whatsapp"
+        name="whatsapp"
+        label={copy.questions.whatsapp}
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        maxlength="30"
+      />
+      <Field
+        hook="field-time-slot"
+        name="time_slot"
+        label={copy.questions.time_slot}
+        type="text"
+        autocomplete="off"
+        maxlength="80"
+      />
+    </div>
+    <p data-sbr="questions-error" id="questions-error" role="alert" hidden class="font-body text-small text-danger">{copy.questions.error}</p>
+    <FilledButton hook="questions-submit" type="submit" label={copy.questions.submit} sendingLabel={copy.status.sending} />
+  </form>
+</Screen>

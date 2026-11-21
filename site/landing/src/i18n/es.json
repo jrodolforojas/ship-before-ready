@@ -1,0 +1,56 @@
+{
+  "lang": "es",
+  "brand": "Ship Before Ready",
+  "hero": {
+    "title": "Antes de escribir código, averigua si alguien lo quiere.",
+    "subtitle": "Ship Before Ready es un plugin de Claude Code que lleva tu idea a sus primeros leads antes de que escribas una línea."
+  },
+  "cta": "Quiero acceso anticipado",
+  "pains": [
+    "Pasaste semanas construyendo algo que nadie usó.",
+    "Tus amigos dijeron que la idea era buena y ninguno la usó.",
+    "Con AI construir es barato, pero construir lo equivocado sigue costando semanas."
+  ],
+  "steps": [
+    "Respondes tres preguntas incómodas.",
+    "Recibes una landing publicada y tres guiones de video listos para grabar.",
+    "Lees el veredicto y decides tú."
+  ],
+  "closing": "Averigua si alguien lo quiere antes de construirlo.",
+  "footer": {
+    "author": "Hecho por Rodolfo Rojas para el Dojo AI Hackathon.",
+    "privacy": "El correo se usa solo para avisar del lanzamiento y hacer una pregunta."
+  },
+  "progress": "Paso {current} de {total}",
+  "status": {
+    "sending": "Enviando…"
+  },
+  "email": {
+    "title": "¿A qué correo te avisamos?",
+    "label": "Correo electrónico",
+    "placeholder": "tu@correo.com",
+    "submit": "Enviar mi correo",
+    "privacy": "El correo se usa solo para avisar del lanzamiento y hacer una pregunta.",
+    "error": "No pudimos guardar tu correo. Revisa que esté bien escrito e inténtalo de nuevo."
+  },
+  "questions": {
+    "title": "Dos preguntas sobre tu caso",
+    "saved": "Tu correo ya quedó guardado.",
+    "current_solution": "¿Qué haces hoy antes de empezar a programar una idea nueva?",
+    "last_time": "¿Cuál fue el último proyecto que construiste y nadie usó, y cuánto tiempo te tomó?",
+    "wants_call": "¿Hablamos 15 minutos esta semana?",
+    "whatsapp": "Tu WhatsApp",
+    "time_slot": "Un horario que te quede bien",
+    "submit": "Enviar respuestas",
+    "error": "No pudimos enviar tus respuestas. Revisa que no falte ninguna e inténtalo de nuevo."
+  },
+  "done": {
+    "title": "Listo, ya estás en la lista.",
+    "notice": "Todavía no está disponible; se construye este fin de semana en el Dojo AI Hackathon y esta página es su propia prueba de demanda.",
+    "next": "Te avisaremos por correo cuando se lance; si pediste la llamada, te escribimos esta semana."
+  },
+  "meta": {
+    "title": "Ship Before Ready: de la idea a los primeros leads",
+    "description": "Plugin de Claude Code que lleva tu idea a sus primeros leads antes de escribir código: una landing, tres guiones de video y un veredicto con datos."
+  }
+}
