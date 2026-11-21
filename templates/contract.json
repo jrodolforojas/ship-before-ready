@@ -1274,7 +1274,17 @@
       "blocking": false
     }
   ],
+  "probe_event": {
+    "name": "sbr_probe",
+    "sent_by": "connect",
+    "properties": ["source", "probe_id"],
+    "source": "test",
+    "distinct_id": "probe_id"
+  },
   "event_properties": {
+    "probe_id": {
+      "type": "string"
+    },
     "source": {
       "type": "string",
       "values": ["v1", "v2", "v3", "friends", "test", "untagged"]

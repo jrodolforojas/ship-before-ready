@@ -11,6 +11,7 @@ Edit this file only on `main`.
 | `.sbr/connections.json` | `connect` | `design`, `landing`, `verdict` | Package manager, PostHog and Vercel connections. No secrets |
 | `.sbr/brief.md` | `interview` | `rules`, `design`, `video-scripts` | Header with the brief fields; body in the builder's language |
 | `.sbr/rules.md` | `rules` | `verdict`, gate | Thresholds, verdict date and the seal; the seal is a commit |
+| `.sbr/seal.json` | `rules` | `verdict` | Which commit sealed the rules, and when |
 | `.sbr/design/answers.md`, `.sbr/design/market.md`, `.sbr/design/concepts.md` | `design` | `design` | The four design answers (each marked given or derived), the market look, the three concepts |
 | `.sbr/sketches/{a,b,c}/tokens.json` and `.sbr/sketches/{a,b,c}/concept.md` | `design` | builder | One direction per letter |
 | `.sbr/design/tokens.json`, `.sbr/design/copy.<locale>.json`, `.sbr/design/system.md` | `design` | `landing` | The approved design system |
@@ -73,7 +74,20 @@ Reference file: [`templates/example/brief.md`](../../templates/example/brief.md)
 
 ## `.sbr/rules.md`
 
-Header keys: `sealed` (date of the seal; absent until sealed) and `verdict_date` (date the verdict is due). The thresholds go in the body. Step 3 fixes the rest of this file on `main` when it is detailed.
+Header keys: `sealed` (date of the seal; absent until sealed) and `verdict_date` (date the verdict is due). The thresholds go in the body, each with its source; the layout of the body belongs to `rules`.
+
+`rules` seals by committing `.sbr/rules.md` alone. That commit is the seal.
+
+### `.sbr/seal.json`
+
+A file cannot hold the hash of its own commit, and editing `rules.md` after the seal would look like a change of rules. So the seal is recorded apart: `rules` writes this file right after the seal commit and commits it on its own.
+
+| Key | Value |
+|---|---|
+| `sealed_at` | Timestamp of the seal |
+| `commit` | Full SHA of the commit that sealed `.sbr/rules.md` |
+
+Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `verdict` lists them with `git log <commit>..HEAD -- .sbr/rules.md` and shows them. Running `rules` again never rewrites `seal.json`.
 
 ## `.sbr/design/`
 

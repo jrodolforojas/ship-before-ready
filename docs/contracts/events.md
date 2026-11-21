@@ -2,7 +2,7 @@
 
 The landing emits these events and `verdict` reads them. Event names, property names and values do not change without updating this contract.
 
-Machine-readable copy: [`templates/contract.json`](../../templates/contract.json), keys `events` and `sources`. Edit this file only on `main`.
+Machine-readable copy: [`templates/contract.json`](../../templates/contract.json), keys `events`, `probe_event` and `sources`. Edit this file only on `main`.
 
 ## Events
 
@@ -47,6 +47,18 @@ Property names are the `name` of the form fields ([landing.md](landing.md#fields
 | Missing, empty or anything else | `untagged` | Counted apart; not cold traffic |
 
 The list is closed: a value outside it is recorded as `untagged`.
+
+## Probe event
+
+`connect` sends one event of its own to check the connection, before any landing exists.
+
+| Event | Sent by | Properties |
+|---|---|---|
+| `sbr_probe` | `connect`, once per run | `source`, `probe_id` |
+
+- `source` is always `test`.
+- `probe_id` is a random UUID created for that run. It is also the `distinct_id`, and `connect` looks the event up by it.
+- It is not one of the landing's five events. `verdict` never counts it.
 
 ## Sending
 

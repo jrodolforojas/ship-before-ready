@@ -52,11 +52,12 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 1b | `scripts/verify-design.mjs`, `verify-landing.mjs`, `capture.mjs`, `scripts/tests/*`, `guides/*`, `agents/design-reviewer.md`, `ATTRIBUTIONS.md` |
 | 1c | Composition styles and components inside `templates/landing/`, `templates/landing-tests/*` |
 | 2 | `site/**`, `scripts/configure-landing.mjs`; may fix `events.ts` |
+| 3 | `skills/connect/*`, `skills/interview/*`, `skills/rules/*`, `agents/brief-reviewer.md`, `templates/probe/*`, `.mcp.json` |
 | 4a | `skills/design/*` |
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |
 
-Not detailed in the plan yet: step 3 fills `skills/connect/*`, `skills/interview/*` and `skills/rules/*`; step 5 `skills/video-scripts/*`; step 6 `skills/verdict/*`; step 7 `hooks/`. Only steps 0 and 8 touch `.claude-plugin/`.
+Not detailed in the plan yet: step 5 fills `skills/video-scripts/*`; step 6 `skills/verdict/*`; step 7 `hooks/`. Only steps 0 and 8 touch `.claude-plugin/`.
 
 To try a skill before merging, open Claude Code with `claude --plugin-dir <worktree>`.
 
