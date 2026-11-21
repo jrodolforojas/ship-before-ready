@@ -1,0 +1,12 @@
+---
+interface Props {
+  hook: string;
+  titleHook: string;
+}
+
+const { hook, titleHook } = Astro.props;
+---
+
+<section data-sbr={hook} aria-labelledby={titleHook} hidden class="mx-auto flex form-column flex-col gap-block px-group py-block">
+  <slot />
+</section>

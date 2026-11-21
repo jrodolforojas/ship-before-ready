@@ -1,0 +1,20 @@
+---
+import { copy } from '../lib/copy';
+import Brand from './Brand.astro';
+
+interface Props {
+  step: number;
+  savedNote?: string;
+}
+
+const TOTAL_STEPS = 2;
+
+const { step, savedNote } = Astro.props;
+const stepText = copy.progress.replace('{current}', String(step)).replace('{total}', String(TOTAL_STEPS));
+---
+
+<div data-sbr="progress" class="flex flex-col gap-item">
+  <Brand />
+  <p class="font-body text-small text-ink-muted">{stepText}</p>
+  {savedNote && <p class="font-body text-small text-ink-muted">{savedNote}</p>}
+</div>

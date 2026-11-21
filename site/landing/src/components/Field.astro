@@ -1,0 +1,21 @@
+---
+interface Props {
+  hook: string;
+  name: string;
+  label: string;
+  multiline?: boolean;
+  [attribute: string]: unknown;
+}
+
+const { hook, name, label, multiline = false, ...attributes } = Astro.props;
+
+const controlClasses =
+  'touch-target w-full rounded-control border border-line bg-surface px-group py-item font-body text-body text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus aria-invalid:border-danger';
+---
+
+<div class="flex flex-col gap-item">
+  <label for={hook} class="font-body text-label text-ink-muted">{label}</label>
+  {multiline && <textarea data-sbr={hook} id={hook} name={name} class={controlClasses} {...attributes} />}
+  {!multiline && <input data-sbr={hook} id={hook} name={name} class={controlClasses} {...attributes} />}
+  <slot />
+</div>

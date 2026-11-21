@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/nvw27anjv6/static/:path(.*)",
+      "destination": "https://us-assets.i.posthog.com/static/:path"
+    },
+    {
+      "source": "/nvw27anjv6/array/:path(.*)",
+      "destination": "https://us-assets.i.posthog.com/array/:path"
+    },
+    {
+      "source": "/nvw27anjv6/:path(.*)",
+      "destination": "https://us.i.posthog.com/:path"
+    }
+  ]
+}
