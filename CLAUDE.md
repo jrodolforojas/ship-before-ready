@@ -14,7 +14,7 @@ The build plan is [docs/plan.md](docs/plan.md). It is a copy; it is only updated
 
 - The `description` of each skill is in Spanish; its `name` and its body are in English.
 - The language of a project is the `locale` key of the brief (`es` by default). A skill speaks to the builder in that language.
-- Fixed phrases of the plugin live in `locales/es.json`. No visible text lives in code: landing copy comes from `src/i18n/<locale>.json`.
+- Fixed phrases of the plugin live in `locales/<locale>/<skill>.json`, one file per skill (`locales/es/connect.json`). No visible text lives in code: landing copy comes from `src/i18n/<locale>.json`.
 
 ## Technology
 
@@ -36,6 +36,7 @@ No React, no Preact, no form library. The builder picks the package manager amon
 - [docs/contracts/tokens.md](docs/contracts/tokens.md): design variables, their Tailwind utilities, the `tokens.json` schema, color pair rules.
 - [docs/contracts/state.md](docs/contracts/state.md): state files in the builder's repo.
 - [docs/contracts/events.md](docs/contracts/events.md): PostHog events, properties and `src` values.
+- [docs/contracts/reviewers.md](docs/contracts/reviewers.md): answer format and codes of `brief-reviewer` and `script-reviewer`.
 - [templates/contract.json](templates/contract.json): the same names in a file that scripts read.
 
 **Contracts are edited only on `main`.** If a contract falls short, stop and report it; do not change it on your branch. Do not rename a file, hook, key, token, event or property without updating the contract.
@@ -46,7 +47,7 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 
 | Step | Owns |
 |---|---|
-| 0b (on `main`) | `docs/contracts/*`, `CLAUDE.md`, README, `templates/contract.json`, `templates/neutral-design/*`, `templates/example/*`, `locales/es.json`, renaming of the skills |
+| 0b (on `main`) | `docs/contracts/*`, `CLAUDE.md`, README, `templates/contract.json`, `templates/neutral-design/*`, `templates/example/*`, renaming of the skills |
 | 0c | `templates/canvas/*`, `scripts/fill-artboards.mjs`, `docs/design/compositions.md` |
 | 1 | `templates/landing/**`, `scripts/copy-template.mjs` |
 | 1b | `scripts/verify-design.mjs`, `verify-landing.mjs`, `capture.mjs`, `scripts/tests/*`, `guides/*`, `agents/design-reviewer.md`, `ATTRIBUTIONS.md` |
@@ -57,6 +58,8 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |
 | 5 | `skills/video-scripts/*`, `agents/script-reviewer.md` |
+
+Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6.
 
 Not detailed in the plan yet: step 6 fills `skills/verdict/*`; step 7 `hooks/`. Only steps 0 and 8 touch `.claude-plugin/`.
 

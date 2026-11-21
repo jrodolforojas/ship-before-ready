@@ -1,0 +1,23 @@
+{
+  "package_manager": {
+    "question": "¿Con qué gestor de paquetes quiere instalar la landing?",
+    "options": {
+      "bun": {
+        "label": "bun (recomendado)",
+        "description": "Es el valor por defecto. La plantilla ya trae su archivo de bloqueo."
+      },
+      "pnpm": {
+        "label": "pnpm",
+        "description": "Su archivo de bloqueo se genera en la primera instalación."
+      },
+      "npm": {
+        "label": "npm",
+        "description": "Su archivo de bloqueo se genera en la primera instalación."
+      },
+      "yarn": {
+        "label": "yarn",
+        "description": "Su archivo de bloqueo se genera en la primera instalación."
+      }
+    }
+  }
+}

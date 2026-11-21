@@ -24,13 +24,13 @@ Edit this file only on `main`.
 - The gate never blocks edits inside `.sbr/` or `landing/`.
 - State is never stored in `CLAUDE_PLUGIN_ROOT`: that path changes with every plugin update.
 - `.sbr/` is committed with the repo and holds no secrets. It is never published: `landing` deploys with `--cwd landing`.
-- PostHog is read through the builder's sign-in, never with a key: the plugin declares PostHog's MCP server in its `.mcp.json`, and `connect` and `verdict` read through that session. No personal API key exists anywhere, and there is no `.env` file in `.sbr/`.
+- PostHog is read through the builder's sign-in, never with a key: the plugin declares PostHog's MCP server in its `.mcp.json` under the name `posthog`, and `connect` and `verdict` read through that session. No personal API key exists anywhere, and there is no `.env` file in `.sbr/`.
 
 ## Conventions
 
 - JSON keys and header keys are `snake_case`, in English.
 - Timestamps are ISO 8601 in UTC (`2026-11-21T03:12:45Z`); dates are `YYYY-MM-DD`.
-- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. The only nested key is `questions` in the brief, indented two spaces.
+- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3]`). Only two keys are nested, indented two spaces: `questions` in the brief and `scripts` in the video scripts.
 - `<locale>` matches `^[a-z]{2}(-[A-Z]{2})?$`; the default is `es`.
 
 ## `.sbr/connections.json`
@@ -43,6 +43,7 @@ Edit this file only on `main`.
 | `posthog_project_id` | Project id, as a string |
 | `vercel_project` | Name of the Vercel project |
 | `vercel_team` | Team slug, or `null` for a personal account |
+| `probe_url` | URL of the probe page that `connect` published to check the Vercel connection |
 | `verified_at` | Timestamp of the last successful check |
 
 ## `.sbr/brief.md`
@@ -66,7 +67,7 @@ Body in the builder's language.
 
 | Key | Value |
 |---|---|
-| `reviewer` | `pending` or `approved`. Only the context-free reviewer sets `approved`; `design` does not run without it |
+| `reviewer` | `pending` or `approved`. It becomes `approved` only when `brief-reviewer` answers `approved` ([reviewers.md](reviewers.md)); `design` does not run without it |
 | `locale` | Language of the project: of the brief body, of the landing copy and of what the skills say to the builder |
 | `persona`, `pain`, `current_solution`, `promise` | One line each, in the builder's language |
 | `questions` | The three questions of screen 3, with the same keys as the copy file and the event properties |
@@ -75,7 +76,20 @@ Reference file: [`templates/example/brief.md`](../../templates/example/brief.md)
 
 ## `.sbr/rules.md`
 
-Header keys: `sealed` (date of the seal; absent until sealed) and `verdict_date` (date the verdict is due). The thresholds go in the body, each with its source; the layout of the body belongs to `rules`.
+The thresholds live in the header. The defaults come from the design document; the builder may adjust them before sealing.
+
+| Header key | Default | Value |
+|---|---|---|
+| `min_cold_visitors` | `200` | Cold visitors needed before rates are judged |
+| `signup_rate_pass` | `0.05` | Signups over cold visitors at or above which the filter passes |
+| `signup_rate_gray_min` | `0.038` | Lower bound of the gray zone, which ends at `signup_rate_pass` |
+| `no_evidence_visitors` | `300` | Cold visitors with no qualified lead that mean no evidence in this angle |
+| `calls_scheduled_pass` | `3` | Calls scheduled with strangers that mean evidence to continue |
+| `cold_sources` | `[v1, v2, v3]` | Values of `source` that count as cold traffic ([events.md](events.md#source)) |
+| `verdict_date` | None | Date the verdict is due |
+| `sealed` | Absent until sealed | Date of the seal |
+
+Rates are fractions: `0.05` is 5%. The body is in the builder's language.
 
 `rules` seals by committing `.sbr/rules.md` alone. That commit is the seal.
 
@@ -123,18 +137,54 @@ Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `
 
 Header key `result`, one of:
 
-| `result` | Phrase in `locales/<locale>.json` |
+| `result` | Phrase in `locales/<locale>/verdict.json` |
 |---|---|
-| `insufficient_sample` | `verdict.results.insufficient_sample` |
-| `iterate_promise` | `verdict.results.iterate_promise` |
-| `no_evidence` | `verdict.results.no_evidence` |
-| `evidence_to_continue` | `verdict.results.evidence_to_continue` |
+| `insufficient_sample` | `results.insufficient_sample` |
+| `iterate_promise` | `results.iterate_promise` |
+| `no_evidence` | `results.no_evidence` |
+| `evidence_to_continue` | `results.evidence_to_continue` |
 
 The body carries the numbers, every rate next to its raw count. Step 6 fixes the rest of this file on `main` when it is detailed.
 
 ## `.sbr/video-scripts.md`
 
-Three scripts. Each one names its link: the landing URL with `?src=v1`, `?src=v2` or `?src=v3` ([events.md](events.md#source)).
+```markdown
+---
+reviewer: pending
+locale: es
+friends_link: "<landing url>?src=friends"
+scripts:
+  - id: v1
+    angle: <identifier>
+    link: "<landing url>?src=v1"
+  - id: v2
+    angle: <identifier>
+    link: "<landing url>?src=v2"
+  - id: v3
+    angle: <identifier>
+    link: "<landing url>?src=v3"
+---
+
+## v1
+
+Script in the builder's language.
+
+## v2
+
+## v3
+```
+
+| Header key | Value |
+|---|---|
+| `reviewer` | `pending` or `approved`. It becomes `approved` only when `script-reviewer` answers `approved` ([reviewers.md](reviewers.md)) |
+| `locale` | Language of the scripts |
+| `friends_link` | The landing URL with `?src=friends` |
+| `scripts` | List of exactly three items, in the order `v1`, `v2`, `v3` |
+| `id` | `v1`, `v2` or `v3`. It is also the `src` of its link ([events.md](events.md#source)) |
+| `angle` | An identifier in English. The three are different |
+| `link` | The landing URL with `?src=<id>` |
+
+The landing URL is `url` in `.sbr/landing.json`. The body has one section per script, titled with its `id`.
 
 ## `.sbr/bypass.log`
 
@@ -142,4 +192,4 @@ One line per bypass, tab-separated: timestamp, file the builder was about to edi
 
 ## Plugin phrases
 
-Fixed phrases that the skills say to the builder live in `locales/<locale>.json` in the plugin, with English keys. A skill reads the file of the brief's `locale` and falls back to `locales/es.json`.
+Fixed phrases that the skills say to the builder live in the plugin, one file per skill: `locales/<locale>/<skill>.json` (`locales/es/connect.json`). Keys are in English. A skill reads the file of the brief's `locale` and falls back to `locales/es/<skill>.json`. Each file belongs to the step that owns that skill.
