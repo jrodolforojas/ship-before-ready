@@ -46,6 +46,7 @@ const CONTRAST_LARGE = 3;
 const CONTRAST_TEXT = 4.5;
 const FORM_WIDTH_PX = [300, 500];
 const PIXEL_TOLERANCE = 0.5;
+const FALLBACK_BODY_PX = 16;
 const OVERFLOW_HEIGHTS = { 375: 667, 768: 1024, 1024: 768, 1440: 900 };
 const MEASURED_HOOKS = ['title', 'subtitle', 'cta', 'notice', 'email-form', 'questions-form'];
 const TEST_SOURCE = 'test';
@@ -379,11 +380,11 @@ const isInsideViewport = (rect, state) =>
   rect.right <= state.innerWidth + PIXEL_TOLERANCE &&
   rect.bottom <= state.innerHeight + PIXEL_TOLERANCE;
 
-function firstViewProblems(state, label) {
+function firstViewProblems(state) {
   return ['title', 'subtitle', 'cta'].flatMap((hook) => {
     const rect = state.rects[hook];
-    if (!rect) return [`${label}: ${hook} is not drawn`];
-    return problemIf(!isInsideViewport(rect, state), `${label}: ${hook} does not fit in the first view (it ends at ${Math.round(rect.bottom)} px of ${state.innerHeight})`);
+    if (!rect) return [`${hook} is not drawn`];
+    return problemIf(!isInsideViewport(rect, state), `${hook} does not fit in the first view (it ends at ${Math.round(rect.bottom)} px of ${state.innerHeight})`);
   });
 }
 
@@ -391,13 +392,12 @@ function contrastOf(entry) {
   return contrastOfLuminances(relativeLuminance(entry.color), relativeLuminance(entry.background));
 }
 
-function contrastProblems(state, label) {
-  const problems = state.texts.flatMap((entry) => {
+function contrastProblems(state) {
+  return state.texts.flatMap((entry) => {
     const needed = entry.fontSize >= LARGE_TEXT_PX ? CONTRAST_LARGE : CONTRAST_TEXT;
     const ratio = contrastOf(entry);
-    return problemIf(ratio < needed, `${label}: "${entry.text}" in ${entry.name} is ${formatRatio(ratio)}:1, needs ${needed}:1`);
+    return problemIf(ratio < needed, `"${entry.text}" in ${entry.name} is ${formatRatio(ratio)}:1, needs ${needed}:1`);
   });
-  return [...new Set(problems)];
 }
 
 function gapBetween(first, second) {
@@ -406,57 +406,60 @@ function gapBetween(first, second) {
   return Math.hypot(across, down);
 }
 
-function targetProblems(state, label) {
+function targetProblems(state) {
   const small = state.targets
     .filter((target) => target.right - target.left < MIN_TARGET_PX - PIXEL_TOLERANCE || target.bottom - target.top < MIN_TARGET_PX - PIXEL_TOLERANCE)
-    .map((target) => `${label}: ${target.name} is ${round(target.right - target.left)}×${round(target.bottom - target.top)} px, needs ${MIN_TARGET_PX}×${MIN_TARGET_PX}`);
+    .map((target) => `${target.name} is ${round(target.right - target.left)}×${round(target.bottom - target.top)} px, needs ${MIN_TARGET_PX}×${MIN_TARGET_PX}`);
   const crowded = state.targets.flatMap((first, index) =>
     state.targets
       .slice(index + 1)
       .filter((second) => gapBetween(first, second) < MIN_TARGET_GAP_PX - PIXEL_TOLERANCE)
-      .map((second) => `${label}: ${first.name} and ${second.name} are ${round(gapBetween(first, second))} px apart, need ${MIN_TARGET_GAP_PX}`),
+      .map((second) => `${first.name} and ${second.name} are ${round(gapBetween(first, second))} px apart, need ${MIN_TARGET_GAP_PX}`),
   );
   return [...small, ...crowded];
 }
 
-function overflowProblems(state, label) {
+function overflowProblems(state) {
   return [
-    ...problemIf(state.scrollWidth > state.innerWidth, `${label}: the page scrolls sideways (${state.scrollWidth} px in a ${state.innerWidth} px window)`),
-    ...[...new Set(state.clipped)].map((name) => `${label}: text is cut in ${name}`),
+    ...problemIf(state.scrollWidth > state.innerWidth, `the page scrolls sideways (${state.scrollWidth} px in a ${state.innerWidth} px window)`),
+    ...[...new Set(state.clipped)].map((name) => `text is cut in ${name}`),
   ];
 }
 
-function formWidthProblems(state, label, hook) {
+function formWidthProblems(state, hook, isDesktop) {
   const rect = state.rects[hook];
-  if (!rect) return [`${label}: ${hook} is not drawn`];
+  if (!rect) return [`${hook} is not drawn`];
   const width = rect.right - rect.left;
   const [min, max] = FORM_WIDTH_PX;
-  const isDesktop = state.innerWidth >= 768;
-  return problemIf(width > max + PIXEL_TOLERANCE || (isDesktop && width < min - PIXEL_TOLERANCE), `${label}: ${hook} is ${round(width)} px wide, needs ${min} to ${max}`);
+  return problemIf(width > max + PIXEL_TOLERANCE || (isDesktop && width < min - PIXEL_TOLERANCE), `${hook} is ${round(width)} px wide, needs ${min} to ${max}`);
 }
 
-function noticeProblems(state, label) {
+function noticeProblems(state) {
   const rect = state.rects.notice;
-  if (!rect) return [`${label}: notice is not drawn`];
+  if (!rect) return ['notice is not drawn'];
   const text = state.texts.find((entry) => entry.name === 'notice');
-  const bodySize = Number.isFinite(state.bodyFontSize) ? state.bodyFontSize : 16;
+  const bodySize = Number.isFinite(state.bodyFontSize) ? state.bodyFontSize : FALLBACK_BODY_PX;
   return [
-    ...problemIf(!isInsideViewport(rect, state), `${label}: the notice does not fit in the first view of the final screen`),
-    ...problemIf(text.fontSize < bodySize - PIXEL_TOLERANCE, `${label}: the notice is ${text.fontSize} px, smaller than the body (${bodySize} px)`),
-    ...problemIf(contrastOf(text) < CONTRAST_TEXT, `${label}: the notice is ${formatRatio(contrastOf(text))}:1, needs ${CONTRAST_TEXT}:1`),
+    ...problemIf(!isInsideViewport(rect, state), 'the notice does not fit in the first view of the final screen'),
+    ...problemIf(text.fontSize < bodySize - PIXEL_TOLERANCE, `the notice is ${text.fontSize} px, smaller than the body (${bodySize} px)`),
+    ...problemIf(contrastOf(text) < CONTRAST_TEXT, `the notice is ${formatRatio(contrastOf(text))}:1, needs ${CONTRAST_TEXT}:1`),
   ];
+}
+
+function addProblems(session, id, view, messages) {
+  session.problems[id].push(...messages.map((message) => ({ view, message })));
 }
 
 function recordDrawnState(session, state, number, viewport) {
-  const label = `${viewport.width}×${viewport.height} screen ${number}`;
-  const { problems } = session;
-  problems.R13.push(...contrastProblems(state, label));
-  problems.R18.push(...targetProblems(state, label));
-  problems.R19.push(...overflowProblems(state, label));
-  if (number === 1) problems.R3.push(...firstViewProblems(state, label));
-  if (number === 2) problems.R20.push(...formWidthProblems(state, label, 'email-form'));
-  if (number === 3) problems.R20.push(...formWidthProblems(state, label, 'questions-form'));
-  if (number === 4 && viewport.width < 768) problems.R25.push(...noticeProblems(state, label));
+  const view = `${viewport.width}×${viewport.height} screen ${number}`;
+  const isDesktop = viewport.width >= session.contract.desktop_breakpoint_px;
+  addProblems(session, 'R13', view, contrastProblems(state));
+  addProblems(session, 'R18', view, targetProblems(state));
+  addProblems(session, 'R19', view, overflowProblems(state));
+  if (number === 1) addProblems(session, 'R3', view, firstViewProblems(state));
+  if (number === 2) addProblems(session, 'R20', view, formWidthProblems(state, 'email-form', isDesktop));
+  if (number === 3) addProblems(session, 'R20', view, formWidthProblems(state, 'questions-form', isDesktop));
+  if (number === 4 && !isDesktop) addProblems(session, 'R25', view, noticeProblems(state));
 }
 
 async function captureFirstViews(session) {
@@ -473,14 +476,14 @@ async function captureFirstViews(session) {
 }
 
 async function measureOtherWidths(session) {
-  const { client, contract, problems } = session;
+  const { client, contract } = session;
   const firstViewWidths = contract.viewports.first_view.map((viewport) => viewport.width);
   const widths = contract.viewports.overflow_widths.filter((width) => !firstViewWidths.includes(width));
   for (const width of widths) {
     for (const screen of contract.screens) {
       await openScreen(session, screen.number, { width, height: OVERFLOW_HEIGHTS[width] ?? 900 });
       const state = await evaluate(client, inPage(measureState, MEASURED_HOOKS));
-      problems.R19.push(...overflowProblems(state, `${width} px screen ${screen.number}`));
+      addProblems(session, 'R19', `${width} px screen ${screen.number}`, overflowProblems(state));
     }
   }
 }
@@ -553,29 +556,32 @@ async function filledSubmit(session, { submit, error, nextScreen }) {
 }
 
 async function measureFlow(session) {
-  const { client, contract, problems } = session;
+  const { client, contract } = session;
   const desktop = contract.viewports.first_view.at(-1);
+  const add = (id, messages) => addProblems(session, id, '', messages);
   await openScreen(session, 1, desktop);
-  problems.R22.push(...(await keyboardProblems(session, 1)));
-  problems.R22.push(...(await hoverProblems(session, 'cta')));
+  add('R22', await keyboardProblems(session, 1));
+  add('R22', await hoverProblems(session, 'cta'));
   await evaluate(client, inPage(clickHook, 'cta'));
   await delay(SETTLE_MS);
-  if ((await evaluate(client, inPage(readScreen))) !== '2') await openScreen(session, 2, desktop);
-  if (!session.forcedScreens.has(2)) problems.R22.push(...(await titleFocusProblems(session, 2, 'email-title')));
-  problems.R22.push(...(await keyboardProblems(session, 2)));
-  problems.R21.push(...(await emptySubmitProblems(session, { submit: 'email-submit', field: 'email-field', error: 'email-error', screen: 2 })));
+  const didCtaAdvance = (await evaluate(client, inPage(readScreen))) === '2';
+  add('R22', problemIf(!didCtaAdvance, 'the button of the first screen does not open the email screen'));
+  if (!didCtaAdvance) await openScreen(session, 2, desktop);
+  if (didCtaAdvance) add('R22', await titleFocusProblems(session, 2, 'email-title'));
+  add('R22', await keyboardProblems(session, 2));
+  add('R21', await emptySubmitProblems(session, { submit: 'email-submit', field: 'email-field', error: 'email-error', screen: 2 }));
   await typeInto(client, 'email-field', SAMPLE_EMAIL);
   const emailOutcome = await filledSubmit(session, { submit: 'email-submit', error: 'email-error', nextScreen: 3 });
-  problems.R24.push(...problemIf(emailOutcome === 'stuck', 'a valid email neither advances to the questions nor shows an error'));
+  add('R24', problemIf(emailOutcome === 'stuck', 'a valid email neither advances to the questions nor shows an error'));
   if (emailOutcome !== 'advanced') await openScreen(session, 3, desktop);
-  if (emailOutcome === 'advanced') problems.R22.push(...(await titleFocusProblems(session, 3, 'questions-title')));
-  problems.R22.push(...(await keyboardProblems(session, 3)));
-  problems.R21.push(...(await emptySubmitProblems(session, { submit: 'questions-submit', field: 'field-current-solution', error: 'questions-error', screen: 3 })));
+  if (emailOutcome === 'advanced') add('R22', await titleFocusProblems(session, 3, 'questions-title'));
+  add('R22', await keyboardProblems(session, 3));
+  add('R21', await emptySubmitProblems(session, { submit: 'questions-submit', field: 'field-current-solution', error: 'questions-error', screen: 3 }));
   await typeInto(client, 'field-current-solution', SAMPLE_ANSWER);
   await typeInto(client, 'field-last-time', SAMPLE_ANSWER);
   const answersOutcome = await filledSubmit(session, { submit: 'questions-submit', error: 'questions-error', nextScreen: 4 });
-  problems.R24.push(...problemIf(answersOutcome === 'stuck', 'valid answers neither advance to the final screen nor show an error'));
-  if (answersOutcome === 'advanced') problems.R22.push(...(await titleFocusProblems(session, 4, 'done-title')));
+  add('R24', problemIf(answersOutcome === 'stuck', 'valid answers neither advance to the final screen nor show an error'));
+  if (answersOutcome === 'advanced') add('R22', await titleFocusProblems(session, 4, 'done-title'));
 }
 
 const PASS_DETAILS = {
@@ -590,9 +596,19 @@ const PASS_DETAILS = {
   R25: 'the notice fits in the first view of the final screen at body size and 4.5:1',
 };
 
+function problemsByMessage(problems) {
+  const views = new Map();
+  problems.forEach(({ view, message }) => views.set(message, [...(views.get(message) ?? []), view]));
+  return [...views].map(([message, seenIn]) => {
+    const where = [...new Set(seenIn.filter(Boolean))];
+    if (where.length === 0) return message;
+    return `${where[0]}: ${message}${where.length > 1 ? ` (and ${where.length - 1} more)` : ''}`;
+  });
+}
+
 function reportOf(session) {
   const report = createReport(session.contract, 'capture');
-  Object.entries(PASS_DETAILS).forEach(([id, passDetail]) => record(report, id, [...new Set(session.problems[id])], passDetail));
+  Object.entries(PASS_DETAILS).forEach(([id, passDetail]) => record(report, id, problemsByMessage(session.problems[id]), passDetail));
   return report;
 }
 

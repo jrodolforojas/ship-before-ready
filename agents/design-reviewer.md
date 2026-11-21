@@ -67,9 +67,10 @@ After the rows you may add up to five notes about things visibly broken that are
 
 ## Output
 
-One line per requirement you decide, in the shape the scripts use: the id, the status and the detail, separated by tabs. The status is `pass`, `fail` or `skip`. A `fail` names every problem and quotes the words or names the image it is about, with problems separated by `; `. Use `skip` only for a requirement you were not given the files for. Quote copy as it is written; write everything else in English.
+The first line is `approved` or `rejected`, alone, like the other reviewers of the plugin: `rejected` when any requirement fails. Then one line per requirement you decide, in the shape the scripts use: the id, the status and the detail, separated by tabs. The status is `pass`, `fail` or `skip`. A `fail` names every problem and quotes the words or names the image it is about, with problems separated by `; `. Use `skip` only for a requirement you were not given the files for. Quote copy as it is written; write everything else in English.
 
 ```text
+rejected
 R27	fail	pains[2] says "ahorra 40% de tu tiempo": 40% is not in the brief
 R31	pass	the headline names validating an idea before building it; subtitle, pains, steps and closing trace to the brief; system.md was not given, so its citations were not checked
 ```
@@ -77,6 +78,7 @@ R31	pass	the headline names validating an idea before building it; subtitle, pai
 In mode `page`, add the two phrases after the rows:
 
 ```text
+rejected
 R7	pass	headline, then button, then subtitle at both sizes
 R6	fail	screen-2-375x667-gray.png: the privacy line reads as strong as the label of the field
 audience: builders who start coding an idea before knowing if anyone wants it
