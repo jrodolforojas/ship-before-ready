@@ -60,6 +60,7 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 5 | `skills/video-scripts/*`, `agents/script-reviewer.md`, `locales/es/video-scripts.json` |
 | 6 | `skills/verdict/*`, `agents/verdict-reviewer.md`, `locales/es/verdict.json` |
 | 7 | `hooks/hooks.json`, `hooks/gate.mjs`, `scripts/bypass.mjs`, `locales/es/gate.json` |
+| 8 (once every other step is merged) | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `README.md`, `assets/icon.*` |
 
 Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6. The gate is not a skill but has its own file, `gate.json`, owned by step 7.
 

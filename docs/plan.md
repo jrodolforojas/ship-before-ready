@@ -3,7 +3,7 @@
 # Plan de construcción: Ship Before Ready
 
 Actualizado el 2026-11-20
-Estado: parte web aprobada y en ejecución; pasos 3, 5, 6, 7 y 8 pendientes de detalle
+Estado: todos los pasos aprobados; la demo, el pitch y la entrega en Dojo los lleva el usuario en otra sesión
 Fuente de verdad del alcance: [docs/designs/ship-before-ready.md](../designs/ship-before-ready.md)
 Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 
@@ -39,7 +39,7 @@ Entrega: domingo 22 de noviembre de 2026, 23:59 (hora de Costa Rica)
 | 5 | Skill `video-scripts` | Aprobado; en curso |
 | 6 | Skill `verdict` | Aprobado; en curso |
 | 7 | Gate | Aprobado; en curso |
-| 8 | Empaque y entrega | Por detallar |
+| 8 | Empaque en GitHub | Aprobado; espera a que todo esté fusionado |
 
 ## Registro
 
@@ -801,4 +801,23 @@ El plugin declara el servidor de PostHog (`https://mcp.posthog.com/mcp`) en su p
 
 Las llamadas realizadas no se pueden medir en PostHog: la skill se las pregunta al builder y las anota como dato declarado, aparte de los medidos.
 
+### Paso 8 · Empaque en GitHub (aprobado)
 
+**Objetivo:** que el repo quede completo y bien en GitHub: cualquiera instala Ship Before Ready en dos comandos y entiende qué hace leyendo el README.
+
+**Fuera de este paso:** el video de demo, el pitch y la entrega en Dojo. Los lleva el usuario en otra sesión.
+
+**Archivos (dueño):** `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `README.md`, `assets/icon.*`. Corre cuando todos los demás pasos están fusionados en `main`.
+
+**Procedimiento**
+1. Resolver las dos advertencias de `claude plugin validate --strict`: el ícono y el `CLAUDE.md` en la raíz, sin perder las reglas para las sesiones de desarrollo. Subir la versión a `1.0.0`.
+2. README en español: qué es en una frase; para quién; los siete comandos en orden con una línea cada uno; requisitos (Claude Code, Node 22.23.4 o superior, cuentas de Vercel y PostHog, plan con Claude Design para los bocetos); instalación en dos comandos; qué no hace; privacidad; atribuciones.
+3. Prueba de instalación limpia: en una sesión nueva y una carpeta vacía, `/plugin marketplace add jrodolforojas/ship-before-ready` y `/plugin install ship-before-ready@ship-before-ready`, y correr `connect` hasta el primer punto de espera.
+4. Quitar del repo lo que no deba publicarse (worktrees, archivos de prueba sueltos) y dejar `main` limpio.
+
+**Aceptación**
+1. `claude plugin validate --strict` pasa sin advertencias.
+2. La instalación limpia funciona en una sesión nueva.
+3. El README se entiende sin haber visto esta conversación.
+
+**Riesgos:** si `CLAUDE.md` en la raíz se empaqueta con el plugin; formato y tamaño del ícono.
