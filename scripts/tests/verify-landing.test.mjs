@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { appendFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import { CHECKED_BY } from '../verify-design.mjs';
 import {
@@ -12,8 +14,17 @@ import {
   textOf,
   verifyLanding,
 } from '../verify-landing.mjs';
-import { SCRIPTS, contract, exampleCopy, idsWithStatus, neutralTokens, rowOf, runScript, tempDir, withChange } from './helpers.mjs';
-import { PAGE_CSS, PAGE_SCRIPT, SKELETON_FILES, renderPage, writeLanding, writeTemplate } from './landing-fixture.mjs';
+import { SCRIPTS, contract, exampleCopy, idsWithStatus, neutralTokens, rowOf, runScript, tempDir, withChange, writeFiles } from './helpers.mjs';
+import {
+  PAGE_CSS,
+  PAGE_SCRIPT,
+  SKELETON_FILES,
+  builtFiles,
+  landingVerifierWithFixtureTemplate,
+  renderPage,
+  writeLanding,
+  writeTemplate,
+} from './landing-fixture.mjs';
 
 const LANDING_ROWS = contract.requirement_ids.filter((id) => CHECKED_BY[id].includes('landing'));
 const templateDir = writeTemplate();
@@ -208,17 +219,34 @@ test('the CSS reader keeps the context of nested rules and survives data URLs', 
 });
 
 test('the command exits 0 on the fixture, 1 on a failure and 2 on a folder it cannot check', () => {
-  const passing = runScript(SCRIPTS.landing, [writeLanding()]);
-  assert.equal(passing.code, 0);
+  const command = landingVerifierWithFixtureTemplate();
+  const passing = runScript(command, [writeLanding()]);
+  assert.equal(passing.code, 0, passing.stdout);
   assert.equal(passing.rows.length, 32);
-  const failing = runScript(SCRIPTS.landing, [writeLanding(edited('name="theme-color" content="#FAFAFA"', 'name="theme-color" content="#000000"'))]);
+  assert.equal(rowOf(passing.rows, 'R28').status, 'pass');
+  const failing = runScript(command, [writeLanding(edited('name="theme-color" content="#FAFAFA"', 'name="theme-color" content="#000000"'))]);
   assert.equal(failing.code, 1);
   assert.deepEqual(idsWithStatus(failing.rows, 'fail'), ['R30']);
-  assert.equal(runScript(SCRIPTS.landing, []).code, 2);
-  assert.equal(runScript(SCRIPTS.landing, [`${tempDir()}/missing`]).code, 2);
-  const notBuilt = runScript(SCRIPTS.landing, [writeTemplate(undefined, { 'src/data/tokens.json': neutralTokens(), 'src/i18n/es.json': exampleCopy() })]);
+  assert.equal(runScript(command, []).code, 2);
+  assert.equal(runScript(command, [`${tempDir()}/missing`]).code, 2);
+  const notBuilt = runScript(command, [writeTemplate(undefined, { 'src/data/tokens.json': neutralTokens(), 'src/i18n/es.json': exampleCopy() })]);
   assert.equal(notBuilt.code, 2);
   assert.match(notBuilt.stderr, /build the landing first/);
+});
+
+test('a copy made by copy-template.mjs --example, with the fixture page as its build, passes R28 against the real template until a component changes', () => {
+  const projectDir = join(tempDir(), 'landing');
+  const copied = runScript(SCRIPTS.copyTemplate, [projectDir, '--example']);
+  assert.equal(copied.code, 0, copied.stderr);
+  writeFiles(projectDir, builtFiles());
+  const verified = runScript(SCRIPTS.landing, [projectDir]);
+  assert.equal(verified.code, 0, verified.stdout);
+  assert.equal(rowOf(verified.rows, 'R28').status, 'pass');
+
+  appendFileSync(join(projectDir, 'src/components/Hero.astro'), '\n');
+  const changed = runScript(SCRIPTS.landing, [projectDir]);
+  assert.deepEqual(idsWithStatus(changed.rows, 'fail'), ['R28']);
+  assert.match(rowOf(changed.rows, 'R28').detail, /src\/components\/Hero\.astro differs from the template/);
 });
 
 test('the fixture skeleton stays free of per-builder files', () => {
