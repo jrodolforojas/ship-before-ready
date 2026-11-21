@@ -1,0 +1,112 @@
+{
+  "missing": {
+    "brief": "No encuentro .sbr/brief.md. Corra primero /ship-before-ready:interview.",
+    "brief_pending": "El brief todavía no está aprobado por su revisor. Termine /ship-before-ready:interview antes de escribir los guiones.",
+    "landing": "No encuentro la URL publicada en .sbr/landing.json. Los guiones llevan links a la landing: corra primero /ship-before-ready:landing.",
+    "product_name": "¿Cómo se llama el producto? Solo lo voy a nombrar al cierre de cada video."
+  },
+  "resume": {
+    "approved": "Ya hay tres guiones aprobados en .sbr/video-scripts.md. ¿Quiere rehacerlos o cambiar alguno? Si cambian, vuelven a pasar por el revisor.",
+    "pending": "Hay guiones sin aprobar en .sbr/video-scripts.md. Sigo desde ahí."
+  },
+  "visits": {
+    "title": "Visitantes por link hasta ahora:",
+    "row": "{source}: {visitors}",
+    "sources": {
+      "bio": "Link del perfil (bio)",
+      "v1": "Video 1 (v1)",
+      "v2": "Video 2 (v2)",
+      "v3": "Video 3 (v3)",
+      "friends": "Amigos y comunidad (friends)"
+    },
+    "unavailable": "No pude leer PostHog en esta sesión, así que no muestro las visitas por link. Los guiones no dependen de eso."
+  },
+  "smp": {
+    "intro": "Un video, una idea. Antes de escribir, esto es lo único que dirá cada video. El SMP 1 es la idea en una sola frase; el SMP 2 es la lista de lo único que se va a decir. Lo que no esté en la lista no entra, y si una idea necesita dos frases, son dos videos.",
+    "videos": {
+      "v1": "v1 · El dolor: «¿Le ha pasado que…?»",
+      "v2": "v2 · Tres errores comunes",
+      "v3": "v3 · Usted a cámara"
+    },
+    "founder_story": "El tercer video es usted a cámara, en su voz. Cuénteme en dos o tres líneas por qué le importa este problema: qué le pasó a usted. Si prefiere no contarlo, lo escribo solo con lo que dice el brief.",
+    "confirm": "¿Los escribo así, o cambia alguno?"
+  },
+  "document": {
+    "smp1": "SMP 1",
+    "smp2": "SMP 2",
+    "parts": {
+      "reveal": "Reveal",
+      "build_up": "Build up",
+      "value": "Value",
+      "call_to_action": "Call to action"
+    },
+    "reveal": {
+      "visual": "Visual",
+      "headline": "Titular en pantalla",
+      "line": "Frase"
+    },
+    "call_to_action": {
+      "profile": "Link en el perfil",
+      "profile_link": "Link para poner en el perfil",
+      "comment": "Palabra para comentar",
+      "message": "Mensaje para quien comenta"
+    },
+    "extras": {
+      "subtitles": "Subtítulos",
+      "safe_zone": "Zona segura",
+      "description": "Descripción"
+    },
+    "search_terms": "Palabras clave",
+    "call_to_action_note": "Grabe una de las dos formas, no las dos. La palabra para comentar sirve si usted usa una herramienta de respuestas automáticas como ManyChat; este plugin no la configura: usted pega ahí el mensaje.",
+    "subtitles_note": "El video lleva subtítulos siempre. Estas son las líneas, tal como se dicen. Los subtítulos del cierre son la forma de la llamada a la acción que usted grabe.",
+    "safe_zone_note": "Mantenga el titular en pantalla y los subtítulos en el centro del cuadro: lejos del borde superior, del borde inferior donde la aplicación pone la descripción y de la columna de botones de la derecha.",
+    "links": {
+      "title": "Links",
+      "bio": "Perfil, uno solo para los tres videos: {link}",
+      "video": "{id}, para el mensaje por palabra clave o para anuncios: {link}",
+      "friends": "Amigos y comunidad, que el veredicto cuenta aparte: {link}",
+      "warning": "A sus amigos y a su comunidad páseles solo el link de amigos. Si entran por el del perfil o por el de un video, sus visitas cuentan como tráfico frío."
+    },
+    "sources": {
+      "title": "Fuentes",
+      "lines": [
+        "La estructura de estos guiones (una sola idea por video, o SMP; reveal, build up, value y call to action) y los tres tipos de video se los enseñó Guillie Collado al autor de Ship Before Ready. Es una enseñanza directa: no está verificada en una fuente pública.",
+        "Las guías públicas para creadores de TikTok, Meta y Google respaldan dos cosas que estos guiones hacen: abrir dejando claro de qué va el video y cerrar con una llamada a la acción clara.",
+        "Desviación deliberada: Meta recomienda mostrar la marca al inicio. Aquí el producto todavía no existe y se nombra solo al cierre."
+      ]
+    }
+  },
+  "review": {
+    "written": "Escribí los tres guiones en .sbr/video-scripts.md. Ahora los lee un revisor que no sabe nada de esta conversación.",
+    "rejected": "El revisor leyó solo los guiones y encontró esto:",
+    "findings": {
+      "smp_not_one_sentence": "El SMP 1 no cabe en una sola frase",
+      "outside_smp": "El guion dice algo fuera del SMP 2",
+      "reveal_incomplete": "Al reveal le falta una pieza",
+      "value_before_build_up": "El valor aparece antes del build up",
+      "product_before_cta": "El producto aparece antes de la llamada a la acción",
+      "claims_it_exists": "Habla como si el producto ya existiera",
+      "price": "Menciona un precio",
+      "invented_figure": "Usa una cifra o un testimonio que nadie midió ni dijo"
+    },
+    "fixing": "Lo corrijo y se los vuelvo a pasar.",
+    "stopped": "El revisor rechazó los guiones tres veces, así que me detengo. Quedan sin aprobar y esto es lo que falta:",
+    "stopped_next": "Dígame cómo quiere resolver cada punto y vuelva a correr /ship-before-ready:video-scripts."
+  },
+  "request": {
+    "warning": "Eso rompe una regla de los guiones: {rule}. Lo escribo como usted lo pide y dejo que el revisor decida.",
+    "rules": {
+      "claims_it_exists": "el producto todavía no existe y los guiones no pueden decir que ya está disponible",
+      "price": "los guiones no mencionan precios",
+      "invented_figure": "los guiones no usan cifras ni testimonios que nadie midió ni dijo",
+      "product_before_cta": "el producto se nombra solo en la llamada a la acción"
+    },
+    "reverted": "El revisor lo rechazó, así que dejé el guion como estaba antes de ese cambio."
+  },
+  "done": {
+    "title": "Guiones aprobados",
+    "detail": "Son tres videos, cada uno con una sola idea. El producto aparece solo al cierre y como acceso anticipado.",
+    "links": "Sus links están al final de .sbr/video-scripts.md: uno para el perfil, uno por video y uno para amigos.",
+    "next": "Grabe y publique los videos usted mismo; el plugin no publica nada. Cuando llegue la fecha del veredicto, corra /ship-before-ready:verdict."
+  }
+}
