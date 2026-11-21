@@ -1,0 +1,11 @@
+{
+  "name": "ship-before-ready",
+  "description": "Lleva a un builder de su idea a sus primeros leads antes de escribir código: tres preguntas, una landing publicada, tres guiones de video, lectura de números y un veredicto.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Rodolfo Rojas"
+  },
+  "homepage": "https://github.com/jrodolforojas/ship-before-ready",
+  "repository": "https://github.com/jrodolforojas/ship-before-ready",
+  "license": "MIT"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ship-before-ready",
+  "description": "Marketplace de Ship Before Ready: de la idea a los primeros leads antes de escribir código.",
+  "owner": {
+    "name": "Rodolfo Rojas"
+  },
+  "plugins": [
+    {
+      "name": "ship-before-ready",
+      "source": "./",
+      "description": "Lleva a un builder de su idea a sus primeros leads antes de escribir código."
+    }
+  ]
+}
