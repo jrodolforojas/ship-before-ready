@@ -1,0 +1,11 @@
+---
+import { copy } from '../lib/copy';
+---
+
+<ul data-sbr="pains" class="mx-auto flex w-full max-w-prose flex-col gap-group">
+  {
+    copy.pains.map((pain) => (
+      <li class="rounded-card border border-line bg-surface p-group font-body text-body text-ink shadow-card">{pain}</li>
+    ))
+  }
+</ul>

@@ -1,0 +1,17 @@
+---
+interface Props {
+  hook: string;
+  label: string;
+  type?: 'button' | 'submit';
+  sendingLabel?: string;
+}
+
+const { hook, label, type = 'button', sendingLabel } = Astro.props;
+---
+
+<button
+  data-sbr={hook}
+  type={type}
+  data-sending-label={sendingLabel}
+  class="inline-flex touch-target items-center justify-center rounded-control bg-accent px-group py-item font-body text-button text-on-accent transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:opacity-80 disabled:opacity-60"
+>{label}</button>
