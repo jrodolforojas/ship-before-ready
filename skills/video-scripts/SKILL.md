@@ -203,7 +203,11 @@ Say `done.title` and `done.detail`, then for each video one line with its id, it
 
 Any change to an approved file sets `reviewer: pending` again and goes through step 4.
 
-If the builder asks for a line that breaks a rule (that the product is available, a price, an unmeasured figure, the product before the close), do not argue and do not refuse: say `request.warning` with the matching `request.rules.<code>`, write it as asked, and let the reviewer answer. When the reviewer rejects it, show the finding, put the script back as it was before that change, say `request.reverted`, and review again. That rejection does not count toward the three rounds.
+If the builder asks for a line that breaks a rule (that the product is available, a price, an unmeasured figure, the product before the close), do not argue and do not refuse. Follow these steps in order:
+
+1. Before touching the file, say `request.warning` once per broken rule, with `{rule}` replaced by the matching `request.rules.<code>`. This message is required even when you expect the reviewer to reject the change.
+2. Keep the current text of the parts you will change in this conversation; do not copy files to keep it. Write the change as asked, with `reviewer: pending`, and run the check.
+3. Run one review round (step 4). If the reviewer rejects it, show the findings, put those parts back exactly as they were, say `request.reverted`, and review again. These rounds do not count toward the three.
 
 ## 6. Visits per link
 
