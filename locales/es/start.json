@@ -1,0 +1,41 @@
+{
+  "welcome": "Bienvenido a Ship Before Ready. Antes de escribir una línea de código, vamos a averiguar si alguien quiere lo que usted piensa construir. Yo lo llevo paso a paso; usted decide cuándo seguir.",
+  "journey": {
+    "title": "El recorrido tiene siete fases:",
+    "phases": {
+      "connect": "Conexiones",
+      "interview": "Problema e idea",
+      "rules": "Reglas",
+      "design": "Diseño",
+      "landing": "Landing",
+      "video-scripts": "Guiones de video",
+      "verdict": "Veredicto"
+    },
+    "about": {
+      "connect": "comprobar su gestor de paquetes, Vercel y PostHog",
+      "interview": "definir el problema con fuentes y armar el Lean Canvas",
+      "rules": "fijar y sellar las varas y la fecha del veredicto antes de lanzar",
+      "design": "elegir e iterar el diseño de la landing en Claude Design",
+      "landing": "programar, verificar y publicar la landing aprobada",
+      "video-scripts": "escribir tres guiones de video, cada uno con su link",
+      "verdict": "leer los números y ver qué dicen frente a las varas"
+    }
+  },
+  "resume": {
+    "title": "Así va su idea:"
+  },
+  "status": {
+    "done": "hecho",
+    "pending": "pendiente"
+  },
+  "next": {
+    "ask": "Sigue {phase}: {about}. ¿Empezamos?",
+    "out_of_order": "Para eso primero hace falta terminar {phase}.",
+    "manual": "No puedo abrir esa fase desde aquí. Córrala usted con {command} y, al terminar, vuelva a /ship-before-ready:start."
+  },
+  "after": {
+    "done": "{phase} quedó lista.",
+    "not_done": "{phase} todavía no está completa: {missing}",
+    "verdict": "Ese es el veredicto con los números de hoy. Seguir o no, y cuánto cobrar, lo decide usted. Puede volver a correrlo cuando haya más visitas."
+  }
+}

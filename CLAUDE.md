@@ -63,7 +63,7 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 7 | `hooks/hooks.json`, `hooks/gate.mjs`, `scripts/bypass.mjs`, `locales/es/gate.json` |
 | 8 (once every other step is merged) | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `README.md`, `assets/icon.*`, and `CLAUDE.md` to resolve the validator's warning about it at the plugin root |
 
-Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6. The gate is not a skill but has its own file, `gate.json`, owned by step 7.
+Each `locales/<locale>/<skill>.json` belongs to the step that owns that skill: `connect`, `interview` and `rules` to step 3, `design` to 4a, `landing` to 4b, `video-scripts` to 5, `verdict` to 6. The gate is not a skill but has its own file, `gate.json`, owned by step 7. The entry skill `skills/start/*` and `locales/es/start.json` only route to the other skills and never do a phase's work.
 
 Only steps 0 and 8 touch `.claude-plugin/`.
 
