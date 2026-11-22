@@ -1364,5 +1364,34 @@
   },
   "requirement_ids": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "R16", "R17", "R18", "R19", "R20", "R21", "R22", "R23", "R24", "R25", "R26", "R27", "R28", "R29", "R30", "R31", "R32"],
   "requirement_statuses": ["pass", "fail", "skip"],
-  "verdict_results": ["insufficient_sample", "iterate_promise", "no_evidence", "evidence_to_continue"]
+  "verdict_results": ["insufficient_sample", "iterate_promise", "no_evidence", "evidence_to_continue"],
+  "problem_components": [
+    { "key": "trigger", "id_letter": "T", "questions": [1, 2, 3] },
+    { "key": "frequency", "id_letter": "F", "questions": [4, 5, 6] },
+    { "key": "relevance", "id_letter": "R", "questions": [7, 8] },
+    { "key": "viability", "id_letter": "V", "questions": [9, 10] }
+  ],
+  "claim_statuses": ["supported", "contradicted", "no_source", "own_experience", "other_context"],
+  "claim_statuses_with_a_page": ["supported", "contradicted", "other_context"],
+  "source_types": ["study", "official_data", "news", "collaborative_index", "own_research"],
+  "third_party_source_types": ["study", "official_data", "news", "collaborative_index"],
+  "statement_max_characters": 480,
+  "canvas_blocks": {
+    "required": ["problem", "segments", "alternatives", "uvp", "solution"],
+    "invited": ["channels", "key_metrics", "unfair_advantage"],
+    "builder_only": ["cost_structure", "revenue_streams"]
+  },
+  "brief_finding_codes": [
+    "persona",
+    "pain",
+    "current_solution",
+    "promise",
+    "questions",
+    "statement_names_solution",
+    "statement_too_long",
+    "statement_without_source",
+    "claim_without_status",
+    "quote_does_not_support",
+    "segment_not_single"
+  ]
 }

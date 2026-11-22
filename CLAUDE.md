@@ -54,6 +54,7 @@ Each step of the plan runs in its own session and, except 0b, in its own worktre
 | 1c | Composition styles and components inside `templates/landing/`, `templates/landing-tests/*` |
 | 2 | `site/**`, `scripts/configure-landing.mjs`; may fix `events.ts` |
 | 3 | `skills/connect/*`, `skills/interview/*`, `skills/rules/*`, `agents/brief-reviewer.md`, `templates/probe/*`, `.mcp.json` |
+| 3b (alone, after every other step) | `skills/interview/*`, `agents/brief-reviewer.md`, `locales/es/interview.json`, `templates/example/{brief,problem,lean-canvas}.md`, and the brief, problem and canvas sections of `docs/contracts/state.md`, `docs/contracts/reviewers.md` and `templates/contract.json` |
 | 4a | `skills/design/*` |
 | 4b | `skills/landing/*` |
 | 4c | `site/**`, and fixes in any folder because it is the only design session open |

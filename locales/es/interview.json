@@ -1,56 +1,222 @@
 {
-  "intro": "Son tres preguntas, una a la vez. Sirven las respuestas concretas: una persona, un caso, un costo.",
+  "welcome": "Bienvenido a Ship Before Ready. Antes de diseñar o construir nada vamos a dejar por escrito dos cosas: el problema, con fuentes que lo respalden, y su Lean Canvas. De ahí sale el brief que usa el resto del proceso. Tarda entre 20 y 40 minutos y lo puede retomar donde lo deje.",
+  "rule": "Una sola regla por ahora: primero el problema. Todavía no hablamos de su solución, de la app ni de funciones.",
+  "how": "Le pregunto una cosa a la vez. \"No sé\" es una respuesta válida: lo anoto y lo investigo yo.",
   "resume": {
     "approved": "Ya hay un brief aprobado en .sbr/brief.md. ¿Quiere rehacerlo? Si lo cambia, vuelve a pasar por el revisor.",
-    "pending": "Hay un brief sin aprobar en .sbr/brief.md. Sigo desde ahí."
-  },
-  "questions": {
-    "persona": {
-      "ask": "¿Quién exactamente tiene este problema? Deme una persona real o un caso real: quién es, qué hace y qué le pasa si el problema no se resuelve.",
-      "push": "\"{vague}\" es una categoría, no una persona: a una categoría no se le puede escribir un correo. Nombre a una persona o un caso real que usted conozca: quién es, qué hace y cuándo le pasó esto."
-    },
-    "current_solution": {
-      "ask": "¿Qué hace hoy esa persona para resolverlo, aunque sea mal? ¿Qué le cuesta ese arreglo: horas, dinero, errores?",
-      "push": "Eso todavía no me dice qué hace hoy ni qué le cuesta. Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. Describa el arreglo actual, por malo que sea, y un costo que se pueda contar."
-    },
-    "promise": {
-      "ask": "¿Qué cambia para esa persona? Dígalo en una frase que ella misma repetiría, con sus palabras y no con las de un folleto.",
-      "push": "\"{vague}\" es cómo lo diría quien lo vende, no quien lo usa. ¿Qué diría esa persona al contárselo a un colega? Una frase, sin lista de funciones."
+    "approved_without_problem": "Ese brief se hizo antes de que existieran la declaración del problema y el Lean Canvas, así que rehacerlo empieza por el problema.",
+    "in_progress": "Hay una entrevista a medias en .sbr/. Sigo desde donde quedó: {where}.",
+    "where": {
+      "problem": "{component}, pregunta {question}",
+      "sources": "las fuentes de {component}",
+      "statement": "la declaración del problema",
+      "canvas": "el Lean Canvas",
+      "brief": "el brief",
+      "review": "la revisión del brief"
     }
+  },
+  "problem": {
+    "opener": "Antes de crear la idea, ¿cuál es el problema? Recuerde que su idea debe resolver un problema o un dolor de un grupo de personas específico.",
+    "opener_push": "\"{vague}\" describe una solución, no un problema. ¿Qué le pasa a quién, sin nombrar lo que usted quiere construir?",
+    "solution_reminder": "Eso ya es la solución; la anoto para el canvas y sigo con el problema.",
+    "dont_know": "Anotado como \"no sé\". Lo investigo al cerrar este componente.",
+    "title": "Problema: {topic}",
+    "components": {
+      "trigger": {
+        "title": "Detonador",
+        "intro": "Empezamos por el detonador: qué hace que alguien note el problema."
+      },
+      "frequency": {
+        "title": "Frecuencia",
+        "intro": "Sigue la frecuencia: qué tan seguido pasa y a cuánta gente."
+      },
+      "relevance": {
+        "title": "Relevancia",
+        "intro": "Sigue la relevancia: cuánto duele y cuánto cuesta."
+      },
+      "viability": {
+        "title": "Viabilidad",
+        "intro": "Por último la viabilidad: qué implica resolverlo y si hoy se puede. Aquí hablamos de resolver el problema en general, todavía no de su producto."
+      }
+    },
+    "questions": {
+      "1": {
+        "ask": "¿Cuál es el evento o accionable que activa la percepción del problema?"
+      },
+      "2": {
+        "ask": "¿Se presenta cuando se está en un lugar o momento específico?"
+      },
+      "3": {
+        "ask": "¿Depende o es una reacción de una condición previa?"
+      },
+      "4": {
+        "ask": "¿Cuántas veces sucede u ocurre el detonador?"
+      },
+      "5": {
+        "ask": "¿Cuántas personas son afectadas?"
+      },
+      "6": {
+        "ask": "¿Sucede de forma periódica, constante o con estacionalidad?"
+      },
+      "7": {
+        "ask": "¿Qué tanto es el dolor de los afectados o potenciales clientes?"
+      },
+      "8": {
+        "ask": "¿Hay una magnitud del impacto económico o social de ese problema?"
+      },
+      "9": {
+        "ask": "¿Cuáles son las implicaciones de generar una solución?"
+      },
+      "10": {
+        "ask": "¿Qué posibilidad hay de generar una solución satisfactoria con los conocimientos actuales?"
+      }
+    }
+  },
+  "sources": {
+    "ask": "¿Tiene fuentes para lo que respondió en {component}? Sirven investigaciones propias (no es observación, ni percepción), investigaciones de terceros, noticias, estudios, encuestas, estudios cuantitativos o cualitativos, libros, o cualquier otra fuente de evidencia consultada. Pegue los links que tenga; lo que falte lo busco yo.",
+    "searching": "Busco fuentes para cada afirmación de {component}. Solo cito páginas que abrí, con la frase exacta que respalda el dato.",
+    "table_title": "Fuentes",
+    "table_intro": "Esto es lo que encontré para {component}:",
+    "columns": [
+      "#",
+      "Afirmación",
+      "Estado",
+      "Tipo de fuente",
+      "Fuente",
+      "Frase exacta"
+    ],
+    "statuses": {
+      "supported": "respaldada",
+      "contradicted": "contradicha",
+      "no_source": "sin fuente",
+      "own_experience": "experiencia propia",
+      "other_context": "fuente de otro contexto"
+    },
+    "types": {
+      "study": "estudio",
+      "official_data": "dato oficial",
+      "news": "noticia",
+      "collaborative_index": "índice colaborativo",
+      "own_research": "investigación propia"
+    },
+    "no_type": "—",
+    "found_by_skill": "(dato que encontré yo, no lo dijo usted)",
+    "contradicted_note": "{id} quedó contradicha: la fuente dice otra cosa. Usted decide si corrige la afirmación o la deja así, marcada.",
+    "no_source_note": "Las afirmaciones \"sin fuente\" quedan anotadas y no detienen nada, pero no pueden sostener la declaración del problema.",
+    "unreachable_note": "No pude volver a abrir estos links para comprobar la frase; ábralos usted antes de confiar en ellos: {links}",
+    "confirm": "¿Confirma esta tabla? Puede corregir una afirmación, quitarla o darme una fuente mejor."
+  },
+  "statement": {
+    "title": "Declaración del problema",
+    "pending": "Pendiente: se escribe al cerrar los cuatro componentes.",
+    "intro": "Con eso escribo la declaración del problema: tres o cuatro líneas, con datos, y sin la solución.",
+    "show": "Propuesta de declaración:",
+    "based_on": "Se apoya en: {claims}.",
+    "confirm": "¿La aprueba así? Puede pedirme cambios; lo único que no puede entrar es la solución.",
+    "blocked_no_source": "Todavía no puedo dar por buena la declaración: ninguno de sus datos está respaldado por una fuente de terceros. Sin eso sería una opinión. Podemos buscar otra fuente, o usted puede traer una (un estudio, un dato oficial, una noticia).",
+    "names_solution": "Esa versión nombra la solución, y la declaración solo describe el problema. La reescribo sin ella.",
+    "approved": "Declaración aprobada. Quedó en .sbr/problem.md con sus fuentes."
+  },
+  "canvas": {
+    "title": "Lean Canvas: {topic}",
+    "intro": "Ahora sí: el Lean Canvas, un bloque a la vez. El bloque del problema ya está: es la declaración que acaba de aprobar.",
+    "pending": "Pendiente",
+    "chosen_mark": "(elegido para esta prueba)",
+    "sections": {
+      "problem": "Problema",
+      "segments": "Segmentos de clientes",
+      "alternatives": "Alternativas actuales",
+      "uvp": "Propuesta de valor única",
+      "solution": "Solución",
+      "channels": "Canales",
+      "key_metrics": "Métricas clave",
+      "unfair_advantage": "Ventaja competitiva",
+      "cost_structure": "Estructura de costos (solo para usted)",
+      "revenue_streams": "Fuentes de ingresos (solo para usted)"
+    },
+    "problem_sources": "Las fuentes están en .sbr/problem.md.",
+    "questions": {
+      "segments": {
+        "ask": "¿Quiénes tienen este problema? Liste todos los segmentos que vea: para cada uno, quién es, en qué situación está y qué busca.",
+        "push": "\"{vague}\" es una categoría, no un segmento: a una categoría no se le puede escribir un correo. Diga quién es, en qué situación está y cuándo le pasa esto."
+      },
+      "chosen_segment": {
+        "ask": "El canvas guarda todos, pero esta prueba le habla a uno solo. ¿Con cuál segmento empieza?",
+        "push": "Tiene que ser uno solo: la landing y los guiones le hablan a una persona. ¿Cuál?"
+      },
+      "alternatives": {
+        "ask": "Pensando en {segment}: ¿qué hace hoy esa persona para resolverlo, aunque sea mal? Para cada alternativa dígame qué le cuesta y qué la frustra, con las palabras que ella usaría.",
+        "push": "Me falta {missing}. Describa el arreglo actual, por malo que sea, un costo que se pueda contar y una queja tal como ella la diría.",
+        "push_nothing": "Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. ¿Qué hace cuando le pasa, aunque sea aguantarse o resolverlo mal, y qué le cuesta?"
+      },
+      "uvp": {
+        "ask": "¿Qué cambia para esa persona? Dígalo en una frase que ella misma repetiría, con sus palabras y no con las de un folleto.",
+        "push": "\"{vague}\" es cómo lo diría quien lo vende, no quien lo usa. ¿Qué diría esa persona al contárselo a un colega? Una frase, sin lista de funciones."
+      },
+      "solution": {
+        "ask": "Ahora sí, la solución: ¿qué es y cuáles son las tres cosas principales que hace para esa persona?",
+        "push": "Necesito algo que esa persona pueda imaginar usando: qué es y hasta tres cosas que hace."
+      },
+      "channels": {
+        "ask": "¿Por dónde piensa llegar a ese segmento? Si todavía no lo sabe, lo dejo pendiente."
+      },
+      "key_metrics": {
+        "ask": "¿Qué números le dirían que esto funciona? Si todavía no lo sabe, lo dejo pendiente."
+      },
+      "unfair_advantage": {
+        "ask": "¿Tiene algo difícil de copiar o de comprar? Si no, lo dejo pendiente; es normal al principio."
+      },
+      "builder_only": {
+        "ask": "Quedan estructura de costos y fuentes de ingresos. Son solo para usted: no opino sobre ellos y no llegan a la landing ni a los guiones. ¿Quiere anotarlos ahora o los deja para después?"
+      }
+    },
+    "invited_pending": "Lo dejo pendiente; no detiene nada.",
+    "builder_only_saved": "Anotado tal como lo dijo, solo para usted.",
+    "written": "El canvas quedó en .sbr/lean-canvas.md."
   },
   "brief": {
     "title": "Brief: {name}",
     "sections": {
+      "problem": "Problema",
       "persona": "Persona",
       "pain": "Dolor",
       "current_solution": "Arreglo actual",
       "promise": "Promesa",
+      "receives": "Qué recibe",
       "questions": "Preguntas para el visitante",
       "limits": "Límites"
     },
+    "problem_sources": "Declaración aprobada por el builder; las fuentes están en .sbr/problem.md.",
     "limits": [
       "Todavía no existe: la landing lo dice.",
       "No fija, sugiere ni prueba precios.",
       "No decide por el builder: con el veredicto y su propio criterio, él decide si sigue."
     ],
-    "written": "Escribí el brief en .sbr/brief.md. Ahora lo lee un revisor que no sabe nada de esta conversación."
+    "written": "Escribí el brief en .sbr/brief.md. Ahora un revisor que no sabe nada de esta conversación lee el brief, el problema y el canvas."
   },
   "review": {
-    "rejected": "El revisor leyó solo el brief y no pudo decir esto:",
+    "rejected": "El revisor leyó solo los archivos y encontró esto:",
     "fields": {
       "persona": "Quién es el usuario",
       "pain": "Qué le duele",
       "current_solution": "Qué hace hoy y qué le cuesta",
       "promise": "Qué promete el producto",
-      "questions": "Qué preguntan las tres preguntas para el visitante"
+      "questions": "Qué preguntan las tres preguntas para el visitante",
+      "statement_names_solution": "La declaración del problema nombra la solución",
+      "statement_too_long": "La declaración no cabe en cuatro líneas",
+      "statement_without_source": "La declaración no trae un dato con fuente de terceros",
+      "claim_without_status": "Una afirmación sin estado, o sin su link o su frase",
+      "quote_does_not_support": "Una frase citada no dice lo que la afirmación dice",
+      "segment_not_single": "No hay un solo segmento elegido para esta prueba"
     },
-    "ask_again": "Se lo pregunto de nuevo, una cosa a la vez.",
+    "ask_again": "Lo arreglamos una cosa a la vez.",
     "stopped": "El revisor rechazó el brief tres veces, así que me detengo. El brief queda sin aprobar y esto es lo que falta:",
-    "stopped_next": "Cuando tenga esas respuestas, vuelva a correr /ship-before-ready:interview."
+    "stopped_next": "Cuando tenga esas respuestas, vuelva a correr /ship-before-ready:interview; sigue desde aquí."
   },
   "done": {
     "title": "Brief aprobado",
-    "detail": "El revisor, sin más contexto que el brief, pudo decir quién es el usuario, qué le duele y qué hace hoy.",
+    "detail": "El revisor, sin más contexto que los archivos, pudo decir quién es el usuario, qué le duele y qué hace hoy, y comprobó que la declaración del problema tiene fuente y no nombra la solución.",
+    "files": "Quedaron tres archivos: .sbr/problem.md (el problema y sus fuentes), .sbr/lean-canvas.md y .sbr/brief.md.",
     "next": "Lo que sigue: /ship-before-ready:rules."
   }
 }

@@ -6,7 +6,7 @@ Edit this file only on `main`.
 
 | Agent | File | Receives | Called by | Owner |
 |---|---|---|---|---|
-| `brief-reviewer` | `agents/brief-reviewer.md` | `.sbr/brief.md` | `interview` | Step 3 |
+| `brief-reviewer` | `agents/brief-reviewer.md` | `.sbr/brief.md`, `.sbr/problem.md` and `.sbr/lean-canvas.md` | `interview` | Steps 3 and 3b |
 | `script-reviewer` | `agents/script-reviewer.md` | `.sbr/video-scripts.md` | `video-scripts` | Step 5 |
 | `verdict-reviewer` | `agents/verdict-reviewer.md` | Only the numbers and the thresholds of the verdict | `verdict` | Step 6 |
 
@@ -29,7 +29,7 @@ The skill writes `reviewer: approved` in the header of its file (`.sbr/brief.md`
 
 ## Codes of `brief-reviewer`
 
-Each code is the header key of the brief that falls short.
+The first five are the header key of the brief that falls short.
 
 | Code | The reader cannot tell |
 |---|---|
@@ -38,6 +38,17 @@ Each code is the header key of the brief that falls short.
 | `current_solution` | What the user does today and what it costs |
 | `promise` | What the product promises |
 | `questions` | What the three questions for the visitor ask |
+
+The other six are about `.sbr/problem.md` and `.sbr/lean-canvas.md`.
+
+| Code | Finding |
+|---|---|
+| `statement_names_solution` | The problem statement names or describes the product or a solution |
+| `statement_too_long` | The problem statement does not fit in four lines |
+| `statement_without_source` | The problem statement carries no figure backed by a third-party source, or carries a figure that no cited sentence gives |
+| `claim_without_status` | A claim of a sources table has no status, or lacks the link or the exact sentence its status needs |
+| `quote_does_not_support` | The sentence quoted for a `supported` claim does not say what the claim says |
+| `segment_not_single` | There is not exactly one segment chosen for this test, or the `persona` of the brief is not that segment |
 
 ## Codes of `script-reviewer`
 

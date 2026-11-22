@@ -15,15 +15,20 @@ questions:
 
 Ship Before Ready es un plugin de Claude Code que lleva al builder de la elaboración de la idea a sus primeros leads, antes de escribir código.
 
+## Problema
+
+Programar con AI ya es lo normal: el 84% de quienes respondieron la encuesta de desarrolladores de Stack Overflow de 2025 usa o piensa usar herramientas de AI. Lo que no cambió es el riesgo de construir algo que nadie quiere: cuando CB Insights analizó 101 relatos de startups que fracasaron, la razón más citada, por el 42%, fue la falta de una necesidad de mercado para su producto.
+
+Declaración aprobada por el builder; las fuentes están en .sbr/problem.md.
+
 ## Persona
 
-Un builder que programa sus propios productos con Claude Code. Tiene una idea nueva y la capacidad de construirla en días; lo que no tiene es evidencia de que alguien la quiera.
+Un builder que programa solo sus propios productos con Claude Code. Tiene una idea nueva y la capacidad de construirla en días; lo que no tiene es evidencia de que alguien la quiera. Es el segmento elegido para esta prueba; los demás están en .sbr/lean-canvas.md.
 
 ## Dolor
 
-- Pasó semanas construyendo algo que nadie usó.
-- Sus amigos dijeron que la idea era buena y ninguno la usó.
-- Con AI construir es barato, pero construir lo equivocado sigue costando semanas.
+- "Pasé semanas construyendo algo que después nadie usó."
+- "Mis amigos me dijeron que la idea era buena y ninguno la usó."
 
 ## Arreglo actual
 
@@ -35,7 +40,7 @@ Antes de escribir código, averigua si alguien lo quiere.
 
 ## Qué recibe
 
-1. Responde tres preguntas incómodas.
+1. Declara el problema con fuentes y arma su Lean Canvas.
 2. Recibe una landing publicada y tres guiones de video listos para grabar.
 3. Lee el veredicto y decide él.
 
@@ -57,4 +62,4 @@ Antes de escribir código, averigua si alguien lo quiere.
 
 ## Pendiente del revisor
 
-Este brief todavía no pasó por el revisor sin contexto. Falta ponerle nombre a la persona y un costo medido al arreglo actual; ambos salen del interrogatorio.
+Este brief es el archivo de referencia del formato y por eso queda con `reviewer: pending`: esa línea solo la cambia el script de `interview` cuando el revisor sin contexto aprueba el brief, el problema y el canvas.

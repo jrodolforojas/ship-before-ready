@@ -9,6 +9,8 @@ Edit this file only on `main`.
 | File | Written by | Read by | Content |
 |---|---|---|---|
 | `.sbr/connections.json` | `connect` | `design`, `landing`, `verdict` | Package manager, PostHog and Vercel connections. No secrets |
+| `.sbr/problem.md` | `interview` | `interview`, `brief-reviewer` | The problem module: ten answers in four components, the sources table of each one and the problem statement |
+| `.sbr/lean-canvas.md` | `interview` | `interview`, `brief-reviewer` | The Lean Canvas: every segment and the one chosen for this test. Costs and revenue stay here |
 | `.sbr/brief.md` | `interview` | `rules`, `design`, `video-scripts` | Header with the brief fields; body in the builder's language |
 | `.sbr/rules.md` | `rules` | `verdict`, gate | Thresholds, verdict date and the seal; the seal is a commit |
 | `.sbr/seal.json` | `rules` | `verdict` | Which commit sealed the rules, and when |
@@ -33,7 +35,7 @@ Edit this file only on `main`.
 
 - JSON keys and header keys are `snake_case`, in English.
 - Timestamps are ISO 8601 in UTC (`2026-11-21T03:12:45Z`); dates are `YYYY-MM-DD`.
-- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3, bio]`). Only three keys are nested, indented two spaces per level: `questions` in the brief, `scripts` in the video scripts and `counts` in the verdict.
+- A Markdown state file starts with a header between two `---` lines: one `key: value` per line, values on a single line, strings in double quotes when they contain `:` or `#`. A list of plain values is written inline (`cold_sources: [v1, v2, v3, bio]`, `confirmed: [trigger, frequency]`). Only three keys are nested, indented two spaces per level: `questions` in the brief, `scripts` in the video scripts and `counts` in the verdict.
 - `<locale>` matches `^[a-z]{2}(-[A-Z]{2})?$`; the default is `es`.
 
 ## `.sbr/connections.json`
@@ -48,6 +50,120 @@ Edit this file only on `main`.
 | `vercel_team` | Team slug, or `null` for a personal account |
 | `probe_url` | URL of the probe page that `connect` published to check the Vercel connection |
 | `verified_at` | Timestamp of the last successful check |
+
+## `.sbr/problem.md`
+
+Written before anything else, and before the solution is mentioned. It is the evidence that the problem is real and large; what converts on the landing is the pain in the person's words, which lives in the canvas and the brief.
+
+```markdown
+---
+locale: es
+confirmed: [trigger, frequency, relevance, viability]
+statement: "The problem statement, one paragraph on one line"
+statement_claims: [T1, R2]
+approved: "2026-11-21T18:00:00Z"
+statement_fingerprint: sha256:<hex>
+---
+
+# Title
+
+**0. The opener**
+
+Answer.
+
+## Statement
+
+The same statement.
+
+## Trigger
+
+**1. Question, in the author's words**
+
+Answer, in the builder's words.
+
+### Sources
+
+| # | Claim | Status | Source type | Source | Exact sentence |
+|---|---|---|---|---|---|
+| T1 | One fact | respaldada | noticia | [site](https://…) | "The sentence copied from the page" |
+| T2 | Another fact | sin fuente | — | — | — |
+```
+
+| Header key | Value |
+|---|---|
+| `locale` | Language of the file |
+| `confirmed` | The components whose sources table the builder confirmed, in order: a prefix of `trigger`, `frequency`, `relevance`, `viability` |
+| `statement` | The problem statement: one paragraph of three or four lines, at most 480 characters, with figures and without the solution. Absent until it is written |
+| `statement_claims` | Ids of the claims the statement rests on. At least one is `supported` by a third-party source, with its link and its exact sentence |
+| `approved` | Timestamp of the builder's written approval of the statement. Written only by `interview`'s script, after it opened every cited page again. Absent until then; the brief is not written without it |
+| `statement_fingerprint` | `sha256:<hex>` of the approved statement with its whitespace collapsed. A statement that changes afterwards has to be approved again |
+
+The body is in the builder's language; its headings and labels come from `locales/<locale>/interview.json`.
+
+- **Questions.** Ten, numbered 1 to 10, in four components: `trigger` (1 to 3), `frequency` (4 to 6), `relevance` (7 and 8) and `viability` (9 and 10). Question 0 is the opener. A question is a line that starts with `**<n>. `; its answer is the lines below it. "No sé" is an answer.
+- **Sources table.** One per component, with six columns in this order: id, claim, status, source type, source, exact sentence. A row is a claim when its first cell is an id: the component's letter (`T`, `F`, `R`, `V`) and a number. Every claim has a row and every row has a status.
+
+| Status | Phrase in `locales/<locale>/interview.json` | Meaning |
+|---|---|---|
+| `supported` | `sources.statuses.supported` | A page that was opened says the same thing |
+| `contradicted` | `sources.statuses.contradicted` | A page that was opened says something else |
+| `no_source` | `sources.statuses.no_source` | Nothing was found. It is written down and blocks nothing |
+| `own_experience` | `sources.statuses.own_experience` | The builder's own observation or perception |
+| `other_context` | `sources.statuses.other_context` | A page says it about another place, population, product or time |
+
+| Source type | Phrase | Third party |
+|---|---|---|
+| `study` | `sources.types.study` | Yes |
+| `official_data` | `sources.types.official_data` | Yes |
+| `news` | `sources.types.news` | Yes |
+| `collaborative_index` | `sources.types.collaborative_index` | Yes |
+| `own_research` | `sources.types.own_research` | No |
+
+Rows that are `supported`, `contradicted` or `other_context` carry their type, the link of the page and the exact sentence copied from it; the other two carry a dash in those cells. Only pages that were opened are cited, and no figure is written that is in neither the builder's answers nor a copied sentence.
+
+Reference file: [`templates/example/problem.md`](../../templates/example/problem.md).
+
+## `.sbr/lean-canvas.md`
+
+```markdown
+---
+locale: es
+chosen_segment: "Name of the one segment chosen for this test"
+---
+
+# Title
+
+## Problema
+
+## Segmentos de clientes
+
+- **Name of a segment** (elegido para esta prueba): who they are
+- **Name of another segment**: who they are
+
+## Alternativas actuales
+
+- **An alternative**: what the person does and what it costs
+  - "A frustration, in the person's words"
+```
+
+| Header key | Value |
+|---|---|
+| `locale` | Language of the file |
+| `chosen_segment` | The one segment this test addresses. It equals the bold name of exactly one item of the segments list. The canvas keeps every segment; `persona` of the brief describes this one |
+
+One `##` section per block, titled with its phrase of `canvas.sections` in `locales/<locale>/interview.json`:
+
+| Block | Kind | Content |
+|---|---|---|
+| `problem` | Required | The approved statement, unchanged |
+| `segments` | Required | A list; each item starts with the segment's name in bold |
+| `alternatives` | Required | What the chosen segment does today, what it costs, and at least one frustration between quotes, in the person's words |
+| `uvp` | Required | The unique value proposition: one sentence the person would repeat |
+| `solution` | Required | What the product is and up to three things it does |
+| `channels`, `key_metrics`, `unfair_advantage` | Invited | The section always exists; it may hold only the phrase `canvas.pending` |
+| `cost_structure`, `revenue_streams` | The builder's alone | Optional. Written as the builder said them, with no comment from the plugin. They never leave this file: not to the brief, the landing or the video scripts |
+
+Reference file: [`templates/example/lean-canvas.md`](../../templates/example/lean-canvas.md).
 
 ## `.sbr/brief.md`
 
@@ -70,10 +186,15 @@ Body in the builder's language.
 
 | Key | Value |
 |---|---|
-| `reviewer` | `pending` or `approved`. It becomes `approved` only when `brief-reviewer` answers `approved` ([reviewers.md](reviewers.md)); `design` does not run without it |
+| `reviewer` | `pending` or `approved`. It becomes `approved` only when `brief-reviewer` answers `approved` ([reviewers.md](reviewers.md)) about the brief, the problem file and the canvas; `design` does not run without it |
 | `locale` | Language of the project: of the brief body, of the landing copy and of what the skills say to the builder |
-| `persona`, `pain`, `current_solution`, `promise` | One line each, in the builder's language |
+| `persona` | One line, in the builder's language: the chosen segment of the canvas |
+| `pain` | One line: the sharpest frustration of the canvas, in the person's words. Never the problem statement |
+| `current_solution` | One line: the current alternatives of the chosen segment and what they cost |
+| `promise` | One line: the unique value proposition of the canvas |
 | `questions` | The three questions of screen 3, with the same keys as the copy file and the event properties |
+
+The body may carry the problem statement with a pointer to `.sbr/problem.md`. Nothing from the costs or the revenue of the canvas appears in the brief.
 
 Reference file: [`templates/example/brief.md`](../../templates/example/brief.md).
 
