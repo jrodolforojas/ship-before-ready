@@ -225,5 +225,9 @@
   "save": {
     "deferred": "No pude guardar esta respuesta en .sbr/ todavía. La conservo aquí y sigo con las preguntas; la guardo en cuanto pueda.",
     "needed": "Para seguir necesito guardar sus respuestas en .sbr/, y la escritura sigue bloqueada. Apruebe la escritura en esa carpeta y avíseme; no se pierde nada de lo que ya respondió."
+  },
+  "summary": {
+    "title": "Así quedó su Lean Canvas:",
+    "sources": "Fuentes del problema: {supported} respaldadas, {contradicted} contradichas, {other_context} de otro contexto, {no_source} sin fuente y {own_experience} de experiencia propia. El detalle está en .sbr/problem.md."
   }
 }
