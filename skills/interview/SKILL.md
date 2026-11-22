@@ -1,6 +1,6 @@
 ---
 name: interview
-description: Hace tres preguntas, una a la vez, para convertir la idea del builder en un brief. Insiste una vez cuando la respuesta es vaga, escribe .sbr/brief.md y lo pasa por un revisor sin contexto; el brief solo queda aprobado si ese revisor lo aprueba.
+description: Da la bienvenida y hace cuatro preguntas, una a la vez y empezando por el problema, para convertir la idea del builder en un brief. Insiste una vez cuando la respuesta es vaga, escribe .sbr/brief.md y lo pasa por un revisor sin contexto; el brief solo queda aprobado si ese revisor lo aprueba.
 argument-hint: "[locale]"
 ---
 
@@ -20,19 +20,22 @@ Turn the builder's idea into `.sbr/brief.md`, a brief that a stranger can read a
 
 ## 1. Before asking
 
+Always open with `welcome`, on its own, before anything else. Then:
+
 - If `.sbr/brief.md` exists with `reviewer: approved`, say `resume.approved` and continue only if the builder wants to redo it.
 - If it exists with `reviewer: pending`, say `resume.pending`, keep the answers it already has, and ask only what is missing or what the last review rejected.
-- Otherwise say `intro`.
+- Otherwise say `intro` and ask the first question in the same message.
 
-## 2. The three questions
+## 2. The four questions
 
 Ask them in this order, as plain messages (not AskUserQuestion: the answers are open).
 
 | # | Phrase | It is about | The answer is vague when |
 |---|---|---|---|
-| 1 | `questions.persona.ask` | Who exactly has the problem: a real person or a real case | It names a category ("usuarios", "empresas", "pymes", "emprendedores", "equipos de marketing", "todo el mundo") with no person, role in a situation or case behind it |
-| 2 | `questions.current_solution.ask` | What that person does today to solve it, and what it costs them | It gives no concrete action, or no cost (time, money, mistakes, a consequence), or it says they do nothing |
-| 3 | `questions.promise.ask` | What changes for that person, in one sentence they would repeat | It is a list of features, or brochure words ("más fácil", "optimiza", "solución integral", "potencia") that the person would never say |
+| 1 | `questions.pain.ask` | The problem or pain, before any idea or product | It describes a product, an app or a feature instead of a problem, or it names no group of people who have it |
+| 2 | `questions.persona.ask` | Who exactly has the problem: a real person or a real case | It names a category ("usuarios", "empresas", "pymes", "emprendedores", "equipos de marketing", "todo el mundo") with no person, role in a situation or case behind it |
+| 3 | `questions.current_solution.ask` | What that person does today to solve it, and what it costs them | It gives no concrete action, or no cost (time, money, mistakes, a consequence), or it says they do nothing |
+| 4 | `questions.promise.ask` | What changes for that person, in one sentence they would repeat | It is a list of features, or brochure words ("más fácil", "optimiza", "solución integral", "potencia") that the person would never say |
 
 After each answer:
 
@@ -61,7 +64,7 @@ questions:
 ```
 
 - Every value is one line, in the builder's language, inside double quotes. Replace a double quote inside a value with a single one.
-- `persona`, `current_solution` and `promise` come from the three answers, in the builder's words. `pain` is what hurts that person, taken from the same answers; do not add anything they did not say.
+- `pain`, `persona`, `current_solution` and `promise` come from the four answers, in the builder's words. Do not add anything they did not say.
 - `questions` are the three questions the landing will ask a visitor, written for this idea and addressed to the visitor: what they use today, when it last happened and what it cost them, and an invitation to a 15-minute call this week. Each one is at most 120 characters.
 - The body is in the builder's language: a title (`brief.title`, with the product's name or, if it has none, the idea in a few words) and one section per key of `brief.sections`, in that order. Under `limits` write the lines of `brief.limits`. The body may give the detail that does not fit in one line, and nothing the builder did not say.
 
@@ -88,11 +91,11 @@ A round is one answer of the reviewer. There are at most three rounds.
 
    The script checks the format of the contract and prints `{"result": …, "findings": […], "reviewer": …}`. With `approved` it writes `reviewer: approved`; with `rejected` it leaves `reviewer: pending`. If it exits with code 2 the answer did not follow the format: call the agent again once, with the same prompt, and do not count that as a round. If the format fails twice in a row, stop and show the builder the agent's answer.
 3. `approved`: go to step 5.
-4. `rejected`, in round one or two: say `review.rejected`, then one line per finding with its `review.fields.<code>` and the reviewer's sentence. Say `review.ask_again` and ask about each rejected point, one at a time, with the question of step 2 that covers it (`pain` goes with question 1, `questions` is yours to rewrite without asking). Do not push again here. Rewrite the brief as in step 3, with `reviewer: pending`, and start the next round.
+4. `rejected`, in round one or two: say `review.rejected`, then one line per finding with its `review.fields.<code>` and the reviewer's sentence. Say `review.ask_again` and ask about each rejected point, one at a time, with the question of step 2 that covers it (`questions` is yours to rewrite without asking). Do not push again here. Rewrite the brief as in step 3, with `reviewer: pending`, and start the next round.
 5. `rejected` in round three: stop. Say `review.stopped`, list the findings the same way, and close with `review.stopped_next`. The brief stays `reviewer: pending`. Do not offer to approve it another way.
 
 ## 5. Close
 
 Say `done.title` and `done.detail`, show the four lines of the header (`persona`, `pain`, `current_solution`, `promise`), and close with `done.next`. Do not commit; the builder decides when.
 
-The wording of the three questions and of the pushes is adapted from the `/office-hours` skill of gstack (MIT, Garry Tan).
+The wording of the persona, current solution and promise questions and of the pushes is adapted from the `/office-hours` skill of gstack (MIT, Garry Tan).

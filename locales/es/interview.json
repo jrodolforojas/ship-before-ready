@@ -1,10 +1,15 @@
 {
-  "intro": "Son tres preguntas, una a la vez. Sirven las respuestas concretas: una persona, un caso, un costo.",
+  "welcome": "Bienvenido a Ship Before Ready. Antes de escribir una línea de código, vamos a averiguar si alguien quiere lo que usted piensa construir. Empezamos por el problema, no por la idea.",
+  "intro": "Son cuatro preguntas, una a la vez. Sirven las respuestas concretas: un problema, una persona, un caso, un costo.",
   "resume": {
     "approved": "Ya hay un brief aprobado en .sbr/brief.md. ¿Quiere rehacerlo? Si lo cambia, vuelve a pasar por el revisor.",
     "pending": "Hay un brief sin aprobar en .sbr/brief.md. Sigo desde ahí."
   },
   "questions": {
+    "pain": {
+      "ask": "Antes de crear la idea, ¿cuál es el problema? Recuerde que su idea debe resolver un problema o un dolor de un grupo de personas específico.",
+      "push": "\"{vague}\" describe una solución, no un problema. Olvide por un momento lo que quiere construir: ¿qué le pasa hoy a ese grupo de personas que le cuesta tiempo, dinero o paciencia?"
+    },
     "persona": {
       "ask": "¿Quién exactamente tiene este problema? Deme una persona real o un caso real: quién es, qué hace y qué le pasa si el problema no se resuelve.",
       "push": "\"{vague}\" es una categoría, no una persona: a una categoría no se le puede escribir un correo. Nombre a una persona o un caso real que usted conozca: quién es, qué hace y cuándo le pasó esto."
