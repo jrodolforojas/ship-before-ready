@@ -1,0 +1,117 @@
+{
+  "intro": "Voy a programar el diseño que usted aprobó, revisarlo sobre la página real, mostrárselo y, con su visto bueno, publicarlo. Aquí no se decide nada de diseño: si la página real falla algo, se lo digo y volvemos a /ship-before-ready:design.",
+  "missing": {
+    "choice": "No encuentro un diseño aprobado (.sbr/design/choice.md). Corra primero /ship-before-ready:design.",
+    "approval": "El diseño todavía no está aprobado por escrito. Termine /ship-before-ready:design y apruébelo; sin esa aprobación no programo nada.",
+    "design_files": "Falta {file}, que escribe /ship-before-ready:design al aprobar. Corra /ship-before-ready:design otra vez.",
+    "connections": "No encuentro .sbr/connections.json. Corra primero /ship-before-ready:connect.",
+    "connections_invalid": "Sus conexiones están incompletas ({problems}). Corra /ship-before-ready:connect otra vez.",
+    "node": "La landing necesita Node 22.23.4 o superior y esta máquina tiene {version}. Actualice Node y avíseme para seguir.",
+    "package_manager": "No encontré {manager}, el gestor que eligió en /ship-before-ready:connect. Instálelo y avíseme, o corra /ship-before-ready:connect para elegir otro.",
+    "vercel": "No encontré la CLI de Vercel o no tiene la sesión iniciada. Corra /ship-before-ready:connect, que la deja lista, y avíseme."
+  },
+  "fingerprint_changed": "Los valores o el texto del diseño cambiaron después de su aprobación: ya no coinciden con lo que usted aprobó. Corra /ship-before-ready:design para revisarlo y aprobarlo de nuevo.",
+  "republish": "Ya hay una landing publicada en {url}. La vuelvo a publicar en la misma dirección con el diseño aprobado.",
+  "canvas": {
+    "checking": "Releo el lienzo de Claude Design para confirmar que es el que usted aprobó.",
+    "unchanged": "El lienzo es el mismo que usted aprobó.",
+    "none": "Su diseño se aprobó sin Claude Design, así que no hay lienzo que releer.",
+    "unreadable": "No pude leer el lienzo ({reason}). Los archivos del diseño sí coinciden con su aprobación.",
+    "changed": "El lienzo cambió después de su aprobación: {boards}. Esos cambios no están en los valores aprobados y no se programarían.",
+    "unreadable_question": "¿Sigo con el diseño aprobado sin releer el lienzo?",
+    "question": "¿Qué hago con esos cambios del lienzo?",
+    "options": {
+      "back": {
+        "label": "Volver a diseño",
+        "description": "Llevamos los cambios a los valores en /ship-before-ready:design y usted aprueba de nuevo."
+      },
+      "ignore": {
+        "label": "Programar lo aprobado",
+        "description": "Programo lo que usted aprobó; los cambios del lienzo quedan fuera de la página."
+      }
+    },
+    "continue": {
+      "label": "Seguir",
+      "description": "Programo el diseño aprobado tal como está en sus archivos."
+    },
+    "stop": {
+      "label": "Detenerme",
+      "description": "No programo nada todavía."
+    },
+    "ignored": "Programo lo aprobado; los cambios del lienzo no van a estar en la página.",
+    "back_to_design": "Corra /ship-before-ready:design: ahí se llevan los cambios del lienzo a los valores y se aprueban de nuevo."
+  },
+  "install": {
+    "copying": "Copio la plantilla en landing/ y la instalo con {manager}.",
+    "install_failed": "La instalación con {manager} falló. Le muestro el error; no sigo hasta que instale bien.",
+    "placed": "Puse en la landing los valores y el texto que usted aprobó, sin cambiarlos."
+  },
+  "gate": {
+    "building": "Compilo la página y la reviso contra los requisitos.",
+    "build_failed": "La página no compila. Le muestro el error; no publico.",
+    "capturing": "Abro la página en Chrome sin ventana: capturas de las cuatro pantallas y medidas sobre la página dibujada.",
+    "reviewing": "Un revisor sin contexto mira las capturas: si la jerarquía se sostiene en grises y si en cinco segundos se entiende para quién es y qué promete.",
+    "fixing": "Lo que falló era de la instalación, no de su diseño ({requirements}). Lo corregí y repito la revisión.",
+    "template_broken": "La plantilla del plugin falla {requirements} aun recién copiada. No es su diseño: es un error del plugin. No publico.",
+    "passed": "La página real cumple los requisitos: {passed} comprobados, {skipped} sin comprobar en esta corrida.",
+    "design_failed": "No publico. La página real no cumple {requirement}: {detail}",
+    "values_failed": "No instalo ni publico nada. Su diseño no cumple {requirement}: {detail}",
+    "proposal": "El cambio mínimo que propongo: {change}.",
+    "back_to_design": "Aquí no se cambia un diseño aprobado. Corra /ship-before-ready:design, aplique ese cambio en el lienzo y apruébelo de nuevo; después vuelva a /ship-before-ready:landing."
+  },
+  "no_chrome": {
+    "intro": "No encontré Chrome, así que no puedo medir la página dibujada. Ábrala usted en {url} con la ventana a 375 px de ancho (las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4) y dígame qué líneas se cumplen:",
+    "items": {
+      "R3": "En la primera pantalla, sin bajar: ¿ve completos el titular, el subtítulo y el botón?",
+      "R13": "¿Hay algún texto difícil de leer sobre su fondo, en cualquiera de las cuatro pantallas?",
+      "R18": "¿Puede tocar cada botón y cada campo con el pulgar sin pegarle al de al lado?",
+      "R19": "¿Alguna pantalla se mueve hacia los lados o corta una palabra? Revise a 375 px y con la ventana completa.",
+      "R21": "Envíe vacío el formulario del correo: ¿aparece el mensaje bajo el campo y el cursor va al campo?",
+      "R22": "Recorra las cuatro pantallas solo con Tab y Enter: ¿siempre ve dónde está el foco?",
+      "R25": "En la pantalla final, sin bajar: ¿ve el aviso de que todavía no existe?"
+    },
+    "unconfirmed": "Lo que no confirmó queda anotado como no comprobado, nunca como cumplido."
+  },
+  "preview": {
+    "ready": "Esta es su página, todavía en su máquina y sin enviar ningún dato: {url}. Las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4. Compárela con el lienzo que aprobó: {canvas}",
+    "ready_no_canvas": "Esta es su página, todavía en su máquina y sin enviar ningún dato: {url}. Las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4.",
+    "question": "¿La publico así?",
+    "options": {
+      "publish": {
+        "label": "Publicarla",
+        "description": "La publico en Vercel y hago una visita de prueba que no cuenta para el veredicto."
+      },
+      "change": {
+        "label": "Algo no está bien",
+        "description": "Dígame qué; si es del diseño, se cambia en /ship-before-ready:design."
+      }
+    },
+    "change_is_design": "Ese cambio es del diseño, y aquí no se cambia un diseño aprobado. Corra /ship-before-ready:design, hágalo en el lienzo y apruébelo de nuevo.",
+    "stopped": "Detuve la vista previa."
+  },
+  "publish": {
+    "configuring": "Conecto la página con su proyecto de PostHog, por una ruta de su propio dominio.",
+    "deploying": "Publico la carpeta landing/ en su proyecto de Vercel {project}. Nunca publico desde la raíz: eso subiría .sbr/.",
+    "deploy_failed": "Vercel no publicó la página. Le muestro el error; no sigo.",
+    "private_leak": "{url}/.sbr/connections.json responde: la carpeta .sbr/ quedó publicada. No sigo; hay que retirar esa publicación.",
+    "live": "Su landing está en línea: {url}"
+  },
+  "visit": {
+    "running": "Hago una visita de prueba con ?src=test: recorro las cuatro pantallas como un visitante. Esa visita no cuenta para el veredicto.",
+    "manual": "No tengo Chrome para la visita de prueba. Abra {url} y recorra las cuatro pantallas: botón, un correo de prueba, las dos respuestas y enviar. Avíseme cuando vea la pantalla final.",
+    "failed": "La visita de prueba no llegó al final: se detuvo en {step}{error}. La página quedó publicada, pero no la doy por lista."
+  },
+  "events": {
+    "checking": "Busco en PostHog los cinco eventos de esa visita.",
+    "ok": "Llegaron los cinco eventos de la visita de prueba a PostHog: {events}.",
+    "missing": "En PostHog faltan eventos de la visita de prueba: {events}. La página quedó publicada, pero no la doy por lista.",
+    "sign_in": "Para comprobar los eventos necesito su sesión de PostHog en Claude Code. Corra `/mcp`, elija {server} y siga el navegador; en la app de escritorio, corra `claude mcp login {server}` en una terminal. Avíseme cuando termine."
+  },
+  "done": {
+    "title": "Listo: su landing pasó la revisión, está publicada y registra los cinco eventos.",
+    "url": "Dirección: {url}",
+    "saved": "Lo anoté en .sbr/landing.json: la dirección, la fecha, la huella del diseño y el resultado de la revisión.",
+    "skipped": "Quedó sin comprobar en esta corrida: {requirements}.",
+    "next": "Lo siguiente es /ship-before-ready:video-scripts, que escribe tres guiones con un link de esta landing para cada uno."
+  }
+}
