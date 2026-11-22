@@ -171,8 +171,6 @@ The language file `src/i18n/<locale>.json` holds every visible string. `.sbr/des
 
 The limits of `hero.title`, `hero.subtitle`, the three buttons, `pains` and `steps` come from R2; `meta.*` from R30. The rest are fixed here so that `templates/landing-tests/` can build the template with the longest text allowed. Copy also follows R26 (`email.privacy` is a real privacy line) and R27 (no currency symbols, amounts or price words; no invented figures or testimonials).
 
-Reference file: [`templates/example/es.json`](../../templates/example/es.json).
-
 ## Files of a landing
 
 The project lives in `landing/` at the root of the builder's repo.

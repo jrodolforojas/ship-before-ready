@@ -121,8 +121,6 @@ The body is in the builder's language; its headings and labels come from `locale
 
 Rows that are `supported`, `contradicted` or `other_context` carry their type, the link of the page and the exact sentence copied from it; the other two carry a dash in those cells. Only pages that were opened are cited, and no figure is written that is in neither the builder's answers nor a copied sentence.
 
-Reference file: [`templates/example/problem.md`](../../templates/example/problem.md).
-
 ## `.sbr/lean-canvas.md`
 
 ```markdown
@@ -163,8 +161,6 @@ One `##` section per block, titled with its phrase of `canvas.sections` in `loca
 | `channels`, `key_metrics`, `unfair_advantage` | Invited | The section always exists; it may hold only the phrase `canvas.pending` |
 | `cost_structure`, `revenue_streams` | The builder's alone | Optional. Written as the builder said them, with no comment from the plugin. They never leave this file: not to the brief, the landing or the video scripts |
 
-Reference file: [`templates/example/lean-canvas.md`](../../templates/example/lean-canvas.md).
-
 ## `.sbr/brief.md`
 
 ```markdown
@@ -195,8 +191,6 @@ Body in the builder's language.
 | `questions` | The three questions of screen 3, with the same keys as the copy file and the event properties |
 
 The body may carry the problem statement with a pointer to `.sbr/problem.md`. Nothing from the costs or the revenue of the canvas appears in the brief.
-
-Reference file: [`templates/example/brief.md`](../../templates/example/brief.md).
 
 ## `.sbr/rules.md`
 
