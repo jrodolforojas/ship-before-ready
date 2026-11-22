@@ -24,8 +24,6 @@ export interface CardShadow {
 export interface Tokens {
   name: string;
   scheme: 'light' | 'dark';
-  composition: 'centered' | 'split' | 'editorial';
-  decor: 'none' | 'shapes' | 'grid';
   palette_source?: 'derived' | 'builder';
   fonts: Record<FontRole, FontChoice>;
   color: Record<string, string>;

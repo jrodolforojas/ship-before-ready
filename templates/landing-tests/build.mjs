@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const USAGE = 'Usage: build.mjs <output> [set...]';
 const here = fileURLToPath(new URL('.', import.meta.url));
 const scripts = fileURLToPath(new URL('../../scripts/', import.meta.url));
+const examplePromise = fileURLToPath(new URL('../example/promise/', import.meta.url));
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
 
@@ -33,8 +34,9 @@ function buildSet(set, output) {
 }
 
 function writeSetData(set, folder) {
-  const tokens = { ...readJson(join(here, set.tokens)), ...set.override };
+  const tokens = readJson(join(here, set.tokens));
   const copy = readJson(join(here, set.copy));
+  cpSync(examplePromise, join(folder, 'src/promise'), { recursive: true });
   mkdirSync(join(folder, 'src/data'), { recursive: true });
   mkdirSync(join(folder, 'src/i18n'), { recursive: true });
   writeFileSync(join(folder, 'src/data/tokens.json'), `${JSON.stringify(tokens, null, 2)}\n`);

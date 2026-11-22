@@ -39,9 +39,7 @@
     }
   ],
   "page_attributes": {
-    "data-composition": ["centered", "split", "editorial"],
     "data-scheme": ["light", "dark"],
-    "data-decor": ["none", "shapes", "grid"],
     "data-screen": ["1", "2", "3", "4"]
   },
   "hooks": [
@@ -51,7 +49,7 @@
       "element": "body",
       "screens": [],
       "required": true,
-      "attributes": ["data-composition", "data-scheme", "data-decor", "data-screen"]
+      "attributes": ["data-scheme", "data-screen"]
     },
     {
       "name": "brand",
@@ -75,25 +73,8 @@
       "element": "div",
       "screens": [1],
       "required": false,
-      "present_when": "decor != none"
-    },
-    {
-      "name": "decor-1",
-      "group": "structure",
-      "element": "div",
-      "screens": [1],
-      "required": false,
-      "present_when": "decor != none",
-      "inside": "figure"
-    },
-    {
-      "name": "decor-2",
-      "group": "structure",
-      "element": "div",
-      "screens": [1],
-      "required": false,
-      "present_when": "decor != none",
-      "inside": "figure"
+      "repeatable": true,
+      "no_text": true
     },
     {
       "name": "footer",
@@ -605,12 +586,10 @@
     ]
   },
   "tokens": {
-    "keys": ["name", "scheme", "composition", "decor", "palette_source", "fonts", "color", "text", "spacing", "shape", "measure"],
+    "keys": ["name", "scheme", "palette_source", "fonts", "color", "text", "spacing", "shape", "measure"],
     "optional_keys": ["palette_source"],
     "enums": {
       "scheme": ["light", "dark"],
-      "composition": ["centered", "split", "editorial"],
-      "decor": ["none", "shapes", "grid"],
       "palette_source": ["derived", "builder"],
       "font_fallback": ["sans-serif", "serif", "monospace"]
     },
@@ -1316,18 +1295,19 @@
   "config_keys": ["posthog_key", "capture_path"],
   "landing_files": {
     "folder": "landing",
-    "per_builder": ["src/i18n/<locale>.json", "src/data/tokens.json", "src/data/config.json", "vercel.json"],
-    "not_compared_with_template": ["src/data/", "src/i18n/", "vercel.json", "lockfile"],
+    "per_builder": ["src/i18n/<locale>.json", "src/data/tokens.json", "src/promise/*.astro", "src/data/config.json", "vercel.json"],
+    "not_compared_with_template": ["src/data/", "src/i18n/", "src/promise/", "vercel.json", "lockfile"],
     "package_scripts": ["dev", "build", "preview"],
     "build_output": "dist",
-    "built_page": "dist/index.html"
+    "built_page": "dist/index.html",
+    "promise_entry": "src/promise/Promise.astro"
   },
   "package_managers": ["bun", "pnpm", "npm", "yarn"],
   "default_package_manager": "bun",
   "scripts": [
     {
       "name": "fill-artboards.mjs",
-      "usage": "fill-artboards.mjs <tokens.json> <copy.json> <output>",
+      "usage": "fill-artboards.mjs <tokens.json> <copy.json> <promise-phone.html> <promise-desktop.html> <output>",
       "owner": "0c"
     },
     {
@@ -1337,7 +1317,7 @@
     },
     {
       "name": "verify-design.mjs",
-      "usage": "verify-design.mjs <tokens.json> <copy.json>",
+      "usage": "verify-design.mjs <tokens.json> <copy.json> [<promise-phone.html> <promise-desktop.html>]",
       "owner": "1b"
     },
     {
@@ -1393,5 +1373,37 @@
     "claim_without_status",
     "quote_does_not_support",
     "segment_not_single"
-  ]
+  ],
+  "promise_board": {
+    "files": {
+      "phone": "promise-phone.html",
+      "desktop": "promise-desktop.html"
+    },
+    "widths": {
+      "phone": 390,
+      "desktop": 1440
+    },
+    "root": "screen-promise",
+    "copy_keys": ["brand", "hero.title", "hero.subtitle", "cta", "pains", "steps", "closing", "footer.author", "footer.privacy"],
+    "hook_styles": {
+      "title": ["title"],
+      "subtitle": ["lead", "body"],
+      "brand": ["button", "body", "small", "label"],
+      "cta": ["button"],
+      "cta-closing": ["button"],
+      "pains": ["body", "lead", "heading"],
+      "steps": ["body", "lead", "heading"],
+      "closing": ["heading"],
+      "footer": ["small"]
+    },
+    "text_pairs": [
+      ["ink", "canvas"],
+      ["ink", "surface"],
+      ["ink-muted", "canvas"],
+      ["ink-muted", "surface"],
+      ["on-accent", "accent"]
+    ],
+    "elements": ["section", "header", "footer", "div", "p", "h1", "h2", "ul", "ol", "li", "span", "button", "svg", "g", "path", "circle", "rect", "line", "polyline", "polygon", "ellipse"],
+    "drawing_elements": ["svg", "g", "path", "circle", "rect", "line", "polyline", "polygon", "ellipse"]
+  }
 }

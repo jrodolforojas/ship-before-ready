@@ -3,6 +3,7 @@
 @source "../components";
 @source "../layouts";
 @source "../pages";
+@source "../promise";
 
 @theme {
   --*: initial;
@@ -111,26 +112,7 @@
   border-radius: 50%;
 }
 
-/* The two columns of split: 7/12 and 5/12 of what is left after the gap. */
-@utility grid-cols-split {
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-}
-
-/* Step numbers are the position of each li, not copy (R32), so they are drawn as a counter and hidden from assistive technology. */
-@utility step-counter {
-  counter-reset: step;
-}
-
-@utility step-number {
-  counter-increment: step;
-  &::before {
-    --tw-content: counter(step) / "";
-  }
-}
-
-@utility step-number-padded {
-  counter-increment: step;
-  &::before {
-    --tw-content: counter(step, decimal-leading-zero) / "";
-  }
+/* The line width of drawings in a figure: SVG strokes have no token utility of their own. */
+@utility stroke-line-width {
+  stroke-width: var(--line-width);
 }

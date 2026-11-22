@@ -1,0 +1,46 @@
+---
+import Brand from '../components/Brand.astro';
+import FilledButton from '../components/FilledButton.astro';
+import { copy } from '../lib/copy';
+
+const CARD = 'rounded-card border border-line bg-surface shadow-card';
+const PAIN_COLUMNS = ['md:grid-cols-1', 'md:grid-cols-2', 'md:grid-cols-3'][copy.pains.length - 1];
+---
+
+<section
+  data-sbr="screen-promise"
+  aria-labelledby="title"
+  class="mx-auto flex w-full max-w-page flex-col gap-block px-group md:gap-section md:px-block"
+>
+  <header class="pt-group text-center">
+    <Brand />
+  </header>
+  <div class="flex flex-col items-center gap-group text-center">
+    <div class="flex flex-col items-center gap-item">
+      <h1 data-sbr="title" id="title" class="font-display text-title text-balance text-ink">{copy.hero.title}</h1>
+      <p data-sbr="subtitle" class="max-w-prose font-body text-lead text-ink-muted">{copy.hero.subtitle}</p>
+    </div>
+    <FilledButton hook="cta" label={copy.cta} class="w-auto" />
+  </div>
+  <ul data-sbr="pains" class:list={['flex flex-col gap-group md:grid', PAIN_COLUMNS]}>
+    {copy.pains.map((pain) => <li class:list={[CARD, 'p-group font-body text-body text-ink']}>{pain}</li>)}
+  </ul>
+  <ol data-sbr="steps" class="flex flex-col gap-group md:grid md:grid-cols-3">
+    {
+      copy.steps.map((step, index) => (
+        <li class="flex flex-col gap-item font-body text-body text-ink">
+          <span aria-hidden="true" class="font-body text-label text-ink-muted">{String(index + 1).padStart(2, '0')}</span>
+          {step}
+        </li>
+      ))
+    }
+  </ol>
+  <div class:list={[CARD, 'flex flex-col items-center gap-group px-group py-block text-center md:py-section']}>
+    <h2 data-sbr="closing" tabindex="-1" class="font-display text-heading text-balance text-ink">{copy.closing}</h2>
+    <FilledButton hook="cta-closing" label={copy.cta} class="w-auto" />
+  </div>
+  <footer data-sbr="footer" class="flex flex-col gap-item border-t border-line pt-group pb-block text-center font-body text-small text-ink-muted">
+    <p>{copy.footer.author}</p>
+    <p>{copy.footer.privacy}</p>
+  </footer>
+</section>

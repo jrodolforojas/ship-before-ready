@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import {
   EXIT_CODES,
   UsageError,
@@ -644,6 +645,43 @@ async function runWithPage(port, options, contract) {
     return await run(client, options, contract);
   } finally {
     client.close();
+  }
+}
+
+function boardBox(hooks) {
+  const root = document.querySelector('.sbr');
+  const screen = root?.querySelector(':scope > section');
+  if (!screen) return null;
+  const top = root.getBoundingClientRect().top;
+  const bottoms = Object.fromEntries(hooks.map((hook) => [hook, root.querySelector(`[data-sbr="${hook}"]`)?.getBoundingClientRect().bottom - top]));
+  return { height: Math.ceil(screen.getBoundingClientRect().bottom - top), bottoms };
+}
+
+async function measureBoard(client, { path, width }) {
+  await client.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false });
+  const loaded = client.waitFor('Page.loadEventFired');
+  await client.send('Page.navigate', { url: pathToFileURL(path).href });
+  await loaded;
+  await evaluate(client, inPage(waitForPaint));
+  return evaluate(client, inPage(boardBox, ['title', 'subtitle', 'cta']));
+}
+
+export async function measureBoards(boards) {
+  const chromePath = findChrome();
+  if (!chromePath) throw new NoChromeError('Chrome is not available: install Google Chrome or set CHROME_PATH to a Chromium browser');
+  const chrome = await launchChrome(chromePath);
+  try {
+    const client = await connectToPage(chrome.port);
+    try {
+      await client.send('Page.enable');
+      const results = [];
+      for (const board of boards) results.push(await measureBoard(client, board));
+      return results;
+    } finally {
+      client.close();
+    }
+  } finally {
+    await chrome.close();
   }
 }
 
