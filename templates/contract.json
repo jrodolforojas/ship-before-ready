@@ -1361,6 +1361,11 @@
     "invited": ["channels", "key_metrics", "unfair_advantage"],
     "builder_only": ["cost_structure", "revenue_streams"]
   },
+  "canvas_blocks_without_advisor": ["problem", "segments", "cost_structure", "revenue_streams"],
+  "canvas_claim_groups": [
+    { "key": "pains", "id_letter": "P" },
+    { "key": "advisor", "id_letter": "A" }
+  ],
   "brief_finding_codes": [
     "persona",
     "pain",
@@ -1372,7 +1377,8 @@
     "statement_without_source",
     "claim_without_status",
     "quote_does_not_support",
-    "segment_not_single"
+    "segment_not_single",
+    "pain_without_source"
   ],
   "promise_board": {
     "files": {

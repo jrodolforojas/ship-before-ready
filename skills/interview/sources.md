@@ -1,6 +1,6 @@
 # Sources: from an answer to a row with its evidence
 
-How `interview` closes a component of the problem module. The risk this procedure exists for: citing a page that does not say what the claim says. A row that says `sin fuente` is honest; a row that says `respaldada` over a page that says something else is the one failure this skill cannot afford.
+How `interview` closes a component of the problem module, and how it checks the pains of the Lean Canvas (section 6). The risk this procedure exists for: citing a page that does not say what the claim says. A row that says `sin fuente` is honest; a row that says `respaldada` over a page that says something else is the one failure this skill cannot afford.
 
 Phrases are in `sources.*` of the phrases file. The script is `${CLAUDE_SKILL_DIR}/scripts/brief.mjs`.
 
@@ -86,3 +86,21 @@ node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" verify-sources .sbr/problem.md <com
 | `unreachable` | Neither fetch nor curl could open the page (a block, a PDF, a timeout) | Keep the row only if you did open that page yourself in this run. List the link in `sources.unreachable_note` so the builder opens it |
 
 Then show the builder the table as it is in the file, without shortening a sentence, and wait for their confirmation, as step 3 of the skill says.
+
+## 6. The pains of the Lean Canvas
+
+A frustration of the alternatives block is checked like a claim, with these differences. The risk here: a pain that reads as true because it carries a figure nobody gave, or because the skill wrote it.
+
+- **One row per frustration the builder said**, with ids `P1`, `P2`… The claim cell is the frustration, word for word. Never a row for a pain the builder did not say: a pain of your own exists only as an option of the advisor ([advisor.md](advisor.md)), and its claim cell ends with `canvas.advisor.pain_mark`.
+- **Every pain is searched**, also one the builder lived: the budget of section 2 applies per pain. When nothing is found it is `no_source`.
+- **What `supported` means for a pain.** An opened page says that people of the chosen segment, or of a population that contains it, live that: the same situation, the same feeling or the same cost. The page does not need the builder's wording; it needs to say the same thing. Judge the core of the pain: what happens to the person and what it does to them. A turn of phrase or a detail of voice needs no source of its own; a figure, a share or a comparison with other people does. A page about another population is `other_context`.
+- **Figures.** A number, a fraction, a duration or a share inside the pain, in digits or in words, needs the exact sentence of a `supported` row that gives the same number with the same unit about the same thing. The script checks the digits; the words are yours to check. A figure without that sentence is put to the builder with `canvas.pains.figure`; it is never removed or reworded silently.
+- **Only `supported` pains stay** in the alternatives block and reach the brief. Every other row stays in the table, with its status, so the builder can bring a source later.
+- **The table** has the same six columns and lives in the section `canvas.sources.title` of `.sbr/lean-canvas.md`, with the advisor's `A` rows after the `P` rows.
+
+```bash
+node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" check-canvas .sbr/lean-canvas.md
+node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" verify-sources .sbr/lean-canvas.md pains
+```
+
+`check-canvas` reports a quoted frustration that has no row, one whose row is not `supported`, and a figure in digits that no supported sentence carries. `verify-sources` works as in section 5.

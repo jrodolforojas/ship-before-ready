@@ -39,16 +39,17 @@ The first five are the header key of the brief that falls short.
 | `promise` | What the product promises |
 | `questions` | What the three questions for the visitor ask |
 
-The other six are about `.sbr/problem.md` and `.sbr/lean-canvas.md`.
+The other seven are about `.sbr/problem.md` and `.sbr/lean-canvas.md`.
 
 | Code | Finding |
 |---|---|
 | `statement_names_solution` | The problem statement names or describes the product or a solution |
 | `statement_too_long` | The problem statement does not fit in four lines |
 | `statement_without_source` | The problem statement carries no figure backed by a third-party source, or carries a figure that no cited sentence gives |
-| `claim_without_status` | A claim of a sources table has no status, or lacks the link or the exact sentence its status needs |
+| `claim_without_status` | A claim of a sources table, of the problem or of the canvas, has no status, or lacks the link or the exact sentence its status needs; or an advisor's proposal names no supported row |
 | `quote_does_not_support` | The sentence quoted for a `supported` claim does not say what the claim says |
 | `segment_not_single` | There is not exactly one segment chosen for this test, or the `persona` of the brief is not that segment |
+| `pain_without_source` | A pain of the canvas or of the brief has no supported row in the sources table of the canvas, or carries a figure that no supported sentence gives |
 
 ## Codes of `script-reviewer`
 

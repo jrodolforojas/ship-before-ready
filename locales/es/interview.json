@@ -12,8 +12,10 @@
       "statement": "la declaración del problema",
       "canvas": "el Lean Canvas",
       "brief": "el brief",
-      "review": "la revisión del brief"
-    }
+      "review": "la revisión del brief",
+      "pains": "los dolores del canvas, que reviso contra fuentes"
+    },
+    "existing_canvas": "Este canvas se escribió antes de que los dolores se revisaran contra fuentes. Reviso los que ya están y no toco la declaración aprobada ni las reglas selladas. Al terminar, el brief se vuelve a escribir y pasa otra vez por el revisor."
   },
   "problem": {
     "opener": "Antes de crear la idea, ¿cuál es el problema? Recuerde que su idea debe resolver un problema o un dolor de un grupo de personas específico.",
@@ -173,9 +175,38 @@
     "invited_pending": "Lo dejo pendiente; no detiene nada.",
     "builder_only_saved": "Anotado tal como lo dijo, solo para usted.",
     "written": "El canvas quedó en .sbr/lean-canvas.md.",
-    "draft_offer": "Con lo que usted ya me dijo, se podría decir así: «{draft}». Son sus palabras, reordenadas. ¿Le sirve, la cambia o la dejamos pendiente?",
     "required_pending": "Dejo {block} pendiente y sigo. Hay que volver a este bloque antes de cerrar el brief.",
-    "required_left": "Quedan pendientes {blocks}. Sin ellos el brief no se puede aprobar. ¿Los respondemos ahora, uno a la vez, o lo deja aquí? Todo quedó guardado y la entrevista retoma desde este punto."
+    "required_left": "Quedan pendientes {blocks}. Sin ellos el brief no se puede aprobar. ¿Los respondemos ahora, uno a la vez, o lo deja aquí? Todo quedó guardado y la entrevista retoma desde este punto.",
+    "sources": {
+      "title": "Fuentes del canvas"
+    },
+    "pains": {
+      "searching": "Reviso contra fuentes cada dolor que usted dijo, igual que hice con el problema. Solo cito páginas que abrí, con la frase exacta.",
+      "table_intro": "Esto es lo que encontré para los dolores:",
+      "confirm": "¿Confirma esta tabla? Puede corregir un dolor, quitarlo o darme una fuente mejor.",
+      "figure": "El dolor {id} trae una cifra ({figure}) que no está en ninguna frase respaldada. ¿Lo dice sin la cifra, o tiene una fuente para ella?",
+      "none_supported": "Ningún dolor tiene una fuente que lo respalde, y sin al menos uno el brief no se puede escribir. ¿Tiene una fuente para alguno, o lo quiere decir de otra manera?",
+      "unsupported": "Sin respaldo, y por eso fuera del canvas y del brief: {pains}. Si consigue una fuente, tráigala y los reviso de nuevo."
+    },
+    "advisor": {
+      "mark": "Propuesta del asesor, aceptada por el builder",
+      "mark_sources": "Fuentes: {ids}",
+      "pain_mark": "(propuesta del asesor)",
+      "researching": "Anotado como \"no sé\". Investigo cómo se resuelve esto en general y le traigo opciones, cada una con su fuente. Busco con términos generales de la categoría, nunca con el nombre de su producto ni con sus palabras.",
+      "options_intro": "Para {block} encontré esto. Son propuestas mías, no palabras suyas:",
+      "conventional": "Lo habitual en este espacio: {summary}",
+      "builder_evidence": "Lo que usted ya dejó escrito: {evidence}",
+      "reason": "Por qué: {reason}",
+      "premise": "Solo funciona si: {premise}",
+      "source": "Fuente: {source}",
+      "recommended": "(la que recomiendo)",
+      "recommendation": "Recomiendo la {letter}: {reason}",
+      "choose": "¿Se queda con una, la cambia a su manera, o dejamos el bloque pendiente?",
+      "choose_several": "¿Cuáles reconoce? Puede quedarse con una o varias, cambiarlas, o no tomar ninguna.",
+      "saved": "Anotado como propuesta del asesor, con sus fuentes.",
+      "nothing_found": "No encontré fuentes suficientes para proponerle algo con respaldo. Dejo {block} pendiente.",
+      "offer_pending": "Quedaron pendientes: {blocks}. Puedo investigar cada uno y traerle opciones con su fuente. ¿Lo hago, o los dejo así?"
+    }
   },
   "brief": {
     "title": "Brief: {name}",
@@ -210,7 +241,8 @@
       "statement_without_source": "La declaración no trae un dato con fuente de terceros",
       "claim_without_status": "Una afirmación sin estado, o sin su link o su frase",
       "quote_does_not_support": "Una frase citada no dice lo que la afirmación dice",
-      "segment_not_single": "No hay un solo segmento elegido para esta prueba"
+      "segment_not_single": "No hay un solo segmento elegido para esta prueba",
+      "pain_without_source": "Un dolor sin fuente que lo respalde, o con una cifra que ninguna fuente da"
     },
     "ask_again": "Lo arreglamos una cosa a la vez.",
     "stopped": "El revisor rechazó el brief tres veces, así que me detengo. El brief queda sin aprobar y esto es lo que falta:",
@@ -218,7 +250,7 @@
   },
   "done": {
     "title": "Brief aprobado",
-    "detail": "El revisor, sin más contexto que los archivos, pudo decir quién es el usuario, qué le duele y qué hace hoy, y comprobó que la declaración del problema tiene fuente y no nombra la solución.",
+    "detail": "El revisor, sin más contexto que los archivos, pudo decir quién es el usuario, qué le duele y qué hace hoy, y comprobó que la declaración del problema y los dolores tienen fuente y que la declaración no nombra la solución.",
     "files": "Quedaron tres archivos: .sbr/problem.md (el problema y sus fuentes), .sbr/lean-canvas.md y .sbr/brief.md.",
     "next": "Lo que sigue: /ship-before-ready:rules."
   },
@@ -228,6 +260,7 @@
   },
   "summary": {
     "title": "Así quedó su Lean Canvas:",
-    "sources": "Fuentes del problema: {supported} respaldadas, {contradicted} contradichas, {other_context} de otro contexto, {no_source} sin fuente y {own_experience} de experiencia propia. El detalle está en .sbr/problem.md."
+    "sources": "Fuentes del problema: {supported} respaldadas, {contradicted} contradichas, {other_context} de otro contexto, {no_source} sin fuente y {own_experience} de experiencia propia. El detalle está en .sbr/problem.md.",
+    "pains": "Dolores: {supported} con fuente; {unsupported} quedaron fuera por falta de respaldo. El detalle está en .sbr/lean-canvas.md."
   }
 }
