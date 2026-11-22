@@ -1,3 +1,4 @@
+import { canvasSourcesProblems } from './pains.mjs'
 import { contract, localeProblems, sectionsByHeading } from './state-file.mjs'
 
 const REQUIRED_BLOCKS = contract.canvas_blocks.required
@@ -33,16 +34,20 @@ function alternativesProblems(lines) {
   if (lines === null) return []
   const problems = []
   if (!lines.some((line) => LIST_ITEM_PATTERN.test(line))) problems.push('alternatives needs at least one alternative as a list item')
-  if (!lines.some((line) => QUOTED_WORDS_PATTERN.test(line))) problems.push('alternatives needs at least one frustration in the words of the person, between quotes')
+  if (!lines.some((line) => QUOTED_WORDS_PATTERN.test(line))) problems.push('alternatives needs at least one frustration in the words of the person, between quotes, that a source supports')
   return problems
 }
 
-export function missingBlocks({ bodyLines }, phrases) {
+function unfilled(blocks, bodyLines, phrases) {
   const sections = sectionsByHeading(bodyLines, BLOCK_HEADING_PREFIX)
-  return REQUIRED_BLOCKS.filter((block) => !isFilled(blockLines(sections, phrases, block), phrases))
+  return blocks.filter((block) => !isFilled(blockLines(sections, phrases, block), phrases))
 }
 
-export function canvasFileProblems({ header, bodyLines }, phrases) {
+export const missingBlocks = ({ bodyLines }, phrases) => unfilled(REQUIRED_BLOCKS, bodyLines, phrases)
+
+export const pendingInvitedBlocks = ({ bodyLines }, phrases) => unfilled(INVITED_BLOCKS, bodyLines, phrases)
+
+export function canvasFileProblems({ header, bodyLines }, phrases, problemClaims = []) {
   const sections = sectionsByHeading(bodyLines, BLOCK_HEADING_PREFIX)
   const headingOf = (block) => `"${BLOCK_HEADING_PREFIX}${phrases.canvas.sections[block]}"`
   const absent = INVITED_BLOCKS.filter((block) => blockLines(sections, phrases, block) === null)
@@ -52,5 +57,6 @@ export function canvasFileProblems({ header, bodyLines }, phrases) {
     ...absent.map((block) => `${block} needs its section ${headingOf(block)}, even if it only says "${phrases.canvas.pending}"`),
     ...chosenSegmentProblems(header, segmentNames(sections, phrases)),
     ...alternativesProblems(blockLines(sections, phrases, 'alternatives')),
+    ...canvasSourcesProblems({ bodyLines }, phrases, problemClaims),
   ]
 }

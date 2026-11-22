@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { canvasFileProblems, missingBlocks } from './canvas.mjs'
+import { basename, dirname, join } from 'node:path'
+import { canvasFileProblems, missingBlocks, pendingInvitedBlocks } from './canvas.mjs'
+import { claimsOf as claimsOfGroups } from './claims.mjs'
+import { briefPainsProblems, painsProgress } from './pains.mjs'
 import { COMPONENTS, claimsOf, problemFileProblems, problemProgress, statementFingerprint } from './problem.mjs'
 import { excerptsOf, verifyQuotes } from './sources.mjs'
 import {
@@ -31,11 +33,13 @@ const ONE_LINE_KEYS = ['persona', 'pain', 'current_solution', 'promise']
 const QUESTION_KEYS = ['current_solution', 'last_time', 'wants_call']
 const QUESTION_MAX_LENGTH = 120
 const FINDING_CODES = contract.brief_finding_codes
+const CLAIM_GROUPS = [...COMPONENTS, ...contract.canvas_claim_groups]
+const CLAIM_GROUP_KEYS = CLAIM_GROUPS.map((group) => group.key)
 
 const USAGE = `Usage:
   brief.mjs status [.sbr]
   brief.mjs check-problem <problem.md>
-  brief.mjs verify-sources <problem.md> [${COMPONENTS.map((component) => component.key).join('|')}]
+  brief.mjs verify-sources <problem.md|lean-canvas.md> [${CLAIM_GROUP_KEYS.join('|')}]
   brief.mjs excerpt <url> <words to look for>
   brief.mjs approve-statement <problem.md>
   brief.mjs check-canvas <lean-canvas.md>
@@ -59,8 +63,16 @@ function problemProblemsOf(file) {
   return problemFileProblems(file, phrasesOf(file))
 }
 
-function canvasProblemsOf(file) {
-  return canvasFileProblems(file, phrasesOf(file))
+function problemClaimsBeside(path) {
+  const problemPath = join(dirname(path), PROBLEM_FILE)
+  if (!existsSync(problemPath)) return []
+  const file = readStateFile(problemPath, PROBLEM_FILE)
+  return claimsOf(file.bodyLines, phrasesOf(file))
+}
+
+function canvasProblemsAt(path) {
+  const file = readStateFile(path, CANVAS_FILE)
+  return canvasFileProblems(file, phrasesOf(file), problemClaimsBeside(path))
 }
 
 function briefHeaderProblems(header) {
@@ -93,17 +105,23 @@ function siblingProblems(briefPath) {
   const problemFile = readStateFile(problemPath, PROBLEM_FILE)
   const problems = [
     ...prefixed(PROBLEM_FILE, problemProblemsOf(problemFile)),
-    ...prefixed(CANVAS_FILE, canvasProblemsOf(readStateFile(canvasPath, CANVAS_FILE))),
+    ...prefixed(CANVAS_FILE, canvasProblemsAt(canvasPath)),
   ]
   if (!problemFile.header.approved) problems.push(`${PROBLEM_FILE}: the builder has not approved the statement`)
   return problems
 }
 
+function painProblemsOf(briefFile, briefPath) {
+  const canvasPath = join(dirname(briefPath), CANVAS_FILE)
+  if (!existsSync(canvasPath)) return []
+  return briefPainsProblems(briefFile, readStateFile(canvasPath, CANVAS_FILE), phrasesOf(briefFile))
+}
+
 function briefProblemsAt(path) {
-  const { header, bodyLines } = readStateFile(path, BRIEF_FILE)
-  const problems = briefHeaderProblems(header)
-  if (bodyLines.join('').trim() === '') problems.push('the body is empty')
-  return [...problems, ...siblingProblems(path)]
+  const briefFile = readStateFile(path, BRIEF_FILE)
+  const problems = briefHeaderProblems(briefFile.header)
+  if (briefFile.bodyLines.join('').trim() === '') problems.push('the body is empty')
+  return [...problems, ...siblingProblems(path), ...painProblemsOf(briefFile, path)]
 }
 
 function parseReview(answer) {
@@ -132,10 +150,10 @@ function withReviewer(text, reviewerState) {
   return [firstLine, ...header, ...rest.slice(closingIndex)].join('\n')
 }
 
-function claimsWithAPage(file, componentKey) {
-  return claimsOf(file.bodyLines, phrasesOf(file))
+function claimsWithAPage(file, groupKey) {
+  return claimsOfGroups(file.bodyLines, phrasesOf(file), CLAIM_GROUPS)
     .filter((claim) => claim.url !== null && claim.quote !== '')
-    .filter((claim) => !componentKey || claim.component === componentKey)
+    .filter((claim) => !groupKey || claim.group === groupKey)
 }
 
 function canvasProgress(canvasPath) {
@@ -143,8 +161,10 @@ function canvasProgress(canvasPath) {
   const file = readStateFile(canvasPath, CANVAS_FILE)
   return {
     missing: missingBlocks(file, phrasesOf(file)),
+    pending_invited: pendingInvitedBlocks(file, phrasesOf(file)),
     chosen_segment: file.header.chosen_segment ?? null,
-    problems: canvasProblemsOf(file),
+    pains: painsProgress(file, phrasesOf(file)),
+    problems: canvasProblemsAt(canvasPath),
   }
 }
 
@@ -153,8 +173,14 @@ function briefProgress(briefPath) {
   return { reviewer: readStateFile(briefPath, BRIEF_FILE).header.reviewer ?? null, problems: briefProblemsAt(briefPath) }
 }
 
+function isDone(problem, brief) {
+  if (brief?.reviewer !== 'approved') return false
+  return problem === null || brief.problems.length === 0
+}
+
 function stageOf(problem, canvas, brief) {
-  if (brief?.reviewer === 'approved') return 'done'
+  if (problem?.statement_approved && canvas?.pains.unverified.length > 0) return 'pains'
+  if (isDone(problem, brief)) return 'done'
   if (problem === null) return 'welcome'
   if (problem.component !== null) return 'problem'
   if (!problem.statement_approved) return 'statement'
@@ -177,9 +203,9 @@ function checkProblem([path]) {
   return { result: 'valid' }
 }
 
-async function verifySources([path, componentKey]) {
-  if (componentKey && !COMPONENTS.some((component) => component.key === componentKey)) throw new UsageError(`Unknown component: ${componentKey}`)
-  const results = await verifyQuotes(claimsWithAPage(readStateFile(requirePath(path), PROBLEM_FILE), componentKey))
+async function verifySources([path, groupKey]) {
+  if (groupKey && !CLAIM_GROUP_KEYS.includes(groupKey)) throw new UsageError(`Unknown group of claims: ${groupKey}`)
+  const results = await verifyQuotes(claimsWithAPage(readStateFile(requirePath(path), basename(path)), groupKey))
   const idsWith = (result) => results.filter((entry) => entry.result === result).map((entry) => entry.id)
   return { results, not_found: idsWith('not_found'), unreachable: idsWith('unreachable') }
 }
@@ -210,7 +236,7 @@ async function approveStatement([path]) {
 }
 
 function checkCanvas([path]) {
-  failWith(canvasProblemsOf(readStateFile(requirePath(path), CANVAS_FILE)))
+  failWith(canvasProblemsAt(requirePath(path)))
   return { result: 'valid' }
 }
 

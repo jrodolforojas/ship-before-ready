@@ -2,7 +2,7 @@
 reviewer: pending
 locale: es
 persona: "Builder que programa sus propios productos con Claude Code y arranca ideas nuevas sin saber si alguien las quiere"
-pain: "Pasa semanas construyendo algo que después nadie usa"
+pain: "Pasé semanas construyendo algo que después nadie usó"
 current_solution: "Les pregunta a sus amigos, que dicen que la idea es buena, y empieza a programar; le cuesta semanas de trabajo"
 promise: "Antes de escribir código, averigua si alguien lo quiere"
 questions:
@@ -27,8 +27,7 @@ Un builder que programa solo sus propios productos con Claude Code. Tiene una id
 
 ## Dolor
 
-- "Pasé semanas construyendo algo que después nadie usó."
-- "Mis amigos me dijeron que la idea era buena y ninguno la usó."
+- "Pasé semanas construyendo algo que después nadie usó." ([dev.to](https://dev.to/zhiwen_chen_611cf2f6f14a0/i-spent-3-months-building-what-nobody-wanted-lessons-in-mvp-validation-89n))
 
 ## Arreglo actual
 

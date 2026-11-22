@@ -141,7 +141,22 @@ chosen_segment: "Name of the one segment chosen for this test"
 ## Alternativas actuales
 
 - **An alternative**: what the person does and what it costs
-  - "A frustration, in the person's words"
+  - "A frustration the builder said, that a source supports"
+  - "A pain the builder kept from the advisor" (propuesta del asesor)
+
+## Propuesta de valor única
+
+One sentence.
+
+Propuesta del asesor, aceptada por el builder. Fuentes: A1.
+
+## Fuentes del canvas
+
+| # | Claim | Status | Source type | Source | Exact sentence |
+|---|---|---|---|---|---|
+| P1 | A frustration the builder said, that a source supports | respaldada | estudio | [site](https://…) | "The sentence copied from the page" |
+| P2 | A frustration no source supports | sin fuente | — | — | — |
+| A1 | The fact an advisor's proposal rests on | respaldada | noticia | [site](https://…) | "The sentence copied from the page" |
 ```
 
 | Header key | Value |
@@ -155,11 +170,23 @@ One `##` section per block, titled with its phrase of `canvas.sections` in `loca
 |---|---|---|
 | `problem` | Required | The approved statement, unchanged |
 | `segments` | Required | A list; each item starts with the segment's name in bold |
-| `alternatives` | Required | What the chosen segment does today, what it costs, and at least one frustration between quotes, in the person's words |
+| `alternatives` | Required | What the chosen segment does today, what it costs, and at least one frustration between double quotes. In this block, text between double quotes is a pain and nothing else, and every pain has a `supported` row in the sources table of the canvas |
 | `uvp` | Required | The unique value proposition: one sentence the person would repeat |
 | `solution` | Required | What the product is and up to three things it does |
 | `channels`, `key_metrics`, `unfair_advantage` | Invited | The section always exists; it may hold only the phrase `canvas.pending` |
 | `cost_structure`, `revenue_streams` | The builder's alone | Optional. Written as the builder said them, with no comment from the plugin. They never leave this file: not to the brief, the landing or the video scripts |
+
+**Sources table of the canvas.** The last section, titled `canvas.sources.title`, with the six columns, the statuses and the source types of the tables of `.sbr/problem.md`. A row is a claim when its first cell is `P` or `A` and a number.
+
+| Id | One row per | Claim cell |
+|---|---|---|
+| `P<n>` | Pain: a frustration the builder said, or one the builder kept from the advisor | The pain, word for word; a pain of the advisor ends with `canvas.advisor.pain_mark` |
+| `A<n>` | Source of a proposal of the advisor that the builder kept | The fact the page gives |
+
+- **Only the builder's pains.** The skill adds no pain of its own. A pain that is not `supported` stays in the table with its status and out of the alternatives block and the brief.
+- **Figures.** A figure inside a pain comes from the exact sentence of a `supported` claim, of this table or of `.sbr/problem.md`, with the same number and the same unit.
+- **The advisor.** It speaks only after the builder said they did not know, for `alternatives`, the pains, `uvp`, `solution`, `channels`, `key_metrics` and `unfair_advantage`; never for `problem`, `segments`, `cost_structure` or `revenue_streams`. A block whose text the builder kept from it carries a line with `canvas.advisor.mark` and the ids of its `A` rows, all `supported`.
+- A canvas written before this table existed is completed by running `interview` again: it checks the pains that are already there and rewrites the brief, without changing `.sbr/problem.md`, `.sbr/rules.md` or `.sbr/seal.json`.
 
 ## `.sbr/brief.md`
 
@@ -185,7 +212,7 @@ Body in the builder's language.
 | `reviewer` | `pending` or `approved`. It becomes `approved` only when `brief-reviewer` answers `approved` ([reviewers.md](reviewers.md)) about the brief, the problem file and the canvas; `design` does not run without it |
 | `locale` | Language of the project: of the brief body, of the landing copy and of what the skills say to the builder |
 | `persona` | One line, in the builder's language: the chosen segment of the canvas |
-| `pain` | One line: the sharpest frustration of the canvas, in the person's words. Never the problem statement |
+| `pain` | One line: a pain of the alternatives block of the canvas, word for word, which a source supports. The sharpest one the builder said, or one the builder kept from the advisor when none of their own has a source. Never the problem statement |
 | `current_solution` | One line: the current alternatives of the chosen segment and what they cost |
 | `promise` | One line: the unique value proposition of the canvas |
 | `questions` | The three questions of screen 3, with the same keys as the copy file and the event properties |

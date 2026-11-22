@@ -108,6 +108,8 @@ test('the contract names all have a phrase in the Spanish locale', () => {
   for (const type of contract.source_types) assert.ok(phrases.sources.types[type], type)
   for (const block of Object.values(contract.canvas_blocks).flat()) assert.ok(phrases.canvas.sections[block], block)
   for (const code of contract.brief_finding_codes) assert.ok(phrases.review.fields[code], code)
+  for (const block of contract.canvas_blocks_without_advisor) assert.ok(phrases.canvas.sections[block], block)
+  assert.deepEqual(contract.canvas_claim_groups.map((group) => group.id_letter), ['P', 'A'])
   for (const component of contract.problem_components) {
     assert.ok(phrases.problem.components[component.key].title, component.key)
     for (const number of component.questions) assert.deepEqual(Object.keys(phrases.problem.questions[number]), ['ask'], `question ${number} is asked as it is, with no hint`)
@@ -164,6 +166,22 @@ test('status goes from statement to canvas to brief to review to done', async ()
   assert.equal((await run(['status', stateDir])).json.stage, 'statement')
 })
 
+test('status sends a canvas whose pains were never checked to the pains, even with an approved brief', async () => {
+  const stateDir = exampleRepo()
+  edited(stateDir, 'lean-canvas.md', (text) => text.replace(/\n## Fuentes del canvas[\s\S]*$/, '\n'))
+  edited(stateDir, 'brief.md', (text) => text.replace('reviewer: pending', 'reviewer: approved'))
+  const { json } = await run(['status', stateDir])
+  assert.equal(json.stage, 'pains')
+  assert.deepEqual(json.canvas.pains, { supported: [], unsupported: [], unverified: ['Pasé semanas construyendo algo que después nadie usó.'] })
+  assert.deepEqual(json.canvas.pending_invited, ['unfair_advantage'])
+})
+
+test('status does not call done an approved brief whose pain is no longer a supported pain of the canvas', async () => {
+  const stateDir = exampleRepo()
+  edited(stateDir, 'brief.md', (text) => text.replace('reviewer: pending', 'reviewer: approved').replace(/^pain: .*$/m, 'pain: "Me cuesta decidir qué construir"'))
+  assert.equal((await run(['status', stateDir])).json.stage, 'brief')
+})
+
 test('the example files pass every check', async () => {
   const stateDir = exampleRepo()
   assert.equal((await run(['check-problem', join(stateDir, 'problem.md')])).code, 0)
@@ -197,6 +215,10 @@ for (const { name, change, expected } of BROKEN_PROBLEMS) {
   })
 }
 
+const EXAMPLE_PAIN = '"Pasé semanas construyendo algo que después nadie usó."'
+const EXAMPLE_UVP = 'Antes de escribir código, averigua si alguien lo quiere.'
+const ADVISOR_ROW = '| A1 | Lo primero que se mide es si alguien deja su correo | respaldada | noticia | [fortune.com](https://fortune.com/2014/09/25/why-startups-fail-according-to-their-founders) | "CB Insights recently parsed 101 post-mortem essays by startup founders to pinpoint the reasons they believe their company failed." |'
+
 const BROKEN_CANVASES = [
   { name: 'no chosen segment', change: (text) => text.replace(/^chosen_segment: .*\n/m, ''), expected: /chosen_segment is missing/ },
   { name: 'a chosen segment that is not in the list', change: (text) => text.replace('chosen_segment: "Builders que programan solos con Claude Code"', 'chosen_segment: "Builders y participantes de hackathons"'), expected: /exactly one segment of the list/ },
@@ -205,6 +227,15 @@ const BROKEN_CANVASES = [
   { name: 'a required block without its section', change: (text) => text.replace('## Solución', '## La solución'), expected: /solution is required/ },
   { name: 'alternatives without a frustration in the words of the person', change: (text) => text.replace(/^ {2}- ".*\n/gm, ''), expected: /frustration in the words of the person/ },
   { name: 'an invited block without its section', change: (text) => text.replace('## Canales', '## Otros'), expected: /channels needs its section/ },
+  { name: 'a pain that has no row in the sources table', change: (text) => text.replace(`  - ${EXAMPLE_PAIN}`, `  - ${EXAMPLE_PAIN}\n  - "Nadie me avisa de que voy por mal camino."`), expected: /the pain "Nadie me avisa de que voy por mal camino\." has no row/ },
+  { name: 'a pain that no source supports left in the alternatives block', change: (text) => text.replace(`  - ${EXAMPLE_PAIN}`, `  - ${EXAMPLE_PAIN}\n  - "Mis amigos me dijeron que la idea era buena y ninguno la usó."`), expected: /P2: no source supports the pain/ },
+  { name: 'a pain with a figure that no supported sentence gives', change: (text) => text.replaceAll('Pasé semanas construyendo', 'Pasé 7 semanas construyendo'), expected: /P1: the pain carries the figure 7, which is in no exact sentence of a supported claim/ },
+  { name: 'a row of the canvas without its status', change: (text) => text.replace('| sin fuente | — | — | — |', '|  | — | — | — |'), expected: /P2: "" is not a status/ },
+  { name: 'a supported pain without its sentence', change: (text) => text.replace('| "I Spent 3 Months Building What Nobody Wanted" |', '| — |'), expected: /P1: a supported claim needs the exact sentence/ },
+  { name: "a pain of the advisor quoted without its mark", change: (text) => text.replace('| P1 | Pasé semanas construyendo algo que después nadie usó. |', '| P1 | Pasé semanas construyendo algo que después nadie usó. (propuesta del asesor) |'), expected: /P1: the advisor proposed this pain: mark it/ },
+  { name: "a proposal of the advisor that names no row", change: (text) => text.replace(EXAMPLE_UVP, `${EXAMPLE_UVP}\n\nPropuesta del asesor, aceptada por el builder.`), expected: /uvp: the advisor's proposal names no row of the sources table/ },
+  { name: "a proposal of the advisor that names a row that is not there", change: (text) => text.replace(EXAMPLE_UVP, `${EXAMPLE_UVP}\n\nPropuesta del asesor, aceptada por el builder. Fuentes: A1.`), expected: /uvp: A1 is not a supported row/ },
+  { name: "a proposal of the advisor in a block that is the builder's alone", change: (text) => text.replace('- **Participantes de hackathons**', 'Propuesta del asesor, aceptada por el builder. Fuentes: A1.\n- **Participantes de hackathons**'), expected: /segments is the builder's alone/ },
 ]
 
 for (const { name, change, expected } of BROKEN_CANVASES) {
@@ -223,6 +254,46 @@ test('check-canvas accepts invited blocks left pending and the blocks that are o
   )
   assert.equal((await run(['check-canvas', path])).code, 0)
 })
+
+test('check-canvas accepts a figure in a pain when a supported sentence of the canvas or of the problem gives it', async () => {
+  const fromItsRow = edited(exampleRepo(), 'lean-canvas.md', (text) => text.replaceAll('Pasé semanas construyendo', 'Pasé 3 meses construyendo'))
+  assert.equal((await run(['check-canvas', fromItsRow])).code, 0)
+  const fromTheProblem = edited(exampleRepo(), 'lean-canvas.md', (text) => text.replaceAll('después nadie usó.', 'después nadie usó, como el 42% de las startups.'))
+  assert.equal((await run(['check-canvas', fromTheProblem])).code, 0)
+})
+
+test('check-canvas reads 1.000 and 1,000 as the same figure, and 1,5 as another', async () => {
+  const withFigure = (pain, sentence) =>
+    edited(exampleRepo(), 'lean-canvas.md', (text) => text.replaceAll('Pasé semanas construyendo', pain).replace('I Spent 3 Months Building What Nobody Wanted', sentence))
+  assert.equal((await run(['check-canvas', withFigure('Gasté 1.000 horas construyendo', 'I spent 1,000 hours building what nobody wanted')])).code, 0)
+  const decimal = await run(['check-canvas', withFigure('Gasté 1,5 años construyendo', 'I spent 15 years building what nobody wanted')])
+  assert.equal(decimal.code, 1)
+  assert.match(decimal.stderr, /carries the figure 1\.5/)
+})
+
+test("check-canvas accepts a pain and a block of the advisor that carry their mark and a supported row", async () => {
+  const path = edited(exampleRepo(), 'lean-canvas.md', (text) =>
+    `${text
+      .replace('| P1 | Pasé semanas construyendo algo que después nadie usó. |', '| P1 | Pasé semanas construyendo algo que después nadie usó. (propuesta del asesor) |')
+      .replace(`  - ${EXAMPLE_PAIN}`, `  - ${EXAMPLE_PAIN} (propuesta del asesor)`)
+      .replace('## Métricas clave\n\n', '## Métricas clave\n\nPropuesta del asesor, aceptada por el builder. Fuentes: A1.\n\n')}${ADVISOR_ROW}\n`,
+  )
+  assert.equal((await run(['check-canvas', path])).code, 0)
+})
+
+const BROKEN_BRIEF_PAINS = [
+  { name: 'a pain in the header that is not a supported pain of the canvas', change: (text) => text.replace(/^pain: .*$/m, 'pain: "Mis amigos me dijeron que la idea era buena y ninguno la usó"'), expected: /pain must be, word for word, a pain of the canvas that a source supports/ },
+  { name: 'a pain in the body that the canvas does not carry', change: (text) => text.replace('## Arreglo actual', '- "Mis amigos me dijeron que la idea era buena y ninguno la usó."\n\n## Arreglo actual'), expected: /the pain "Mis amigos me dijeron que la idea era buena y ninguno la usó\." is not a pain of the canvas that a source supports/ },
+  { name: 'a pain in the body without the link of its source', change: (text) => text.replace(/^(- "Pasé semanas[^"]*") \(.*\)$/m, '$1'), expected: /needs the link of its source: https:\/\/dev\.to/ },
+]
+
+for (const { name, change, expected } of BROKEN_BRIEF_PAINS) {
+  test(`check rejects ${name}`, async () => {
+    const { code, stderr } = await run(['check', edited(exampleRepo(), 'brief.md', change)])
+    assert.equal(code, 1)
+    assert.match(stderr, expected)
+  })
+}
 
 test('check rejects a brief without its problem file or without an approved statement', async () => {
   const withoutProblem = join(mkdtempSync(join(tmpdir(), 'sbr-interview-')), '.sbr')
@@ -293,6 +364,16 @@ test('verify-sources reports the pages it cannot open, a PDF among them', async 
 test('verify-sources opens with curl a page that refuses fetch', async () => {
   const { json } = await run(['verify-sources', problemWithLocalSource({ page: '/only-curl' })])
   assert.deepEqual(json.results, [{ id: 'T1', url: `${origin}/only-curl`, result: 'found' }])
+})
+
+test('verify-sources opens the pages of the pains of a canvas', async () => {
+  const canvasWith = (quote) =>
+    edited(exampleRepo(), 'lean-canvas.md', (text) => text.replace(/\[dev\.to\]\([^)]*\) \| "[^"]*"/, `[local](${origin}/study) | "${quote}"`))
+  const found = await run(['verify-sources', canvasWith(PAGE_SENTENCE), 'pains'])
+  assert.deepEqual(found.json.results, [{ id: 'P1', url: `${origin}/study`, result: 'found' }])
+  assert.deepEqual((await run(['verify-sources', canvasWith('Otra frase que la página no trae.')])).json.not_found, ['P1'])
+  assert.deepEqual((await run(['verify-sources', canvasWith(PAGE_SENTENCE), 'advisor'])).json.results, [])
+  assert.equal((await run(['verify-sources', canvasWith(PAGE_SENTENCE), 'prices'])).code, 2)
 })
 
 test('excerpt prints the sentences of a page that carry the words', async () => {

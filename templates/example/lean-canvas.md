@@ -20,7 +20,6 @@ Las fuentes están en .sbr/problem.md.
 ## Alternativas actuales
 
 - **Preguntarles a los amigos**: cuenta la idea, recibe ánimo y empieza a programar. Le cuesta semanas de trabajo en algo que nadie pidió.
-  - "Mis amigos me dijeron que la idea era buena y ninguno la usó."
 - **Construir primero y publicar después**: programa el producto completo y lo anuncia cuando está listo. Si nadie llega, ya gastó las semanas.
   - "Pasé semanas construyendo algo que después nadie usó."
 
@@ -47,3 +46,10 @@ Visitantes fríos, registros y llamadas agendadas, medidos contra las varas sell
 ## Ventaja competitiva
 
 Pendiente
+
+## Fuentes del canvas
+
+| # | Afirmación | Estado | Tipo de fuente | Fuente | Frase exacta |
+|---|---|---|---|---|---|
+| P1 | Pasé semanas construyendo algo que después nadie usó. | respaldada | índice colaborativo | [dev.to](https://dev.to/zhiwen_chen_611cf2f6f14a0/i-spent-3-months-building-what-nobody-wanted-lessons-in-mvp-validation-89n) | "I Spent 3 Months Building What Nobody Wanted" |
+| P2 | Mis amigos me dijeron que la idea era buena y ninguno la usó. | sin fuente | — | — | — |

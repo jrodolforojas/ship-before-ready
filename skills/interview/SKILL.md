@@ -1,6 +1,6 @@
 ---
 name: interview
-description: Lleva la idea del builder a un brief en tres pasos, una pregunta a la vez. Primero el problema, sin hablar de la solución, con diez preguntas y fuentes que la skill busca y cita; después el Lean Canvas; al final el brief, que solo queda aprobado si un revisor sin contexto lo aprueba. Escribe .sbr/problem.md, .sbr/lean-canvas.md y .sbr/brief.md.
+description: Lleva la idea del builder a un brief en tres pasos, una pregunta a la vez. Primero el problema, sin hablar de la solución, con diez preguntas y fuentes que la skill busca y cita; después el Lean Canvas, con cada dolor revisado contra fuentes y un asesor que propone opciones con su fuente cuando el builder no sabe; al final el brief, que solo queda aprobado si un revisor sin contexto lo aprueba. Escribe .sbr/problem.md, .sbr/lean-canvas.md y .sbr/brief.md.
 argument-hint: "[locale]"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "[locale]"
 Take the builder from an idea to three files, in this order:
 
 1. `.sbr/problem.md`: the problem module (ten questions in four components), the sources table of each component and the problem statement. It is the evidence that the problem is real and large.
-2. `.sbr/lean-canvas.md`: the Lean Canvas. Its problem block is the statement.
+2. `.sbr/lean-canvas.md`: the Lean Canvas. Its problem block is the statement, and it carries its own sources table: one row per pain the builder said, and one per source of an advisor's proposal.
 3. `.sbr/brief.md`: the brief the other skills read. It comes from the canvas, in the words of the person who has the problem.
 
 The files follow [the state contract](../../docs/contracts/state.md); the reviewer follows [the reviewers contract](../../docs/contracts/reviewers.md). The script is `${CLAUDE_SKILL_DIR}/scripts/brief.mjs`, written below as `brief.mjs`.
@@ -18,9 +18,10 @@ The files follow [the state contract](../../docs/contracts/state.md); the review
 
 - **One question at a time.** Ask it, stop, and wait for the answer. Never two questions in one message, never the next one before the builder answered. Questions are plain messages, not AskUserQuestion: the answers are open.
 - **The problem comes first, without the solution.** Until the statement is approved, do not ask about the product and do not write it down. When an answer describes the product, an app or a feature, say `problem.solution_reminder`, keep the part that is about the problem and go on. Remember what they said for the canvas.
-- **Never bias the builder.** No example of a solved idea, no sample answer and no hint of what a good answer looks like, in a question, a push or an acknowledgement. Formats are explained in the abstract: what goes in each field, never a filled-in idea. Never read, quote or show the files of `templates/example/`: they are test data of the plugin's own page. The one exception is the draft offer of the canvas, which only reorders the builder's own words.
+- **Never bias the builder.** No example of a solved idea, no sample answer and no hint of what a good answer looks like, in a question, a push or an acknowledgement. Formats are explained in the abstract: what goes in each field, never a filled-in idea. Never read, quote or show the files of `templates/example/`: they are test data of the plugin's own page. The one exception is the advisor of step 5: it speaks only after the builder said they do not know, never before, and what it proposes is marked as the advisor's.
 - **"No sé" is a valid answer.** Say `problem.dont_know`, write it down as it is and research it when the component closes. Never push on it and never fill it with a guess.
 - **Write only what the builder said or what a page you opened says.** Do not invent a person, a figure, a cost or a quote. A fact you found, and the builder did not say, is marked `sources.found_by_skill` until they confirm it.
+- **Pains are the builder's.** A frustration enters the canvas only because the builder said it, or accepted it from the advisor. Never add one of your own, never complete one with a figure, a comparison or a detail the builder did not say, and never keep one in the canvas or the brief that no source supports.
 - **Sources.** Cite only pages you opened in this run, with the exact sentence copied from the page. Never a search snippet, never a page from memory, never a figure that is in neither the builder's answers nor a copied sentence. The procedure is [sources.md](sources.md); read it before the first table.
 - **Costs and revenue are the builder's alone.** Write them as said, without comment, advice or a suggested price. They live only in `.sbr/lean-canvas.md`: never in the brief, the statement or the questions for the visitor. No price, plan or payment appears in the brief.
 - **Two lines are written only by the script:** `approved` in `.sbr/problem.md` (after the builder approves the statement in writing) and `reviewer: approved` in `.sbr/brief.md` (after the reviewer answers `approved`). Never write either yourself, and never review the brief in place of the agent.
@@ -41,12 +42,13 @@ It prints `stage` and what each file already has. Start at the step of that stag
 | `welcome` | `welcome`, `rule` and `how`, in that order, then the opener in the same message. If an old `.sbr/brief.md` exists without `.sbr/problem.md`, keep it untouched until step 6 rewrites it | Step 2 |
 | `problem` | `resume.in_progress` with `resume.where.problem` (`problem.component` and `problem.next_question`), or with `resume.where.sources` when `next_question` is `null` | Step 2 at that question, or step 3 |
 | `statement` | `resume.in_progress` with `resume.where.statement` | Step 4 |
+| `pains` | `resume.in_progress` with `resume.where.pains`. When `canvas.pains.supported` and `canvas.pains.unsupported` are both empty, the canvas was written before pains were checked: add `resume.existing_canvas` | Step 5, "The pains", from item 2 |
 | `canvas` | `resume.in_progress` with `resume.where.canvas` | Step 5, at the first block of `canvas.missing` |
 | `brief` | `resume.in_progress` with `resume.where.brief` | Step 6 |
 | `review` | `resume.in_progress` with `resume.where.review` | Step 7 |
-| `done` | `resume.approved`; add `resume.approved_without_problem` when `problem` is `null`. Continue only if the builder wants to redo it, from step 2 | Stop, or step 2 |
+| `done` | `resume.approved`; add `resume.approved_without_problem` when `problem` is `null`. When `canvas.pending_invited` is not empty, offer the advisor for those blocks with `canvas.advisor.offer_pending`. Otherwise continue only if the builder wants to redo it, from step 2 | Stop, the advisor of step 5, or step 2 |
 
-When resuming, read the files of `.sbr/` that exist before going on.
+When resuming, read the files of `.sbr/` that exist before going on. A run that starts at `pains` or later never changes `.sbr/problem.md`, its approved statement, `.sbr/rules.md` or `.sbr/seal.json`: it changes only the canvas and, after it, the brief.
 
 ## 2. The problem module
 
@@ -148,7 +150,7 @@ Whenever the statement changes later, the builder approves it again and you run 
 
 ## 5. Lean Canvas
 
-Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.md` after each answer and run `check-canvas` once the four required blocks are in.
+Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.md` after each answer.
 
 | # | Block | Asked with | Kind | The answer is not enough when |
 |---|---|---|---|---|
@@ -164,13 +166,51 @@ Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.
 | 10 | `cost_structure`, `revenue_streams` | `canvas.questions.builder_only.ask` | The builder's alone | Never |
 
 - **Required blocks: push once, and only once.** When an answer is not enough, say the `push` phrase of that question (`{vague}` is the builder's own words, `{missing}` is what is missing) and take the second answer as it comes: the reviewer decides, not you. For `alternatives`, say `push_nothing` instead only when the builder says the person does nothing today.
-- **The builder can always move on.** "No sé", "avance", "siguiente" or any request to move on is obeyed at once: never ask the same question a third time and never keep pushing after the builder asked to go on.
-- **"No sé" on a required block.** For `uvp` and `solution`, offer once `canvas.draft_offer` with a draft of one sentence built only from what the builder already said in this interview (the approved statement, the chosen segment, the alternatives and their frustrations), quoting their words and adding none of yours. The builder accepts it, edits it, or leaves it pending. For `segments`, the chosen segment and `alternatives`, there is no draft: those are facts only the builder knows. A block left pending gets `canvas.pending` in its section; say `canvas.required_pending` with its name and ask the next block.
-- **Before the brief.** If a required block is still pending after the last block, say `canvas.required_left` with their names, once, and offer two ways: answer them now, one at a time, or stop here, since everything is saved and the interview resumes from this point. Do not run `check-canvas` or write the brief while a required block is pending.
-- **Invited blocks never block.** Ask once. With "no sé", "después" or no answer, say `canvas.invited_pending` and write `canvas.pending` in the section.
-- **Costs and revenue.** One question for both. If the builder gives them, write each under its section exactly as said and answer only `canvas.builder_only_saved`: no opinion, no question back, no number of your own. If not, leave both sections out.
+- **The builder can always move on.** "Avance", "siguiente" or any request to move on is obeyed at once: write `canvas.pending` in the block, say `canvas.required_pending` with its name (a required block) or `canvas.invited_pending` (an invited one) and ask the next block. Never ask the same question a third time and never keep pushing after the builder asked to go on.
+- **"No sé" on `alternatives`, on its frustrations, on `uvp` or on `solution` calls the advisor**, described below. It is never offered before the builder says they do not know.
+- **"No sé" on `segments` or on the chosen segment** leaves the block pending: who has the problem is a fact only the builder knows, and the advisor never proposes it.
+- **Invited blocks never block.** Ask once. With "no sé", "después" or no answer, say `canvas.invited_pending` and write `canvas.pending` in the section, as the question promises. The advisor is offered for them before the brief.
+- **Costs and revenue.** One question for both. If the builder gives them, write each under its section exactly as said and answer only `canvas.builder_only_saved`: no opinion, no question back, no number of your own. If not, leave both sections out. The advisor never proposes them.
 - What the builder said about the solution during the problem module is a start, not the answer: say in one line what you noted and still ask `canvas.questions.solution.ask`, so they say what it is and what it does in their own words.
-- Frustrations are written between double quotes, as the person would say them. If the builder gave them in their own voice, keep their words; do not polish them into copy.
+- Frustrations are written between double quotes, as the person would say them. If the builder gave them in their own voice, keep their words; do not polish them into copy. In the alternatives block, text between double quotes is a frustration and nothing else.
+
+### The pains
+
+Every frustration of the alternatives block is checked against sources before the next block is asked, the same way as a claim of the problem module. The procedure is [sources.md](sources.md), section 6.
+
+1. Save the answer as given: each frustration between double quotes under its alternative.
+2. Say `canvas.pains.searching`. Each frustration is one row, with id `P1`, `P2`…, and its claim cell is the frustration, word for word. On a run that resumes at `pains`, the frustrations to check are the ones `status` lists in `canvas.pains.unverified`.
+3. Open the builder's links first, then search. Give each row its status, its source type, its link and the exact sentence.
+4. Write the table in the section `canvas.sources.title`, at the end of the canvas. Then take out of the alternatives block every frustration whose row is not `supported`: it stays in the table with its status and nowhere else.
+5. **Figures.** A figure inside a pain, in digits or in words, stays only if the exact sentence of a `supported` row gives the same number with the same unit. When it does not, say `canvas.pains.figure` and wait: the builder says the pain again without the figure, which replaces the claim of its row, or brings a source for it. Never reword a pain yourself.
+6. Run the checks and fix whatever names a pain or a row. Problems about blocks that were not asked yet are expected here.
+
+   ```bash
+   node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" check-canvas .sbr/lean-canvas.md
+   node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" verify-sources .sbr/lean-canvas.md pains
+   ```
+
+7. Show the builder the table exactly as it is in the file with `canvas.pains.table_intro`, then `sources.contradicted_note` or `sources.unreachable_note` when they apply, one line with `canvas.pains.unsupported` when a pain left the block, and `canvas.pains.confirm`. `sources.no_source_note` is not said here: it is about the statement. **Stop and wait.** Apply what they ask as in step 3: a corrected pain is checked again, a new link is opened like any other.
+8. If no pain is `supported`, say `canvas.pains.none_supported` and wait. A source or a new wording goes through items 2 to 7 again. If the builder does not know, the advisor proposes pains. With none at the end, `alternatives` counts as a required block left pending.
+9. Go on with the next block. On a run that resumed at `pains`, run `status` again and go where it says; a brief that already exists is rewritten in step 6 and goes to the reviewer again.
+
+### The advisor
+
+When the builder does not know, research the block and propose. The procedure is [advisor.md](advisor.md); read it before the first proposal. In short:
+
+1. Say `canvas.advisor.researching`. Search with general terms of the category, never with the product's name or the builder's own sentences.
+2. Weigh what is usual in that space against what this builder already left written in `.sbr/`, and test the premise of each idea before proposing it.
+3. Show two or three options, each with its reason and its source, exactly one marked as recommended. **Stop and wait.**
+4. The builder keeps one, changes it, or leaves the block pending. Nothing of the advisor enters the canvas without that answer.
+5. What the builder keeps is written with its mark and its sources: a line `canvas.advisor.mark` with `canvas.advisor.mark_sources` under the block, and one row `A1`, `A2`… per source in the table of `canvas.sources.title`. A pain of the advisor is a `P` row like any other, `supported` or it is not shown, with `canvas.advisor.pain_mark` after it in the table and wherever it is quoted.
+
+### Before the brief
+
+After the last block, in this order:
+
+1. **Pending blocks the advisor covers** (`alternatives`, `uvp`, `solution`, `channels`, `key_metrics`, `unfair_advantage`): say `canvas.advisor.offer_pending` once with their names. On a yes, run the advisor on each, one block at a time. On a no, they stay pending.
+2. **Required blocks still pending:** say `canvas.required_left` with their names, once, and offer two ways: answer them now, one at a time, or stop here, since everything is saved and the interview resumes from this point. Do not write the brief while a required block is pending.
+3. **Pains without support:** if the table has `P` rows that are not `supported`, say `canvas.pains.unsupported` with them, in one line.
 
 ```markdown
 ---
@@ -194,11 +234,14 @@ chosen_segment: "<the name of the one segment chosen for this test>"
 ## <canvas.sections.alternatives>
 
 - **<alternative>**: <what the person does and what it costs>
-  - "<a frustration, in the person's words>"
+  - "<a frustration the builder said, that a source supports>"
+  - "<a pain of the advisor that the builder kept>" <canvas.advisor.pain_mark>
 
 ## <canvas.sections.uvp>
 
 <one sentence the person would repeat>
+
+<canvas.advisor.mark>. <canvas.advisor.mark_sources>. (this line only under a block whose text came from the advisor)
 
 ## <canvas.sections.solution>
 
@@ -213,12 +256,21 @@ chosen_segment: "<the name of the one segment chosen for this test>"
 ## <canvas.sections.cost_structure>
 
 ## <canvas.sections.revenue_streams>
+
+## <canvas.sources.title>
+
+| <the six cells of sources.columns> |
+|---|---|---|---|---|---|
+| P1 | <the pain, word for word> | <status> | <type> | [<site>](<url>) | "<the exact sentence>" |
+| P2 | <a pain no source supports> | <sources.statuses.no_source> | — | — | — |
+| A1 | <the fact an advisor's proposal rests on> | <sources.statuses.supported> | <type> | [<site>](<url>) | "<the exact sentence>" |
 ```
 
-The headings are exactly the phrases of `canvas.sections`. `chosen_segment` equals the bold name of one, and only one, item of the segments list. Then:
+The headings are exactly the phrases of `canvas.sections` and `canvas.sources.title`. `chosen_segment` equals the bold name of one, and only one, item of the segments list. Then:
 
 ```bash
 node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" check-canvas .sbr/lean-canvas.md
+node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" verify-sources .sbr/lean-canvas.md
 ```
 
 Say `canvas.written`.
@@ -245,13 +297,13 @@ questions:
 | Key | Comes from | Never from |
 |---|---|---|
 | `persona` | The chosen segment: who they are and their situation | The other segments |
-| `pain` | The sharpest frustration of the alternatives block, in the person's words | The problem statement: a country-size figure is evidence, not what the person feels |
+| `pain` | One frustration of the alternatives block, word for word: the sharpest one the builder said. Only when none of the builder's own is in the block, a pain of the advisor that the builder accepted | The problem statement: a country-size figure is evidence, not what the person feels. A pain that is not in the alternatives block, because no source supports it |
 | `current_solution` | The alternatives of the chosen segment, with what they cost | |
 | `promise` | The unique value proposition | The solution's feature list |
 | `questions` | Written by you for this idea, addressed to the visitor: what they use today, when it last happened and what it cost them, and an invitation to a 15-minute call this week. At most 120 characters each | |
 
 - Every value is one line, in the builder's language, inside double quotes. Replace a double quote inside a value with a single one.
-- The body is in the builder's language: a title (`brief.title`, with the product's name or, if it has none, the idea in a few words) and one section per key of `brief.sections`, in that order. `problem` carries the approved statement, unchanged, followed by `brief.problem_sources`. `pain` lists the frustrations between quotes. `receives` lists up to three things from the solution block. Under `limits` write the lines of `brief.limits`.
+- The body is in the builder's language: a title (`brief.title`, with the product's name or, if it has none, the idea in a few words) and one section per key of `brief.sections`, in that order. `problem` carries the approved statement, unchanged, followed by `brief.problem_sources`. `pain` lists the frustrations of the alternatives block and no other, each between double quotes and followed by the link of its row: `- "<the pain>" ([<site>](<url>))`, with `canvas.advisor.pain_mark` after the quote when the row carries it. A section whose text came from the advisor ends with the same mark line the canvas has, without the ids. `receives` lists up to three things from the solution block. Under `limits` write the lines of `brief.limits`.
 - Nothing from channels, key metrics, unfair advantage, costs or revenue goes into the brief.
 
 Then check the file, which also checks the other two, and fix what it reports:
@@ -283,12 +335,13 @@ A round is one answer of the reviewer. There are at most three rounds.
 | Finding | How it is fixed |
 |---|---|
 | `persona`, `segment_not_single` | Ask `canvas.questions.segments.ask` or `canvas.questions.chosen_segment.ask` again, update the canvas, then the brief |
-| `pain`, `current_solution` | Ask `canvas.questions.alternatives.ask` again, update the canvas, then the brief |
-| `promise` | Ask `canvas.questions.uvp.ask` again, once, with the draft offer of step 5 if the builder does not know; update the canvas, then the brief |
+| `pain`, `current_solution` | Ask `canvas.questions.alternatives.ask` again, update the canvas, check the new pains as in step 5, then the brief |
+| `pain_without_source` | For each pain named: open its page again and copy the sentence that says it, or change the row's status and take the pain out of the alternatives block and the brief. A figure with no sentence behind it is put to the builder with `canvas.pains.figure`. Show the builder the rows that changed |
+| `promise` | Ask `canvas.questions.uvp.ask` again, once, with the advisor of step 5 if the builder does not know; update the canvas, then the brief |
 | `questions` | Rewrite them yourself, without asking |
 | `statement_names_solution`, `statement_too_long` | Rewrite the statement as in step 4, show it, and with the builder's written approval run `approve-statement` again. Copy the new statement to the canvas and the brief |
 | `statement_without_source` | Look for a third-party source for a figure of the statement as in step 3. If there is none, the statement changes to figures that have one, and is approved again |
-| `claim_without_status`, `quote_does_not_support` | Open the page of each row named, copy the sentence that says it or change the row's status, show the builder the rows that changed, and approve the statement again if it used one of them |
+| `claim_without_status`, `quote_does_not_support` | Open the page of each row named, copy the sentence that says it or change the row's status, show the builder the rows that changed, and approve the statement again if it used one of them. For a row of the canvas (`P` or `A`), a pain that is no longer supported leaves the alternatives block and the brief, and an advisor's proposal that loses its source is put to the builder again |
 
 ## 8. Close
 
@@ -297,13 +350,13 @@ Say `done.title`, `done.detail` and `done.files`.
 Then show the summary of the Lean Canvas, read from `.sbr/lean-canvas.md` as it is now:
 
 1. Say `summary.title`.
-2. One line per block, in the order of the canvas, with its name from `canvas.sections` in bold and its content in one sentence. Use the builder's words; shorten, do not rewrite. For the segments, list them all and mark the chosen one with `canvas.chosen_mark`. For the alternatives, keep one frustration between double quotes, as the person would say it.
+2. One line per block, in the order of the canvas, with its name from `canvas.sections` in bold and its content in one sentence. Use the builder's words; shorten, do not rewrite. For the segments, list them all and mark the chosen one with `canvas.chosen_mark`. For the alternatives, keep one frustration between double quotes, as the person would say it. A block or a pain that came from the advisor keeps its mark.
 3. A block that is pending shows `canvas.pending`. A block the builder did not fill does not appear.
 4. Costs and revenue appear only if the builder gave them, under their own names, which already say they are for the builder alone. No comment on them.
-5. Close the summary with `summary.sources`, with the number of claims of `.sbr/problem.md` in each status.
+5. Close the summary with `summary.sources`, with the number of claims of `.sbr/problem.md` in each status, and `summary.pains`, with the number of `P` rows that are supported and the number that are not.
 
 The summary is a reading of the files, not a new version: if a line does not fit, shorten it, never change what it says.
 
 Close with `done.next`. Do not commit; the builder decides when.
 
-The ten questions of the problem module, the list of accepted sources and the rule of the statement are the plugin author's. The Lean Canvas is Ash Maurya's adaptation of the Business Model Canvas. The pushes of the canvas questions are adapted from the `/office-hours` skill of gstack (MIT, Garry Tan).
+The ten questions of the problem module, the list of accepted sources and the rule of the statement are the plugin author's. The Lean Canvas is Ash Maurya's adaptation of the Business Model Canvas. The pushes of the canvas questions are adapted from the `/office-hours` skill of gstack (MIT, Garry Tan). The advisor's method (searching with general terms, weighing conventional wisdom against what this builder said, and testing each premise before proposing) is adapted from the same skill.
