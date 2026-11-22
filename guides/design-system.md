@@ -1,6 +1,6 @@
 # Design system: from the brief to three directions
 
-How the `design` skill turns an approved brief and four answers into three directions that are different on purpose and that pass the gate before anything is drawn. The main thread reads sections 1 and 2; the agent that writes one direction reads the whole guide.
+How the `design` skill turns an approved brief, the builder's answers and the structure of screen 1 into three directions that are different on purpose and that pass the gate before anything is drawn. The main thread reads sections 1, 2 and 5; the agent that writes one direction reads the whole guide.
 
 A direction is one `tokens.json` ([tokens contract](../docs/contracts/tokens.md)) and the two boards of its free screen 1 ([promise-screen.md](promise-screen.md)). Screens 2 to 4 never change; they take the skin of the tokens. Everything the builder can change is in those files and in the copy. Numbers below repeat the contract so they are at hand; `templates/contract.json` is what the verifier reads.
 
@@ -13,36 +13,40 @@ Sources of these rules are in [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).
 3. The personality traits, up to three.
 4. The brief: `persona`, `pain`, `current_solution`, `promise`.
 5. `promise.md`: what the builder wants the promise screen to show of the problem, and how.
-6. `market.md`, when the market look ran.
+6. `structure.md`: what the visitor must understand, in order; every direction follows it.
+7. `market.md`, when the market look ran.
 
 An earlier line beats a later one. An answer the builder left to the plugin is derived from the brief and written down as derived.
 
-## 1. Name the world of the subject
+## 1. The scene of use and the builder's words
 
-Before any value, write four or five lines about the world the persona is in when the pain happens: where they are, what they hold and read, the tools, the objects, the signs, the materials. Take from that world two or three colors that exist in it, the character of its lettering, and whether its objects are sharp or soft, dense or airy.
+Two things drive a direction, and nothing else does.
 
-- Start from this persona, not from the category of the product and not from its obvious opposite. A tool for a bakery draws on flour sacks, proofing baskets and a chalk menu, not on "food is orange".
-- Three looks show up when nobody decided. Use one only if the brief asks for it in words: a cream ground with a serif headline and a terracotta accent; a near-black ground with a neon accent and glowing edges; newspaper hairlines with an italic serif headline and tiny tracked monospace labels.
-- Light or dark comes from the scene of use: who, where, under what light. Never from the category.
-- If a decision cannot cite a line of the brief, it is decoration. Every decision in `system.md` carries its citation (R31).
+- **The scene of use** gives the scheme and the materials. In two lines: who looks at the page, where and under what light, and what the surfaces around them are like: sharp or soft, dense or airy. Light or dark comes from that scene or from the builder's tone answer, never from the category. Sharp surfaces read as small radii and fine lines; soft ones as larger radii; dense ones as the lower half of the spacing ranges; airy ones as the upper half.
+- **The builder's words** give the idea. Each direction answers some of what the builder said in `answers.md` and `promise.md`: their traits, how they imagine the first screen, what must stand out. The direction cites those words, and every visual decision of it can be traced to them (R31).
+
+No direction is a literal picture of the subject. An object, a place or a tool of the persona's world never becomes the idea of a direction, its name or a drawing: that is the first look anyone would make, and it says nothing the copy does not.
+
+- Three looks show up when nobody decided. Use one only if the builder asks for it in words: a cream ground with a serif headline and a terracotta accent; a near-black ground with a neon accent and glowing edges; newspaper hairlines with an italic serif headline and tiny tracked monospace labels.
+- If a decision cannot cite the builder's words or a line of the brief, it is decoration. Every decision in `system.md` carries its citation (R31).
 
 ## 2. Fix the axes before writing values
 
-The main thread fills this table in `.sbr/design/concepts.md` and gives each agent only its own row. That is what makes the three directions differ (criterion B1) instead of converging.
+The main thread fills this table in `.sbr/design/axes.md` and gives each agent only its own row. That is what makes the three directions differ (criterion B1) instead of converging. The table is working notes: the builder sees the drawn directions, not the table.
 
 | Axis | Values | Rule across the three |
 |---|---|---|
-| Layout idea | One line: where the headline sits, how the pains are shown, what leads the eye after the button | All three different: no two share their blocks order, grouping, layout and fills |
-| Scheme | `light`, `dark` | From the scene of use; may repeat |
+| Answers | The builder's words the direction answers, quoted | Different words for each, as far as there are words |
+| Layout idea | One line: where the headline sits, how the pains are shown, what leads the eye after the button | All three different: no two share their grouping, layout and fills. The order of the blocks is the one of `structure.md` for all three |
+| Scheme | `light`, `dark` | From the builder's tone, or the scene of use; may repeat |
 | Accent hue | A hue in degrees | At least 40° apart from the other two, or a different scheme |
-| Type pairing | Kind of pair and the two families | No pair repeated |
+| Type system | The system `design.mjs type` dealt to the letter | Dealt, never chosen; three different systems |
 | Category code | follows, departs, ignores | With `market.md`: one follows it and one departs from it on purpose |
-| Leading trait | One of the builder's traits | A different one leads each direction |
 
 - Hue is the HSL hue. The distance between two hues is the smaller of `|a − b|` and `360 − |a − b|`.
 - If the builder brought brand colors, the three directions keep them and differ in everything else; the hue rule does not apply and each file says `palette_source: builder`.
 - A violet accent (hue 250° to 300° with saturation of 15% or more) is allowed only when the builder asked for it.
-- Name each direction for its idea, in the builder's language, in 40 characters or fewer. No direction is presented as the recommended one.
+- Name each direction for its idea, in the builder's words, in the builder's language, in 40 characters or fewer. No direction is presented as the recommended one.
 
 ## 3. Design in gray first
 
@@ -79,17 +83,19 @@ Color added to a hierarchy that already works in gray makes it stronger. Color u
 
 Do not estimate contrast. Write the values and run the verifier.
 
-## 5. Type pairing
+## 5. Type: dealt from the library
 
 Fonts come from the Google Fonts catalog and are served by the landing itself. `display` draws the headline and the headings; `body` draws everything else.
 
-1. From the world of section 1, name the lettering the persona already trusts: a newspaper, a terminal, a product label, a school notebook, a road sign. Say its tone in two words.
-2. Choose the kind of pair: one family in two weights; a display with character over a quiet body; two classes that contrast (serif with sans, slab with sans, condensed with humanist).
-3. Shortlist three candidates for each role and choose the one closest to that tone.
-4. Leave out the faces everyone reaches for by default, unless the builder names one. As the display voice: Inter, Roboto, Open Sans, Lato, Montserrat, Poppins, Raleway, DM Sans, Plus Jakarta Sans, Space Grotesk, Outfit, Playfair Display, Fraunces, Lora, Syne, IBM Plex Sans, Instrument Sans. Several of them are fine as body when the concept says why. Novelty and script faces are out in any role.
-5. Check the exact family name in the catalog, that the weights you need exist in upright style, and that the Latin subset covers the language of the copy. The build downloads the family by that name: a wrong name breaks the build, not the verifier.
-6. Stay in budget: at most two families and four (family, weight) pairs, and every listed weight used by a style of that role. A usual budget is one display weight and two body weights, the second one for the button.
-7. `fallback` is `sans-serif`, `serif` or `monospace`, the class of the family. There are no italics.
+A model that picks fonts from memory reaches for the same few faces, and a list of banned faces only moves it to the next ones. So families are never chosen: `design.mjs type` deals them from the plugin's type library, `templates/type-library.json`, a curated set of pairings each tagged with the moods it carries (precise, calm, warm, bold, refined, classic and others).
+
+1. The script reads the builder's traits in `answers.md` and their words about how the first screen should look in `promise.md`, and turns them into moods: each of the six traits points to its moods, and each word of `locales/<locale>/moods.json` found in what the builder wrote points to its own.
+2. It ranks the pairings by how many of those moods they carry, breaks ties with a seed taken from the brief, and deals three, each of a different class of face where it can (serif, slab, grotesk, geometric, wide): the same brief and answers always deal the same three.
+3. It leaves out a pairing whose families are not in the canvas's list (`--fonts`), and one the builder already turned down (`--exclude`).
+4. Each dealt system gives the display family with one weight (600 where the family has it) and the body family with two (400 for text, 600 for the button). That fits the budget of at most two families and four (family, weight) pairs, and the title is the heaviest style, as the scale requires.
+5. `fallback` is `serif` for a serif or slab display and `sans-serif` otherwise; there are no italics.
+
+The direction keeps its dealt families. It may take another weight of the same family only when the verifier asks for it and the family has it (`available` in `type.json`). A family the builder names wins over the deal, if the canvas lists it and it fits the budget. These faces stay out of the library as display voices because everyone reaches for them by default: Inter, Roboto, Open Sans, Lato, Montserrat, Poppins, Raleway, DM Sans, Plus Jakarta Sans, Space Grotesk, Outfit, Playfair Display, Fraunces, Lora, Syne, IBM Plex Sans, Instrument Sans. Novelty and script faces are out in any role.
 
 ## 6. The scale
 
@@ -150,7 +156,7 @@ Tighten the tracking of large display type a little (−0.01 to −0.03 em) and 
 - Screen 1 is designed freely for each direction, as two boards: [promise-screen.md](promise-screen.md) is how, and what it always has. Screens 2 to 4 have no layout to decide.
 - Its layout follows the direction's layout idea and the builder's answers in `promise.md`. Drawings are optional `figure` elements, flat and drawn only with tokens. A drawing never fixes an empty section; better copy and grouping do.
 
-These never appear, so no concept promises them: gradients on text or buttons, glows, emoji as icons, glass panels, decorative blobs, icons inside colored circles, a pill label above the headline, a menu, prices, testimonials, logos, counters.
+These never appear, so no direction promises them: gradients on text or buttons, glows, emoji as icons, glass panels, decorative blobs, icons inside colored circles, a pill label above the headline, a menu, prices, testimonials, logos, counters.
 
 ## 9. The copy
 
@@ -196,10 +202,11 @@ The reviewer looks for what a list cannot hold: verbs that would sell any produc
 3. Exit 1: change what each `fail` row names and run it again. Exit 2: the call or a file is wrong, not the design. Reading the rows is explained in [landing-requirements.md](landing-requirements.md#reading-the-output).
 4. A direction is drawn only after exit 0 (criterion B2).
 5. Then the boards of screen 1 are written and checked the same way, with the two boards added to the call.
-6. With the three directions passing, the main thread checks B1: no shared composition between the boards, no repeated pair of families, accents 40° apart or different schemes.
+6. With the three directions passing, the main thread checks B1: no shared composition between the boards, the dealt families, no repeated pair of families, accents 40° apart or different schemes.
+7. A critic who has seen nothing else judges the screenshots of each direction (`agents/design-critic.md`); a rejected direction is redone, at most twice, before the builder sees it.
 
 Every change the builder asks for during iteration goes through the same loop before the canvas is repainted.
 
 ## 11. `system.md`
 
-Written at the final approval, in the builder's language. One short section per decision: the world, scheme, palette, type, scale, space and shape, and the free screen (what it shows of the problem and how). Each one states the value and quotes the line of the brief that justifies it. The reviewer checks those quotes against the brief (R31).
+Written at the final approval, in the builder's language. One short section per decision: the scene of use, scheme, palette, type, scale, space and shape, and the free screen (what it shows of the problem, in what order and how). Each one states the value and quotes the line of the brief that justifies it. The reviewer checks those quotes against the brief (R31).

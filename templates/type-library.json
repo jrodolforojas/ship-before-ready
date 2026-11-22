@@ -1,0 +1,813 @@
+{
+  "source": "Taste Skill 2.5.1, library/type.json, https://github.com/Leonxlnx/taste-skill, Copyright (c) 2026 Leonxlnx, MIT License. Filtered and reshaped for Ship Before Ready: see ATTRIBUTIONS.md.",
+  "systems": [
+    {
+      "id": "geist",
+      "class": "neo-grotesk",
+      "moods": [
+        "precise",
+        "technical",
+        "calm"
+      ],
+      "display": {
+        "family": "Geist",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Geist",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "host",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "precise"
+      ],
+      "display": {
+        "family": "Host Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Host Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "mona",
+      "class": "neo-grotesk",
+      "moods": [
+        "technical",
+        "bold",
+        "precise"
+      ],
+      "display": {
+        "family": "Mona Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Mona Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "hanken",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "trusted"
+      ],
+      "display": {
+        "family": "Hanken Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Hanken Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "schibsted",
+      "class": "neo-grotesk",
+      "moods": [
+        "bold",
+        "trusted"
+      ],
+      "display": {
+        "family": "Schibsted Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Schibsted Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "onest",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "trusted"
+      ],
+      "display": {
+        "family": "Onest",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Onest",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "funnel",
+      "class": "neo-grotesk",
+      "moods": [
+        "friendly",
+        "bold"
+      ],
+      "display": {
+        "family": "Funnel Display",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Funnel Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "manrope",
+      "class": "geometric",
+      "moods": [
+        "precise",
+        "friendly"
+      ],
+      "display": {
+        "family": "Manrope",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Manrope",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "sora",
+      "class": "geometric",
+      "moods": [
+        "technical",
+        "bold"
+      ],
+      "display": {
+        "family": "Sora",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "archivo",
+      "class": "wide",
+      "moods": [
+        "bold",
+        "technical"
+      ],
+      "display": {
+        "family": "Archivo",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Archivo",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "anybody",
+      "class": "wide",
+      "moods": [
+        "playful",
+        "bold"
+      ],
+      "display": {
+        "family": "Anybody",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.02
+      },
+      "body": {
+        "family": "Onest",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "bricolage",
+      "class": "grotesk-soft",
+      "moods": [
+        "friendly",
+        "playful",
+        "warm"
+      ],
+      "display": {
+        "family": "Bricolage Grotesque",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "red-hat",
+      "class": "neo-grotesk",
+      "moods": [
+        "trusted",
+        "friendly"
+      ],
+      "display": {
+        "family": "Red Hat Display",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Red Hat Text",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "gabarito",
+      "class": "geometric",
+      "moods": [
+        "friendly",
+        "playful"
+      ],
+      "display": {
+        "family": "Gabarito",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "chivo",
+      "class": "neo-grotesk",
+      "moods": [
+        "technical",
+        "calm"
+      ],
+      "display": {
+        "family": "Chivo",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Chivo",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "epilogue",
+      "class": "neo-grotesk",
+      "moods": [
+        "precise",
+        "bold"
+      ],
+      "display": {
+        "family": "Epilogue",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.035
+      },
+      "body": {
+        "family": "Epilogue",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "familjen",
+      "class": "neo-grotesk",
+      "moods": [
+        "technical",
+        "calm"
+      ],
+      "display": {
+        "family": "Familjen Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Familjen Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "urbanist",
+      "class": "geometric",
+      "moods": [
+        "friendly",
+        "precise"
+      ],
+      "display": {
+        "family": "Urbanist",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Urbanist",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "reddit",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "precise"
+      ],
+      "display": {
+        "family": "Reddit Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "Reddit Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "suse",
+      "class": "neo-grotesk",
+      "moods": [
+        "technical",
+        "precise"
+      ],
+      "display": {
+        "family": "SUSE",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.03
+      },
+      "body": {
+        "family": "SUSE",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "albert",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "refined"
+      ],
+      "display": {
+        "family": "Albert Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Albert Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "figtree",
+      "class": "geometric",
+      "moods": [
+        "friendly",
+        "calm"
+      ],
+      "display": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "work-sans",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "trusted"
+      ],
+      "display": {
+        "family": "Work Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Work Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "rethink",
+      "class": "neo-grotesk",
+      "moods": [
+        "calm",
+        "friendly"
+      ],
+      "display": {
+        "family": "Rethink Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.025
+      },
+      "body": {
+        "family": "Rethink Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "newsreader",
+      "class": "serif",
+      "moods": [
+        "trusted",
+        "refined",
+        "calm"
+      ],
+      "display": {
+        "family": "Newsreader",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.018
+      },
+      "body": {
+        "family": "Hanken Grotesk",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "source-serif",
+      "class": "serif",
+      "moods": [
+        "trusted",
+        "classic"
+      ],
+      "display": {
+        "family": "Source Serif 4",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.02
+      },
+      "body": {
+        "family": "Libre Franklin",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "garamond",
+      "class": "serif",
+      "moods": [
+        "classic",
+        "refined",
+        "calm"
+      ],
+      "display": {
+        "family": "EB Garamond",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.012
+      },
+      "body": {
+        "family": "Jost",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "literata",
+      "class": "serif",
+      "moods": [
+        "trusted",
+        "warm",
+        "calm"
+      ],
+      "display": {
+        "family": "Literata",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.02
+      },
+      "body": {
+        "family": "Figtree",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "besley",
+      "class": "serif",
+      "moods": [
+        "warm",
+        "bold",
+        "classic"
+      ],
+      "display": {
+        "family": "Besley",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.02
+      },
+      "body": {
+        "family": "Albert Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "vollkorn",
+      "class": "serif",
+      "moods": [
+        "warm",
+        "classic"
+      ],
+      "display": {
+        "family": "Vollkorn",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.015
+      },
+      "body": {
+        "family": "Work Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "zilla",
+      "class": "slab",
+      "moods": [
+        "warm",
+        "trusted",
+        "bold"
+      ],
+      "display": {
+        "family": "Zilla Slab",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.018
+      },
+      "body": {
+        "family": "Rethink Sans",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    },
+    {
+      "id": "nunito",
+      "class": "soft",
+      "moods": [
+        "friendly",
+        "warm"
+      ],
+      "display": {
+        "family": "Nunito",
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "tracking": -0.02
+      },
+      "body": {
+        "family": "Nunito",
+        "weights": [
+          400,
+          500,
+          600
+        ]
+      }
+    }
+  ]
+}

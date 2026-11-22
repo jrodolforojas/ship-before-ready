@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { readFileSync, realpathSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readOutline } from './outline.mjs';
 import { boardsProblems, readBoard } from './promise-board.mjs';
 
 export const EXIT_CODES = { ok: 0, requirementFailed: 1, usage: 2, noChrome: 3 };
@@ -820,7 +821,7 @@ function checkCopyValues(copy, contract, report) {
   record(report, 'R27', priceProblems(entries), 'copy has no currency symbol, amount or price word');
 }
 
-export function checkDesign({ tokens, copy, locale, contract, report, boards = null }) {
+export function checkDesign({ tokens, copy, locale, contract, report, boards = null, order = null }) {
   const tokenShape = tokenShapeProblems(tokens, contract.tokens);
   const copyShape = copyShapeProblems(copy, contract.copy, locale);
   record(report, 'R14', tokenShape, 'tokens.json has the closed key set, types and formats of the contract');
@@ -829,13 +830,13 @@ export function checkDesign({ tokens, copy, locale, contract, report, boards = n
   if (copyShape.length) COPY_ROWS.forEach((id) => report.skip(id, 'the language file does not have the shape of the contract: see R32'));
   if (tokenShape.length === 0) checkTokenValues(tokens, contract.tokens, report);
   if (copyShape.length === 0) checkCopyValues(copy, contract, report);
-  checkBoards({ boards, copy, copyShape, contract, report });
+  checkBoards({ boards, copy, copyShape, contract, report, order });
 }
 
-function checkBoards({ boards, copy, copyShape, contract, report }) {
+function checkBoards({ boards, copy, copyShape, contract, report, order }) {
   if (!boards) return;
   if (copyShape.length) return BOARD_ROWS.forEach((id) => report.skip(id, 'the boards are not checked until the language file has the shape of the contract: see R32'));
-  const problems = boardsProblems(boards, { copy, contract });
+  const problems = boardsProblems(boards, { copy, contract, order });
   BOARD_ROWS.forEach((id) => record(report, id, [...new Set(problems.filter((found) => found.id === id).map((found) => found.message))], BOARD_PASS[id]));
 }
 
@@ -848,7 +849,7 @@ const BOARD_PASS = {
   R14: 'the boards use only token values',
   R15: 'the boards have no gradient, glow or effect',
   R23: 'the boards carry no motion',
-  R28: 'the boards have the hooks of the promise screen, and phone and desktop show the same texts in the same styles',
+  R28: 'the boards have the hooks of the promise screen in the order of the structure, and phone and desktop show the same texts in the same styles',
   R32: 'every text of the free screen comes from the copy',
 };
 
@@ -866,9 +867,17 @@ export function readBoards(phonePath, desktopPath, contract) {
   return { phone: read(phonePath), desktop: read(desktopPath) };
 }
 
+export function readStructure(path) {
+  const text = existsSync(path) ? readFileSync(path, 'utf8') : null;
+  if (text === null) throw new UsageError(`structure: cannot read ${path}`);
+  const order = readOutline(text);
+  if (!order) throw new UsageError(`structure: ${path} has no "order:" line in its header`);
+  return order;
+}
+
 function main(args) {
-  if (![2, 4].includes(args.length)) throw new UsageError('usage: verify-design.mjs <tokens.json> <copy.json> [<promise-phone.html> <promise-desktop.html>]');
-  const [tokensPath, copyPath, phonePath, desktopPath] = args;
+  if (![2, 4, 5].includes(args.length)) throw new UsageError('usage: verify-design.mjs <tokens.json> <copy.json> [<promise-phone.html> <promise-desktop.html> [<structure.md>]]');
+  const [tokensPath, copyPath, phonePath, desktopPath, structurePath] = args;
   const contract = loadContract();
   const report = createReport(contract, 'design');
   checkDesign({
@@ -878,6 +887,7 @@ function main(args) {
     contract,
     report,
     boards: phonePath ? readBoards(phonePath, desktopPath, contract) : null,
+    order: structurePath ? readStructure(structurePath) : null,
   });
   if (!phonePath) BOARD_ONLY_ROWS.forEach((id) => report.skip(id, 'the two boards of the free screen were not given'));
   return printReport(report);
