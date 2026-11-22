@@ -218,5 +218,9 @@
     "detail": "El revisor, sin más contexto que los archivos, pudo decir quién es el usuario, qué le duele y qué hace hoy, y comprobó que la declaración del problema tiene fuente y no nombra la solución.",
     "files": "Quedaron tres archivos: .sbr/problem.md (el problema y sus fuentes), .sbr/lean-canvas.md y .sbr/brief.md.",
     "next": "Lo que sigue: /ship-before-ready:rules."
+  },
+  "save": {
+    "deferred": "No pude guardar esta respuesta en .sbr/ todavía. La conservo aquí y sigo con las preguntas; la guardo en cuanto pueda.",
+    "needed": "Para seguir necesito guardar sus respuestas en .sbr/, y la escritura sigue bloqueada. Apruebe la escritura en esa carpeta y avíseme; no se pierde nada de lo que ya respondió."
   }
 }
