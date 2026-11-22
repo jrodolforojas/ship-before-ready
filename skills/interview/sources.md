@@ -8,7 +8,7 @@ Phrases are in `sources.*` of the phrases file. The script is `${CLAUDE_SKILL_DI
 
 Read the component's answers and write one row per fact that could be true or false: a figure, a ranking, a frequency, a cost, how many people, a cause.
 
-- One fact per row. "Segundo país con peor tráfico y se pierden 1 a 2 horas diarias" is two rows.
+- One fact per row. A sentence that carries a ranking and a duration is two rows.
 - Keep the builder's figure and unit exactly as given. Do not round, convert or improve it.
 - Every fact gets a row, also the ones that will end as `sin fuente`. A row is never dropped because nothing was found.
 - An answer of "no sé" has no claim yet: research the question itself. What you find becomes a row whose claim ends with `sources.found_by_skill`.
@@ -44,10 +44,10 @@ Budget per claim: the builder's own links first; then at most two searches and t
 | `study` | `sources.types.study` | A paper, a research report, a survey with its method |
 | `official_data` | `sources.types.official_data` | A government, a statistics office, a regulator, a multilateral body |
 | `news` | `sources.types.news` | A media article. An article that reports a study is `news` unless you opened the study itself |
-| `collaborative_index` | `sources.types.collaborative_index` | Figures contributed by its users: Numbeo, Wikipedia and the like |
+| `collaborative_index` | `sources.types.collaborative_index` | Figures or text contributed by its own users, with no editorial review |
 | `own_research` | `sources.types.own_research` | Research the builder ran: a survey, interviews with counts, their own data. Not an observation or a perception |
 
-- Be strict with `supported`. A page about the same subject with another figure is `contradicted`; the same figure about another country is `other_context`; a figure "up to 2 hours" does not support "2 hours on average". When in doubt, it is not `supported`.
+- Be strict with `supported`. A page about the same subject with another figure is `contradicted`; the same figure about another country is `other_context`; a figure given as a maximum does not support the same figure given as an average. When in doubt, it is not `supported`.
 - The builder's own research is `supported` with type `own_research`: the source cell says where it lives (a link or a document's name) and the quote is the result as the builder gave it. It does not count as a third-party source for the statement.
 - A `contradicted` row stays in the table. The builder decides whether to correct the claim to what the source says, which makes it `supported`, or to keep it, marked.
 

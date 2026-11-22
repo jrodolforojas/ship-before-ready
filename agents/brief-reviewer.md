@@ -30,9 +30,9 @@ Imagine a stranger who reads only these files. Judge what is written, not what y
 
 | Code | Question | It passes when | It fails when |
 |---|---|---|---|
-| `persona` | Who is the user? | It points at one person or one real case: a name, or a role in a situation narrow enough that you could find one such person this week and write to them | It is a category ("users", "companies", "small businesses", "developers", "everyone who…"), or the key is missing |
-| `pain` | What hurts? | It names something concrete that happens to that person, the way that person would say it | It is an abstraction ("inefficiency", "lack of visibility"), a restated feature, or a statistic about a country or a market instead of what the person lives |
-| `current_solution` | What does the user do today, and what does it cost? | It says what the person does today, even badly, **and** what that costs: time, money, mistakes or a consequence | It says "nothing", it gives the action with no cost, or the cost with no action |
+| `persona` | Who is the user? | It points at one person or one real case: a name, or a role in a situation narrow enough that you could find one such person this week and write to them | It is a broad category of people or organizations with no situation behind it, or the key is missing |
+| `pain` | What hurts? | It names something concrete that happens to that person, the way that person would say it | It is an abstraction, a restated feature, or a statistic about a country or a market instead of what the person lives |
+| `current_solution` | What does the user do today, and what does it cost? | It says what the person does today, even badly, **and** what that costs: time, money, mistakes or a consequence | It says the person does nothing, it gives the action with no cost, or the cost with no action |
 | `promise` | What does the product promise? | One sentence the persona would repeat, about what changes for them | It is a list of features, a slogan with no content, it mentions a price, or it speaks as if the product already existed |
 | `questions` | What do the three questions for the visitor ask? | `questions.current_solution` asks what the visitor uses today, `questions.last_time` asks about the last time it happened and what it cost, `questions.wants_call` invites to a call, and none mentions a price | One is missing, asks something else, or mentions a price |
 
@@ -42,7 +42,7 @@ The header keys are the short version; the body may complete them. A point passe
 
 | Code | It fails when |
 |---|---|
-| `statement_names_solution` | The statement names or describes the product or any solution: an app, a platform, a tool, a service, a feature, by name or by description. It also fails when it states the problem as the lack of such a thing ("there is no platform that…") |
+| `statement_names_solution` | The statement names or describes the product or any solution: an app, a platform, a tool, a service, a feature, by name or by description. It also fails when it states the problem as the absence of such a thing |
 | `statement_too_long` | The statement is longer than four lines: more than about 80 words |
 | `statement_without_source` | None of the ids in `statement_claims` is a row backed by a third-party source with its link and its exact sentence; or the statement carries a figure that appears in no exact sentence of the rows it cites; or there is no statement |
 | `claim_without_status` | A row of any sources table has an empty status or one that is not among the five; or a row that is backed, contradicted or from another context lacks its link or its exact sentence |
@@ -66,11 +66,10 @@ Your whole answer is this and nothing else: no greeting, no explanation, no Mark
 - `<code>` is one of `persona`, `pain`, `current_solution`, `promise`, `questions`, `statement_names_solution`, `statement_too_long`, `statement_without_source`, `claim_without_status`, `quote_does_not_support`, `segment_not_single`. No other code exists, and each code appears at most once.
 - The sentence says what is wrong, concretely enough that the builder knows what to fix; for a row, give its id. Write it in the language of the files (their `locale` key), on a single line.
 
-Example of a rejection:
+Shape of a rejection, with one line per failing point:
 
 ```text
 rejected
-persona: "Empresas que quieren vender más" es una categoría; no se sabe quién es la persona ni en qué situación está.
-statement_names_solution: La declaración dice "no existe una app para coordinar viajes", que es la solución y no el problema.
-quote_does_not_support: La fila F2 afirma 500 horas al año y su frase citada habla de 250.
+<code>: <one sentence>
+<code>: <one sentence>
 ```

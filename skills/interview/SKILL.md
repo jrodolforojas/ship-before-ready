@@ -18,6 +18,7 @@ The files follow [the state contract](../../docs/contracts/state.md); the review
 
 - **One question at a time.** Ask it, stop, and wait for the answer. Never two questions in one message, never the next one before the builder answered. Questions are plain messages, not AskUserQuestion: the answers are open.
 - **The problem comes first, without the solution.** Until the statement is approved, do not ask about the product and do not write it down. When an answer describes the product, an app or a feature, say `problem.solution_reminder`, keep the part that is about the problem and go on. Remember what they said for the canvas.
+- **Never bias the builder.** No example of a solved idea, no sample answer and no hint of what a good answer looks like, in a question, a push or an acknowledgement. Formats are explained in the abstract: what goes in each field, never a filled-in idea. Never read, quote or show the files of `templates/example/`: they are test data of the plugin's own page.
 - **"No sé" is a valid answer.** Say `problem.dont_know`, write it down as it is and research it when the component closes. Never push on it and never fill it with a guess.
 - **Write only what the builder said or what a page you opened says.** Do not invent a person, a figure, a cost or a quote. A fact you found, and the builder did not say, is marked `sources.found_by_skill` until they confirm it.
 - **Sources.** Cite only pages you opened in this run, with the exact sentence copied from the page. Never a search snippet, never a page from memory, never a figure that is in neither the builder's answers nor a copied sentence. The procedure is [sources.md](sources.md); read it before the first table.
@@ -61,7 +62,7 @@ When resuming, read the files of `.sbr/` that exist before going on.
 | `viability` | `V` | 9, 10 |
 
 - Open a component with its `problem.components.<component>.intro`, in the same message as its first question.
-- Ask each question with its `problem.questions.<n>.ask`, word for word, followed by its `help` on the next line. The `ask` is never reworded, shortened or merged with another.
+- Ask each question with its `problem.questions.<n>.ask`, word for word and alone. The `ask` is never reworded, shortened, explained, illustrated or merged with another. If the builder asks what a question means, explain the term in the abstract, without an example answer.
 - After each answer, write it under its question in `.sbr/problem.md` in the builder's words, acknowledge it in one short line without praise and ask the next question. Do not judge whether an answer is good, do not ask for a source yet and do not push: the sources table is where an answer gets checked.
 - If an answer already covered a later question of the same component, write it there too and confirm it in one line instead of asking it.
 - Viability is about solving the problem in general (what would change, whether it can be done today, who did it elsewhere), not about the builder's product.
@@ -131,7 +132,7 @@ Say `statement.intro`.
 2. **Draft it.** One paragraph of three or four lines, at most 480 characters, that explains the problem concretely with facts and figures:
    - Every figure in it comes from a `supported` claim, with the same number and the same unit as its quoted sentence. Nothing from a `no_source`, `contradicted`, `other_context` or `own_experience` row.
    - At least one of those claims has a third-party source.
-   - It never includes the solution: no product, app, platform, tool or feature, by name or by description, and no sentence that states the problem as the lack of one ("no existe una plataforma que…").
+   - It never includes the solution: no product, app, platform, tool or feature, by name or by description, and no sentence that states the problem as the absence of such a thing.
 3. Show it with `statement.show`, then `statement.based_on` with the ids and claims it uses, then `statement.confirm`. **Stop and wait.**
 4. If the builder asks for a change, apply it and show it again. A change that brings in the solution is answered with `statement.names_solution` and rewritten without it. A change that brings in a new figure first needs its row and its source through step 3.
 5. With the builder's written approval, write the statement in the header (`statement`, on one line, between double quotes, with any double quote inside replaced by a single one), the ids it uses (`statement_claims: [T1, R2]`) and the same text under the statement's heading in the body, in place of `statement.pending`. Then:
@@ -152,10 +153,10 @@ Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.
 | # | Block | Asked with | Kind | The answer is not enough when |
 |---|---|---|---|---|
 | 1 | `problem` | Not asked: it is the approved statement, followed by `canvas.problem_sources` | Required | |
-| 2 | `segments` | `canvas.questions.segments.ask` | Required | It names a category ("usuarios", "empresas", "pymes", "todo el mundo") with no person, situation or moment behind it |
+| 2 | `segments` | `canvas.questions.segments.ask` | Required | It names a broad category of people or organizations, with no person, situation or moment behind it |
 | 3 | The chosen segment | `canvas.questions.chosen_segment.ask` | Required | It names more than one, or none. If the builder listed a single segment, that one is chosen: confirm it in one line and do not ask |
 | 4 | `alternatives` | `canvas.questions.alternatives.ask`, with `{segment}` | Required | An alternative has no concrete action, no cost (time, money, mistakes, a consequence), or there is no frustration in words the person would say |
-| 5 | `uvp` | `canvas.questions.uvp.ask` | Required | It is a list of features, or brochure words ("más fácil", "optimiza", "solución integral") the person would never say |
+| 5 | `uvp` | `canvas.questions.uvp.ask` | Required | It is a list of features, or marketing words the person would never say |
 | 6 | `solution` | `canvas.questions.solution.ask` | Required | Nothing the person could picture using |
 | 7 | `channels` | `canvas.questions.channels.ask` | Invited | Never |
 | 8 | `key_metrics` | `canvas.questions.key_metrics.ask` | Invited | Never |
@@ -166,7 +167,7 @@ Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.
 - **Invited blocks never block.** Ask once. With "no sé", "después" or no answer, say `canvas.invited_pending` and write `canvas.pending` in the section.
 - **Costs and revenue.** One question for both. If the builder gives them, write each under its section exactly as said and answer only `canvas.builder_only_saved`: no opinion, no question back, no number of your own. If not, leave both sections out.
 - What the builder said about the solution during the problem module is a start, not the answer: say in one line what you noted and still ask `canvas.questions.solution.ask`, so they say what it is and what it does in their own words.
-- Frustrations are written between double quotes, as the person would say them. If the builder gave them in their own voice ("es tedioso coordinar"), keep their words; do not polish them into copy.
+- Frustrations are written between double quotes, as the person would say them. If the builder gave them in their own voice, keep their words; do not polish them into copy.
 
 ```markdown
 ---

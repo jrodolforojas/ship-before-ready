@@ -14,9 +14,9 @@ const STATE_FILES = ['problem.md', 'lean-canvas.md', 'brief.md']
 const contract = JSON.parse(readFileSync(join(PLUGIN_ROOT, 'templates/contract.json'), 'utf8'))
 const phrases = JSON.parse(readFileSync(join(PLUGIN_ROOT, 'locales/es/interview.json'), 'utf8'))
 
-const PAGE_SENTENCE = 'El 46% de la red vial está saturada en horas pico.'
+const PAGE_SENTENCE = 'El 46% de las respuestas llegó en la primera semana.'
 const PAGES = {
-  '/study': { type: 'text/html; charset=utf-8', body: `<html><body><script>var hidden = "46%"</script><p>El <strong>46%</strong> de la red vial\n est&aacute; saturada en horas pico. Otra frase sin el dato.</p></body></html>` },
+  '/study': { type: 'text/html; charset=utf-8', body: `<html><body><script>var hidden = "46%"</script><p>El <strong>46%</strong> de las respuestas\n lleg&oacute; en la primera semana. Otra frase sin el dato.</p></body></html>` },
   '/report.pdf': { type: 'application/pdf', body: '%PDF-1.7' },
   '/only-curl': { type: 'text/html; charset=utf-8', body: `<p>${PAGE_SENTENCE}</p>` },
 }
@@ -71,12 +71,12 @@ function edited(stateDir, name, change) {
 }
 
 const row = (cells) => `| ${cells.join(' | ')} |`
-const SOURCED_STATEMENT = 'En horas pico el 46% de la red vial está saturada.'
+const SOURCED_STATEMENT = 'En la primera semana llegó el 46% de las respuestas.'
 
 function problemWithLocalSource({ quote = PAGE_SENTENCE, page = '/study', status = 'respaldada', type = 'estudio' } = {}) {
   const stateDir = join(mkdtempSync(join(tmpdir(), 'sbr-interview-')), '.sbr')
   mkdirSync(stateDir)
-  const sourcedRow = row(['T1', 'El 46% de la red vial se satura en horas pico', status, type, `[local](${origin}${page})`, `"${quote}"`])
+  const sourcedRow = row(['T1', 'El 46% de las respuestas llega en la primera semana', status, type, `[local](${origin}${page})`, `"${quote}"`])
   const component = (title, letter, numbers, firstRow) =>
     [`## ${title}`, '', ...numbers.flatMap((number) => [`**${number}. Pregunta**`, '', 'Respuesta.', '']), '### Fuentes', '', row(['#', 'Afirmación', 'Estado', 'Tipo de fuente', 'Fuente', 'Frase exacta']), '|---|---|---|---|---|---|', firstRow ?? row([`${letter}1`, 'Algo que vi', 'experiencia propia', '—', '—', '—']), '']
   const text = [
@@ -87,7 +87,7 @@ function problemWithLocalSource({ quote = PAGE_SENTENCE, page = '/study', status
     'statement_claims: [T1]',
     '---',
     '',
-    '# Problema: tráfico',
+    '# Problema: asunto de prueba',
     '',
     '## Declaración del problema',
     '',
@@ -110,7 +110,7 @@ test('the contract names all have a phrase in the Spanish locale', () => {
   for (const code of contract.brief_finding_codes) assert.ok(phrases.review.fields[code], code)
   for (const component of contract.problem_components) {
     assert.ok(phrases.problem.components[component.key].title, component.key)
-    for (const number of component.questions) assert.ok(phrases.problem.questions[number].ask, `question ${number}`)
+    for (const number of component.questions) assert.deepEqual(Object.keys(phrases.problem.questions[number]), ['ask'], `question ${number} is asked as it is, with no hint`)
   }
   assert.deepEqual(contract.problem_components.flatMap((component) => component.questions), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 })
@@ -219,7 +219,7 @@ for (const { name, change, expected } of BROKEN_CANVASES) {
 test('check-canvas accepts invited blocks left pending and the blocks that are only for the builder', async () => {
   const stateDir = exampleRepo()
   const path = edited(stateDir, 'lean-canvas.md', (text) =>
-    `${text.replace(/## Canales\n\n[^\n]*\n/, '## Canales\n\nPendiente\n')}\n## Estructura de costos (solo para usted)\n\nServidores.\n\n## Fuentes de ingresos (solo para usted)\n\nComisión por viaje.\n`,
+    `${text.replace(/## Canales\n\n[^\n]*\n/, '## Canales\n\nPendiente\n')}\n## Estructura de costos (solo para usted)\n\nServidores.\n\n## Fuentes de ingresos (solo para usted)\n\nUna comisión.\n`,
   )
   assert.equal((await run(['check-canvas', path])).code, 0)
 })
@@ -242,7 +242,7 @@ test('check rejects a brief without its problem file or without an approved stat
 test('record-review writes approved only after an approved answer', async () => {
   const stateDir = exampleRepo()
   const briefPath = join(stateDir, 'brief.md')
-  const rejection = 'rejected\nstatement_names_solution: La declaración nombra la app.\nsegment_not_single: Hay dos segmentos elegidos.\n'
+  const rejection = 'rejected\nstatement_names_solution: La declaración nombra la solución.\nsegment_not_single: Hay dos segmentos elegidos.\n'
   const rejected = await run(['record-review', briefPath], rejection)
   assert.equal(rejected.code, 0)
   assert.equal(rejected.json.reviewer, 'pending')
@@ -273,7 +273,7 @@ test('verify-sources finds a sentence through tags, entities and line breaks', a
 })
 
 test('verify-sources reports a sentence that the page does not carry', async () => {
-  const { json } = await run(['verify-sources', problemWithLocalSource({ quote: 'El 90% de la red vial está saturada en horas pico.' })])
+  const { json } = await run(['verify-sources', problemWithLocalSource({ quote: 'El 90% de las respuestas llegó en la primera semana.' })])
   assert.deepEqual(json.not_found, ['T1'])
 })
 
@@ -296,9 +296,9 @@ test('verify-sources opens with curl a page that refuses fetch', async () => {
 })
 
 test('excerpt prints the sentences of a page that carry the words', async () => {
-  const { json } = await run(['excerpt', `${origin}/study`, 'red', 'vial'])
+  const { json } = await run(['excerpt', `${origin}/study`, 'primera', 'semana'])
   assert.equal(json.opened, true)
-  assert.deepEqual(json.sentences, ['El 46% de la red vial está saturada en horas pico.'])
+  assert.deepEqual(json.sentences, ['El 46% de las respuestas llegó en la primera semana.'])
 })
 
 test('approve-statement writes the approval only when every quote is on its page', async () => {
@@ -309,7 +309,7 @@ test('approve-statement writes the approval only when every quote is on its page
   assert.match(readFileSync(approvedPath, 'utf8'), /^statement_fingerprint: sha256:[0-9a-f]{64}$/m)
   assert.equal((await run(['check-problem', approvedPath])).code, 0)
 
-  const refusedPath = problemWithLocalSource({ quote: 'El 90% de la red vial está saturada en horas pico.' })
+  const refusedPath = problemWithLocalSource({ quote: 'El 90% de las respuestas llegó en la primera semana.' })
   const refused = await run(['approve-statement', refusedPath])
   assert.equal(refused.code, 1)
   assert.match(refused.stderr, /T1: the quote is not on/)
@@ -326,7 +326,7 @@ test('approve-statement refuses a statement with no third-party source', async (
 test('approve-statement approves again after the statement changes', async () => {
   const path = problemWithLocalSource()
   await run(['approve-statement', path])
-  writeFileSync(path, readFileSync(path, 'utf8').replaceAll(SOURCED_STATEMENT, 'El 46% de la red vial está saturada en horas pico.'))
+  writeFileSync(path, readFileSync(path, 'utf8').replaceAll(SOURCED_STATEMENT, 'El 46% de las respuestas llegó en la primera semana.'))
   assert.equal((await run(['check-problem', path])).code, 1)
   assert.equal((await run(['approve-statement', path])).code, 0)
   assert.equal((await run(['check-problem', path])).code, 0)

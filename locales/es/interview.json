@@ -41,44 +41,34 @@
     },
     "questions": {
       "1": {
-        "ask": "¿Cuál es el evento o accionable que activa la percepción del problema?",
-        "help": "Es decir: ¿qué pasa justo antes de que la persona diga \"esto es un problema\"?"
+        "ask": "¿Cuál es el evento o accionable que activa la percepción del problema?"
       },
       "2": {
-        "ask": "¿Se presenta cuando se está en un lugar o momento específico?",
-        "help": "Un lugar, una hora, una época, una situación."
+        "ask": "¿Se presenta cuando se está en un lugar o momento específico?"
       },
       "3": {
-        "ask": "¿Depende o es una reacción de una condición previa?",
-        "help": "Algo que tiene que existir antes para que el problema aparezca."
+        "ask": "¿Depende o es una reacción de una condición previa?"
       },
       "4": {
-        "ask": "¿Cuántas veces sucede u ocurre el detonador?",
-        "help": "Por día, por semana, por año: la cifra que tenga, o \"no sé\"."
+        "ask": "¿Cuántas veces sucede u ocurre el detonador?"
       },
       "5": {
-        "ask": "¿Cuántas personas son afectadas?",
-        "help": "Un número y de dónde sale, o \"no sé\"."
+        "ask": "¿Cuántas personas son afectadas?"
       },
       "6": {
-        "ask": "¿Sucede de forma periódica, constante o con estacionalidad?",
-        "help": "Si empeora en ciertas fechas o condiciones, dígalo."
+        "ask": "¿Sucede de forma periódica, constante o con estacionalidad?"
       },
       "7": {
-        "ask": "¿Qué tanto es el dolor de los afectados o potenciales clientes?",
-        "help": "Qué pierden: tiempo, dinero, seguridad, tranquilidad."
+        "ask": "¿Qué tanto es el dolor de los afectados o potenciales clientes?"
       },
       "8": {
-        "ask": "¿Hay una magnitud del impacto económico o social de ese problema?",
-        "help": "Una cifra de país, de sector o de comunidad, o \"no sé\"."
+        "ask": "¿Hay una magnitud del impacto económico o social de ese problema?"
       },
       "9": {
-        "ask": "¿Cuáles son las implicaciones de generar una solución?",
-        "help": "Qué cambiaría si el problema se resolviera, sin describir su producto."
+        "ask": "¿Cuáles son las implicaciones de generar una solución?"
       },
       "10": {
-        "ask": "¿Qué posibilidad hay de generar una solución satisfactoria con los conocimientos actuales?",
-        "help": "Si ya existe la tecnología, si alguien lo resolvió en otro lugar, qué lo hace posible hoy."
+        "ask": "¿Qué posibilidad hay de generar una solución satisfactoria con los conocimientos actuales?"
       }
     }
   },
@@ -87,7 +77,14 @@
     "searching": "Busco fuentes para cada afirmación de {component}. Solo cito páginas que abrí, con la frase exacta que respalda el dato.",
     "table_title": "Fuentes",
     "table_intro": "Esto es lo que encontré para {component}:",
-    "columns": ["#", "Afirmación", "Estado", "Tipo de fuente", "Fuente", "Frase exacta"],
+    "columns": [
+      "#",
+      "Afirmación",
+      "Estado",
+      "Tipo de fuente",
+      "Fuente",
+      "Frase exacta"
+    ],
     "statuses": {
       "supported": "respaldada",
       "contradicted": "contradicha",
@@ -144,11 +141,11 @@
         "push": "\"{vague}\" es una categoría, no un segmento: a una categoría no se le puede escribir un correo. Diga quién es, en qué situación está y cuándo le pasa esto."
       },
       "chosen_segment": {
-        "ask": "El canvas guarda todos, pero esta prueba le habla a uno solo. ¿Con cuál segmento empieza? Sirve el que más le duele y al que usted puede llegar esta semana.",
+        "ask": "El canvas guarda todos, pero esta prueba le habla a uno solo. ¿Con cuál segmento empieza?",
         "push": "Tiene que ser uno solo: la landing y los guiones le hablan a una persona. ¿Cuál?"
       },
       "alternatives": {
-        "ask": "Pensando en {segment}: ¿qué hace hoy esa persona para resolverlo, aunque sea mal? Para cada alternativa dígame qué le cuesta (horas, dinero, errores) y qué la frustra, con las palabras que ella usaría.",
+        "ask": "Pensando en {segment}: ¿qué hace hoy esa persona para resolverlo, aunque sea mal? Para cada alternativa dígame qué le cuesta y qué la frustra, con las palabras que ella usaría.",
         "push": "Me falta {missing}. Describa el arreglo actual, por malo que sea, un costo que se pueda contar y una queja tal como ella la diría.",
         "push_nothing": "Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. ¿Qué hace cuando le pasa, aunque sea aguantarse o resolverlo mal, y qué le cuesta?"
       },
@@ -167,7 +164,7 @@
         "ask": "¿Qué números le dirían que esto funciona? Si todavía no lo sabe, lo dejo pendiente."
       },
       "unfair_advantage": {
-        "ask": "¿Tiene algo difícil de copiar o de comprar: una comunidad, un acceso, un dato propio? Si no, lo dejo pendiente; es normal al principio."
+        "ask": "¿Tiene algo difícil de copiar o de comprar? Si no, lo dejo pendiente; es normal al principio."
       },
       "builder_only": {
         "ask": "Quedan estructura de costos y fuentes de ingresos. Son solo para usted: no opino sobre ellos y no llegan a la landing ni a los guiones. ¿Quiere anotarlos ahora o los deja para después?"
