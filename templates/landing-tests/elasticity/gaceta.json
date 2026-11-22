@@ -1,8 +1,6 @@
 {
   "name": "Gaceta",
   "scheme": "light",
-  "composition": "editorial",
-  "decor": "shapes",
   "palette_source": "derived",
   "fonts": {
     "display": { "family": "Playfair Display", "weights": [700], "fallback": "serif" },

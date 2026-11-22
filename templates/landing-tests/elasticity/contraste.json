@@ -1,8 +1,6 @@
 {
   "name": "Contraste",
   "scheme": "dark",
-  "composition": "split",
-  "decor": "grid",
   "palette_source": "derived",
   "fonts": {
     "display": { "family": "Fraunces", "weights": [700], "fallback": "serif" },

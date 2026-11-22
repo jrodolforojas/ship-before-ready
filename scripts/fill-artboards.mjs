@@ -2,9 +2,9 @@
 import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { frameSize } from '../templates/canvas/frames.mjs';
+import { estimatedPromiseHeight, frameSize } from '../templates/canvas/frames.mjs';
 
-const USAGE = 'Usage: fill-artboards.mjs <tokens.json> <copy.json> <output>';
+const USAGE = 'Usage: fill-artboards.mjs <tokens.json> <copy.json> <promise-phone.html> <promise-desktop.html> <output>';
 const PLUGIN_ROOT = new URL('../', import.meta.url);
 const TEMPLATES = new URL('templates/canvas/', PLUGIN_ROOT);
 const CONTRACT = JSON.parse(readFileSync(new URL('templates/contract.json', PLUGIN_ROOT), 'utf8'));
@@ -45,10 +45,8 @@ const tokenPaths = () => {
 const validateTokens = (tokens) => {
   const missing = tokenPaths().filter((path) => valueAt(tokens, path) === undefined);
   if (missing.length) throw new UsageError(`tokens.json lacks: ${missing.join(', ')}`);
-  for (const key of ['scheme', 'composition', 'decor']) {
-    const allowed = CONTRACT.tokens.enums[key];
-    if (!allowed.includes(tokens[key])) throw new UsageError(`tokens.json: ${key} must be one of ${allowed.join(', ')}`);
-  }
+  const schemes = CONTRACT.tokens.enums.scheme;
+  if (!schemes.includes(tokens.scheme)) throw new UsageError(`tokens.json: scheme must be one of ${schemes.join(', ')}`);
 };
 
 const validateCopy = (copy) => {
@@ -117,9 +115,6 @@ const scopeFor = (tokens, copy, viewport, frame) => ({
   lang: copy.lang,
   name: escapeHtml(tokens.name),
   scheme: tokens.scheme,
-  composition: tokens.composition,
-  decor: tokens.decor,
-  figure: { none: tokens.decor === 'none', shapes: tokens.decor === 'shapes', grid: tokens.decor === 'grid' },
   frame,
   copy: escapeTexts(copy),
   pains: { count: copy.pains.length },
@@ -188,24 +183,50 @@ function render(nodes, scope) {
 
 const fillTemplate = (template, scope) => render(parse(dropTagOnlyLines(expandPartials(readTemplate(`${template}.dc.html`)))), scope);
 
-const boardPlan = (tokens, copy) => [
-  { group: 'promise', template: `${tokens.composition}-phone`, file: 'Main.dc.html', label: tokens.name },
-  { group: 'promise', template: `${tokens.composition}-desktop`, file: 'Promise-desktop.dc.html', label: tokens.name },
-  { group: 'flow', template: 'email-phone', file: 'Email-phone.dc.html', label: `2 · ${copy.email.title}` },
-  { group: 'flow', template: 'questions-phone', file: 'Questions-phone.dc.html', label: `3 · ${copy.questions.title}` },
-  { group: 'flow', template: 'done-phone', file: 'Done-phone.dc.html', label: `4 · ${copy.done.title}` },
+const PROMISE_WIDTH = CONTRACT.promise_board.widths;
+const SCREEN_ROOT = new RegExp(`^\\s*<section\\b[^>]*\\b${CONTRACT.hook_attribute}="${CONTRACT.promise_board.root}"`);
+
+const validatePromise = (promise) => {
+  for (const viewport of Object.keys(PROMISE_WIDTH)) {
+    if (typeof promise?.[viewport] !== 'string' || !SCREEN_ROOT.test(promise[viewport])) {
+      throw new UsageError(`the ${viewport} board of the promise screen must start with <section ${CONTRACT.hook_attribute}="${CONTRACT.promise_board.root}">`);
+    }
+  }
+};
+
+const FLOW_PLAN = (copy) => [
+  { template: 'email-phone', file: 'Email-phone.dc.html', label: `2 · ${copy.email.title}` },
+  { template: 'questions-phone', file: 'Questions-phone.dc.html', label: `3 · ${copy.questions.title}` },
+  { template: 'done-phone', file: 'Done-phone.dc.html', label: `4 · ${copy.done.title}` },
 ];
 
-export const fillDirection = (tokens, copy) => {
+export const PROMISE_FILES = { phone: 'Main.dc.html', desktop: 'Promise-desktop.dc.html' };
+
+const promiseBoard = (tokens, copy, promise, viewport, measured) => {
+  const width = PROMISE_WIDTH[viewport];
+  const height = measured?.[viewport] ?? estimatedPromiseHeight(tokens, copy, viewport, promise[viewport]);
+  const frame = { width, height };
+  const html = fillTemplate('promise', { ...scopeFor(tokens, copy, viewport, frame), board: promise[viewport].trim() });
+  return { group: 'promise', viewport, file: PROMISE_FILES[viewport], title: `${tokens.name} · ${width}`, ...frame, html };
+};
+
+export const fillPromise = (tokens, copy, promise, measured = null) => {
   validateTokens(tokens);
   validateCopy(copy);
-  return boardPlan(tokens, copy).map(({ group, template, file, label }) => {
+  validatePromise(promise);
+  return ['phone', 'desktop'].map((viewport) => promiseBoard(tokens, copy, promise, viewport, measured));
+};
+
+export const fillFlow = (tokens, copy) => {
+  validateTokens(tokens);
+  validateCopy(copy);
+  return FLOW_PLAN(copy).map(({ template, file, label }) => {
     const frame = frameSize(template, tokens, copy);
-    const viewport = template.endsWith('-desktop') ? 'desktop' : 'phone';
-    const title = group === 'promise' ? `${label} · ${frame.width}` : label;
-    return { group, file, title, ...frame, html: fillTemplate(template, scopeFor(tokens, copy, viewport, frame)) };
+    return { group: 'flow', viewport: 'phone', file, title: label, ...frame, html: fillTemplate(template, scopeFor(tokens, copy, 'phone', frame)) };
   });
 };
+
+export const fillDirection = (tokens, copy, promise, measured = null) => [...fillPromise(tokens, copy, promise, measured), ...fillFlow(tokens, copy)];
 
 export const placeInRow = (boards, origin = { x: 0, y: 0 }) => {
   let x = origin.x;
@@ -243,11 +264,19 @@ export const writeCanvas = (output, index, boards) => {
   return ['project/canvas.json', ...boards.map((board) => `project/${board.file}`)];
 };
 
-const main = ([tokensPath, copyPath, output, ...extra]) => {
-  if (!tokensPath || !copyPath || !output || extra.length) throw new UsageError(USAGE);
+const readText = (path) => {
+  try {
+    return readFileSync(path, 'utf8');
+  } catch (error) {
+    throw new UsageError(`Cannot read ${path}: ${error.message}`);
+  }
+};
+
+const main = ([tokensPath, copyPath, phonePath, desktopPath, output, ...extra]) => {
+  if (!tokensPath || !copyPath || !phonePath || !desktopPath || !output || extra.length) throw new UsageError(USAGE);
   const tokens = readJson(tokensPath);
   const copy = readJson(copyPath);
-  const boards = placeInRow(fillDirection(tokens, copy));
+  const boards = placeInRow(fillDirection(tokens, copy, { phone: readText(phonePath), desktop: readText(desktopPath) }));
   const promise = boards.filter((board) => board.group === 'promise');
   const index = canvasIndex({ title: `${copy.brand} · ${tokens.name}`, boards, notes: { 'title-promise': titleNote(tokens.name, promise) } });
   console.log(writeCanvas(output, index, boards).join('\n'));

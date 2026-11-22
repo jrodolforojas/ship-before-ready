@@ -1,20 +1,21 @@
 ---
-import CenteredPromise from '../components/CenteredPromise.astro';
 import DebugPanel from '../components/DebugPanel.astro';
 import DoneScreen from '../components/DoneScreen.astro';
 import EmailScreen from '../components/EmailScreen.astro';
-import EditorialPromise from '../components/EditorialPromise.astro';
 import QuestionsScreen from '../components/QuestionsScreen.astro';
-import SplitPromise from '../components/SplitPromise.astro';
 import Base from '../layouts/Base.astro';
-import { tokens } from '../lib/tokens';
 
-const PromiseLayout = { centered: CenteredPromise, split: SplitPromise, editorial: EditorialPromise }[tokens.composition];
+const promiseScreens = import.meta.glob<typeof DoneScreen>('../promise/Promise.astro', { eager: true, import: 'default' });
+const [PromiseScreen] = Object.values(promiseScreens);
+
+if (!PromiseScreen) {
+  throw new Error('Missing src/promise/Promise.astro: the free screen programmed from the approved boards goes there.');
+}
 ---
 
 <Base>
   <main class="grow">
-    <PromiseLayout />
+    <PromiseScreen />
     <EmailScreen />
     <QuestionsScreen />
     <DoneScreen />

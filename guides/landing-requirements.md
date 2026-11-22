@@ -40,7 +40,7 @@ A file with the wrong shape is not an exit 2: a `tokens.json` with a missing or 
 
 | # | Requirement | Threshold | Checked by | When | Origin |
 |---|---|---|---|---|---|
-| R1 | One action | One `h1`, the `title`. The only buttons are the filled ones of the contract: `cta` and `cta-closing` on screen 1, one submit on screens 2 and 3, none on screen 4. No menu, no link | landing | template | GS, RU |
+| R1 | One action | One `h1`, the `title`. The only buttons are the filled ones of the contract: `cta` and `cta-closing` on screen 1, one submit on screens 2 and 3, none on screen 4. No other text on an `accent` fill. No menu, no link | design, landing | design, template | GS, RU |
 | R2 | Short copy | Headline ≤ 70 characters, subtitle ≤ 160, buttons ≤ 24, one to three pains and exactly three steps of ≤ 90, and the limit of every other key of the contract | design, landing | design | GS |
 | R3 | Whole first view | At 375×667 and 1440×900 the headline, the subtitle and the whole button are inside the window without scrolling | capture | page | GS, HIG |
 | R4 | A scale with a ratio | Per viewport, every size above the body is the body times 1.25^k or 1.333^k within ±4%; the headline is at least 2 times the body on desktop and 1.75 on phone; no size shrinks on desktop | design, landing | design | GS |
@@ -67,7 +67,7 @@ A file with the wrong shape is not an exit 2: a `tokens.json` with a missing or 
 | R25 | Visible notice | The "it does not exist yet" notice is on the final screen in the body style and in `ink`; at 375×667 it fits in the first view at body size and 4.5:1 | landing, capture | page | SBR |
 | R26 | Privacy | A privacy line next to the email, not empty, within its limit, drawn at 14 px or more | design, landing | design | SBR |
 | R27 | No prices, nothing invented | No currency symbol, amount of money or price word; no figure, testimonial or guarantee the brief does not give | design, landing, reviewer | design | SBR |
-| R28 | Skeleton intact | The built page has the hooks and screens of the contract; outside `src/data/`, `src/i18n/`, `vercel.json` and the lockfile the project is byte-identical to the template | landing | page | SBR |
+| R28 | Skeleton intact | The boards of the free screen and the built page have the hooks and screens of the contract, and the two boards show the same texts in the same styles; outside `src/data/`, `src/i18n/`, `src/promise/`, `vercel.json` and the lockfile the project is byte-identical to the template; `src/promise/` holds `.astro` components with token classes only | design, landing | design, page | SBR |
 | R29 | No third parties, light | The built page requests nothing from another domain; its own HTML, CSS and JavaScript weigh at most 100 KB | landing | page | SBR |
 | R30 | Complete head | Title ≤ 60 characters, description 70 to 160; `<title>`, description, `og:title`, `og:description` equal to the copy; `theme-color` equal to `canvas` | design, landing | design, page | WG |
 | R31 | Made for this idea | The headline would not work for another product; every decision of `system.md` cites a line of the brief | reviewer | design | GS |
@@ -81,15 +81,17 @@ The gate never changes an approved design. When a row fails, the skill names it 
 |---|---|
 | R2, R26, R30 | Rewrite the key the detail names within its limit. Do not cut meaning to fit: say less |
 | R4 | Move the size to one of the two "nearest steps" in the detail, or change the body so the others land on the scale |
-| R5 | Restore the order: headline largest and heaviest, lead at or above the body, small and label below it |
+| R5 | Restore the order: headline largest and heaviest, lead at or above the body, small and label below it. On a board, draw the block the detail names in one of the styles it lists |
 | R8, R9, R10, R17, R23 | Bring the value inside the range in the detail |
 | R11 | Drop a weight no style uses, or move a style to a weight already listed |
 | R12 | Darken or lighten the foreground of the pair in the detail until it reaches the ratio; keep the hue |
-| R14 | Remove the unknown key or fix the type; in the template, replace the class with its token utility |
+| R14 | Remove the unknown key or fix the type; on a board, replace the hand-written value with its token; in `src/promise/`, replace the class or the style with its token utility |
 | R15 | Move the accent out of 250° to 300°, or ask the builder and set `palette_source: builder`; rewrite the phrase with what the product does |
 | R27 | Remove the price talk. The plugin never fixes, suggests or tests prices |
 | R3, R13, R18, R19, R25 | These fail only on the drawn page. Propose the token that causes it (a smaller headline, a darker muted ink, more `item` spacing, shorter copy) and send it back to `design` |
-| R1, R16, R20, R21, R22, R24, R28, R29, R32 on the page | The skeleton was edited or the template is broken. Restore the file from the template; never patch the builder's copy by hand |
+| R1, R28, R32 on a board | Fix the board: the hook, the element or the text the detail names. The free screen keeps its anatomy whatever its layout |
+| R1, R5, R14, R28, R32 naming `src/promise/` or a hook of screen 1 on the page, while the boards pass | The free screen was programmed apart from the boards. Fix the component in `src/promise/` until `landing.mjs match` passes |
+| R1, R16, R20, R21, R22, R24, R28, R29, R32 elsewhere on the page | The skeleton was edited or the template is broken. Restore the file from the template; never patch the builder's copy by hand |
 
 ## Without Chrome
 
@@ -110,7 +112,9 @@ Record every line the builder did not confirm as `skipped` in `.sbr/landing.json
 These parts of the requirements are not checked by any script. A rule that cannot be decided by reading text or measuring the page without false positives is not in the scripts.
 
 - **R5.** "At most three levels of text per screen" holds by construction: the seven text styles draw in two inks and two weight families. Nothing counts levels on the page.
-- **R10.** "Paragraphs aligned to the left" belongs to each composition and is approved on the canvas. The scripts only refuse justified text and unbalanced headings.
+- **R10.** "Paragraphs aligned to the left" belongs to each free design and is approved on the canvas. The scripts only refuse justified text and unbalanced headings.
+- **R12, R13 on the free screen.** The boards check the token pair of every text against its nearest fill; a text placed over a figure by absolute position is not caught on the board, only measured on the page.
+- **Fidelity of the free screen.** `landing.mjs match` compares the texts of screen 1 in order with their style, color and fill. Layout, sizes of blocks and drawings are compared by the builder, who sees the page next to the canvas.
 - **R11.** A family name that is not in the Google Fonts catalog is not caught here: the build fails when it tries to download it.
 - **R13, R22.** Contrast is measured at rest. The pointer state is measured on `cta` only, and the pressed state is not measured.
 - **R15.** The scripts match a closed list of phrases. Words that fit any product but have honest uses ("potente", "simple", "transforma tu") go to the reviewer under R31.

@@ -1,8 +1,6 @@
 {
   "name": "Brisa",
   "scheme": "light",
-  "composition": "centered",
-  "decor": "shapes",
   "palette_source": "derived",
   "fonts": {
     "display": { "family": "Space Grotesk", "weights": [700], "fallback": "sans-serif" },

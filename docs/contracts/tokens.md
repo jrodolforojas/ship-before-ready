@@ -16,8 +16,6 @@ The key set is closed: no other keys are allowed at any level. Keys are `snake_c
 |---|---|---|
 | `name` | string | Name of the direction shown to the builder, 1 to 40 characters, in the builder's language |
 | `scheme` | string | `light` or `dark` |
-| `composition` | string | `centered`, `split` or `editorial` |
-| `decor` | string | `none`, `shapes` or `grid` |
 | `palette_source` | string, optional | `derived` (default) or `builder`. `builder` means the builder brought these colors or asked for them |
 | `fonts` | object | `display` and `body`, see [Fonts](#fonts) |
 | `color` | object | Nine colors, see [Color](#color) |
@@ -32,8 +30,6 @@ Every length is a plain number of CSS pixels at a 16 px root. Painters convert; 
 {
   "name": "Neutral",
   "scheme": "light",
-  "composition": "centered",
-  "decor": "none",
   "palette_source": "derived",
   "fonts": {
     "display": { "family": "Public Sans", "weights": [700], "fallback": "sans-serif" },
@@ -107,7 +103,7 @@ Not allowed anywhere in the template:
 
 - Arbitrary values or properties in square brackets (`text-[13px]`, `bg-[#fff]`).
 - `text-accent`, `text-canvas`, `text-surface`, `text-line`, `text-focus`, and any `bg-*` other than `bg-canvas`, `bg-surface` and `bg-accent`.
-- Opacity modifiers on colors (`bg-accent/50`), except on `decor-1` and `decor-2`.
+- Opacity modifiers on colors (`bg-accent/50`), except on a `figure` and inside it.
 - Numeric border widths (`border-2`), `duration-*`, `delay-*`, `ease-*`, `leading-*`, `tracking-*`, `font-<weight>`.
 
 The focus ring is the one fixed, non-token measure: `outline-2 outline-offset-2 outline-focus`. Layout utilities without a token (`flex`, `grid`, `w-full`, `w-1/2`, `min-h-dvh`, `text-balance`, `sr-only`, `opacity-0`) are free.
@@ -122,9 +118,9 @@ Colors are six-digit hex strings matching `^#[0-9A-Fa-f]{6}$`. No alpha, no name
 | `surface` | Raised background: form fields, cards, debug panel |
 | `ink` | Primary text |
 | `ink-muted` | Secondary text and placeholders |
-| `accent` | Fill of the one filled button per screen, the native checkbox, and decor |
+| `accent` | Fill of the one filled button per screen, the native checkbox, and figures |
 | `on-accent` | Text on `accent` |
-| `line` | Borders of fields and cards, dividers, decor lines |
+| `line` | Borders of fields and cards, dividers, lines of figures |
 | `focus` | Focus ring |
 | `danger` | Error text and the border of an invalid field |
 
@@ -133,7 +129,7 @@ Colors are six-digit hex strings matching `^#[0-9A-Fa-f]{6}$`. No alpha, no name
 - Text in `ink` or `ink-muted` is drawn only on `canvas` or `surface`.
 - Text in `on-accent` is drawn only on `accent`.
 - `accent` is never a text color.
-- Text is never drawn over `figure`, `decor-1` or `decor-2`.
+- Text is never drawn over a `figure`.
 - Any pair not listed below is not allowed.
 
 Contrast is the WCAG 2 ratio `(L1 + 0.05) / (L2 + 0.05)` over sRGB relative luminance.
@@ -176,7 +172,7 @@ Other color rules:
 
 ## Text styles
 
-Each style is `{ size, size_desktop, line_height, font_weight, letter_spacing }`. The family, the color and the places where a style is used are fixed here for every composition; a composition changes layout, never which style a hook uses.
+Each style is `{ size, size_desktop, line_height, font_weight, letter_spacing }`. The family and the color of a style are fixed here. On the fixed screens 2 to 4 the places where a style is used are fixed too; on the free screen 1 each hook may use one of the styles that [the free screen guide](../../guides/promise-screen.md#2-what-the-screen-always-has) lists for it, and the title always uses `title`.
 
 | Style | Family | Drawn in | Used by (hooks from [landing.md](landing.md)) |
 |---|---|---|---|
@@ -200,11 +196,11 @@ Allowed ranges (inclusive):
 | `button` | 16 to 18 | 16 to 20 | 1 to 1.5 | 500 to 800 | -0.01 to 0.08 |
 | `label` | 14 to 16 | 14 to 16 | 1.2 to 1.5 | 400 to 600 | -0.01 to 0.08 |
 
-`font_weight` is a multiple of 100. The upper bounds are the "largest allowed values" that step 1c tests each composition with.
+`font_weight` is a multiple of 100. The upper bounds are the "largest allowed values" that `templates/landing-tests/` builds the template with.
 
 ## Spacing
 
-Four levels, one value each for every viewport. A composition adapts to small screens by using a lower level (`py-block md:py-section`), never a value outside the four.
+Four levels, one value each for every viewport. A layout adapts to small screens by using a lower level (`py-block md:py-section`), never a value outside the four.
 
 | Token | Meaning | Range px |
 |---|---|---|
@@ -234,18 +230,9 @@ The shadow color is always black at `opacity`. When `blur` is above 0, `opacity`
 | `page` | Maximum width of the page content, in px | 960 to 1280 |
 | `motion_duration` | Duration of every transition, in ms | 0 to 400 |
 
-## Composition and decor
+## Free screen
 
-- `composition` picks the layout of the hero and of the page: `centered`, `split` or `editorial`. Their look is approved in step 0c and specified in `docs/design/compositions.md`.
-- `decor` picks the decorative motif of the hero. Every motif is drawn only with tokens, is flat (no gradients, no blur) and is `aria-hidden`.
-
-| `decor` | `figure` | `decor-1` | `decor-2` |
-|---|---|---|---|
-| `none` | Not rendered | Not rendered | Not rendered |
-| `shapes` | Rendered | A circle filled with `accent` | A rectangle with `--radius-card` corners, no fill, and a `--line-width` border in `line` |
-| `grid` | Rendered | A square grid of `--line-width` lines in `line`, with cells of `--spacing-block` | One cell of that grid filled with `accent` |
-
-Position and size of the motif belong to each composition.
+Screen 1 has no composition token: its layout is drawn in the approved boards and programmed in `src/promise/` ([guide](../../guides/promise-screen.md)). Its decorative drawings are `figure` elements, flat, drawn only with tokens, `aria-hidden`, and without text.
 
 ## Value rules
 
@@ -312,4 +299,4 @@ Facts from the compile:
 - `--default-border-width: var(--line-width)` makes `border`, `border-t` and `border-b` use the token. `--default-transition-duration: var(--motion-duration)` does the same for `transition-*`. `duration-motion` does not exist.
 - A shadow declared inside `@theme` is copied into the utility as a literal, so a `:root` override would be ignored. `shadow-card` is declared with `@utility` and `--shadow-card` lives on `:root` only.
 - These still compile with the default theme off and are caught by the verifier, not by the compiler: square-bracket values, and bare numbers such as `border-2`, `outline-2` and `duration-200`.
-- An opacity modifier (`bg-accent/50`) compiles with the `@theme` default as a literal fallback for browsers without `color-mix()`; only browsers with `color-mix()` read the variable. That is why modifiers stay on decor.
+- An opacity modifier (`bg-accent/50`) compiles with the `@theme` default as a literal fallback for browsers without `color-mix()`; only browsers with `color-mix()` read the variable. That is why modifiers stay on figures.

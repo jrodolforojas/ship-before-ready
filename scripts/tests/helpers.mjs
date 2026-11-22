@@ -18,6 +18,8 @@ const readRepoJson = (path) => JSON.parse(readFileSync(join(REPO_ROOT, path), 'u
 export const contract = readRepoJson('templates/contract.json');
 export const neutralTokens = () => readRepoJson('templates/neutral-design/tokens.json');
 export const exampleCopy = () => readRepoJson('templates/example/es.json');
+export const EXAMPLE_BOARDS = { phone: join(REPO_ROOT, 'templates/example/promise-phone.html'), desktop: join(REPO_ROOT, 'templates/example/promise-desktop.html') };
+export const exampleBoardHtml = () => ({ phone: readFileSync(EXAMPLE_BOARDS.phone, 'utf8'), desktop: readFileSync(EXAMPLE_BOARDS.desktop, 'utf8') });
 
 export function withChange(source, path, value) {
   const copy = structuredClone(source);

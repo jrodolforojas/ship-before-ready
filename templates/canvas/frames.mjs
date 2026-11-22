@@ -26,6 +26,8 @@ const STYLE_ROLE = { title: 'display', heading: 'display', lead: 'body', body: '
 const VIEWPORT_WIDTH = { phone: 390, desktop: 1440 };
 const PHONE_SCREEN_HEIGHT = 844;
 const FIGURE_RATIO = 9 / 16;
+const FREE_LAYOUT_MARGIN = 1.15;
+const FIGURE_HOOK = /data-sbr="figure"/g;
 const TEXTAREA_ROWS = 3;
 const FLOW_SCREENS = new Set(['email-phone', 'questions-phone', 'done-phone']);
 
@@ -76,12 +78,9 @@ const createKit = (tokens, copy, viewport) => {
   };
   const lineBox = (name) => styleOf(name).size * styleOf(name).lineHeight;
   const text = (value, name, available) => lineCount(value, name, available) * lineBox(name);
-  const prose = (name) => tokens.measure.prose * CH_IN_EM[styleOf(name).fallback] * styleOf(name).size;
-  const figure = (figureWidth) => (tokens.decor === 'none' ? 0 : figureWidth * FIGURE_RATIO);
 
   return {
-    copy, section, block, group, item, line, width, text, lineBox, prose, figure,
-    figureWith: (gap, figureWidth) => (tokens.decor === 'none' ? 0 : gap + figure(figureWidth)),
+    copy, section, block, group, item, line, width, text, lineBox,
     button: (label, available) => Math.max(block, text(label, 'button', available - 2 * group) + 2 * item),
     field: Math.max(block, lineBox('body') + 2 * item + 2 * line),
     textarea: TEXTAREA_ROWS * lineBox('body') + 2 * item + 2 * line,
@@ -92,87 +91,9 @@ const createKit = (tokens, copy, viewport) => {
   };
 };
 
-const heroText = (kit, available, subtitleWidth) => kit.text(kit.copy.hero.title, 'title', available) + kit.item + kit.text(kit.copy.hero.subtitle, 'lead', subtitleWidth) + kit.group + kit.button(kit.copy.cta, available);
-const proseOr = (kit, available, style) => Math.min(available, kit.prose(style));
-const stackedFooter = (kit, available) => kit.line + kit.group + kit.text(kit.copy.footer.author, 'small', available) + kit.item + kit.text(kit.copy.footer.privacy, 'small', available) + kit.block;
 const stepLabel = (kit) => kit.copy.progress.replace('{current}', '2').replace('{total}', '2');
 
 const HEIGHTS = {
-  'centered-phone': (kit) => {
-    const { copy, block, group, line, width } = kit;
-    const panel = width - 2 * group - 2 * line;
-    return sum([
-      group + kit.lineBox('button'),
-      block + heroText(kit, width, proseOr(kit, width, 'lead')) + block,
-      kit.figureWith(block, width),
-      stack(copy.pains.map((pain) => kit.card(pain, width)), group) + block,
-      stack(copy.steps.map((step) => Math.max(block, kit.text(step, 'body', width - block - group))), group) + block,
-      2 * line + 2 * block + kit.text(copy.closing, 'heading', panel) + group + kit.button(copy.cta, panel) + block,
-      stackedFooter(kit, width),
-    ]);
-  },
-  'centered-desktop': (kit) => {
-    const { copy, section, block, group, line, width } = kit;
-    const painWidth = (width - (copy.pains.length - 1) * group) / copy.pains.length;
-    const stepWidth = (width - 2 * group) / 3;
-    const panel = width - 2 * section - 2 * line;
-    return sum([
-      group + kit.lineBox('button'),
-      section + heroText(kit, width, proseOr(kit, width, 'lead')) + section,
-      kit.figureWith(section, width / 2),
-      tallest(copy.pains.map((pain) => kit.card(pain, painWidth))) + section,
-      tallest(copy.steps.map((step) => block + group + kit.text(step, 'body', stepWidth))) + section,
-      2 * line + 2 * section + kit.text(copy.closing, 'heading', panel) + group + kit.button(copy.cta, panel) + section,
-      stackedFooter(kit, width),
-    ]);
-  },
-  'split-phone': (kit) => {
-    const { copy, block, group, item, line, width } = kit;
-    return sum([
-      group + kit.lineBox('button'),
-      block + heroText(kit, width, proseOr(kit, width, 'lead')) + kit.figureWith(block, width) + block,
-      kit.rows(copy.pains, width) + block,
-      stack(copy.steps.map((step) => line + group + kit.lineBox('label') + item + kit.text(step, 'body', width)), group) + block,
-      kit.text(copy.closing, 'heading', width) + group + kit.button(copy.cta, width) + block,
-      stackedFooter(kit, width),
-    ]);
-  },
-  'split-desktop': (kit) => {
-    const { copy, section, block, group, item, line, width } = kit;
-    const left = ((width - block) * 7) / 12;
-    const right = ((width - block) * 5) / 12;
-    const stepWidth = (width - 2 * block) / 3;
-    return sum([
-      group + kit.lineBox('button'),
-      section + Math.max(heroText(kit, left, proseOr(kit, left, 'lead')), kit.figureWith(group, right) + kit.rows(copy.pains, right)) + section,
-      tallest(copy.steps.map((step) => line + group + kit.lineBox('label') + item + kit.text(step, 'body', stepWidth))) + section,
-      Math.max(kit.text(copy.closing, 'heading', left), kit.button(copy.cta, right)) + section,
-      line + group + Math.max(kit.text(copy.footer.author, 'small', left), kit.text(copy.footer.privacy, 'small', right)) + block,
-    ]);
-  },
-  'editorial-phone': (kit) => {
-    const { copy, block, group, line, width } = kit;
-    return sum([
-      2 * group + kit.lineBox('button') + line,
-      block + heroText(kit, width, width) + kit.figureWith(block, width) + block,
-      line + block + stack(copy.pains.map((pain) => kit.text(pain, 'body', width)), group) + block,
-      line + block + stack(copy.steps.map((step) => Math.max(kit.lineBox('heading'), kit.text(step, 'body', width - block - group))), group) + block,
-      line + block + kit.text(copy.closing, 'heading', width) + group + kit.button(copy.cta, width) + block,
-      stackedFooter(kit, width),
-    ]);
-  },
-  'editorial-desktop': (kit) => {
-    const { copy, section, block, group, line, width } = kit;
-    const column = proseOr(kit, width, 'body');
-    return sum([
-      2 * group + kit.lineBox('button') + line,
-      section + Math.max(heroText(kit, column, column), kit.figure(width / 4)) + section,
-      line + section + stack(copy.pains.map((pain) => kit.text(pain, 'body', column)), group) + section,
-      line + section + stack(copy.steps.map((step) => Math.max(kit.lineBox('heading'), kit.text(step, 'body', column - block - group))), group) + section,
-      line + section + kit.text(copy.closing, 'heading', column) + group + kit.button(copy.cta, column) + section,
-      stackedFooter(kit, column),
-    ]);
-  },
   'email-phone': (kit) => {
     const { copy, block, group, item, width } = kit;
     return sum([
@@ -204,6 +125,22 @@ const HEIGHTS = {
       kit.text(copy.done.next, 'body', width) + block,
     ]);
   },
+};
+
+// A free board is laid out by hand, so its height is unknown until a browser draws it. Without one,
+// every text of the screen is stacked at the full width with a section between blocks: no free
+// layout is taller than that, so the frame never cuts the board.
+export const estimatedPromiseHeight = (tokens, copy, viewport, board) => {
+  const kit = createKit(tokens, copy, viewport);
+  const { section, group, width } = kit;
+  const texts = [
+    [copy.brand, 'button'], [copy.hero.title, 'title'], [copy.hero.subtitle, 'lead'],
+    ...copy.pains.map((pain) => [pain, 'heading']), ...copy.steps.map((step) => [step, 'heading']),
+    [copy.closing, 'heading'], [copy.footer.author, 'small'], [copy.footer.privacy, 'small'],
+  ];
+  const figures = (board.match(FIGURE_HOOK) ?? []).length * width * FIGURE_RATIO;
+  const blocks = sum(texts.map(([value, style]) => kit.text(value, style, width - 2 * group) + 2 * group)) + 2 * kit.button(copy.cta, width);
+  return Math.ceil((blocks + figures + (texts.length + 2) * section) * FREE_LAYOUT_MARGIN);
 };
 
 export const frameSize = (template, tokens, copy) => {

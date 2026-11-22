@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { checklistRows, compareArtboards, mergeGate, nodeIsRecentEnough, reviewerExtras, rowsOf } from '../scripts/landing.mjs';
+import { checklistRows, compareArtboards, mergeGate, nodeIsRecentEnough, promiseMatch, reviewerExtras, rowsOf } from '../scripts/landing.mjs';
 import { visitUrl } from '../scripts/visit.mjs';
 import { loadContract } from '../../../scripts/verify-design.mjs';
 
@@ -16,6 +16,7 @@ const NEUTRAL = join(PLUGIN_ROOT, 'templates/neutral-design/tokens.json');
 const EXAMPLE_COPY = join(PLUGIN_ROOT, 'templates/example/es.json');
 const EXAMPLE_BRIEF = join(PLUGIN_ROOT, 'templates/example/brief.md');
 const SITE_CONNECTIONS = join(PLUGIN_ROOT, 'site/.sbr/connections.json');
+const EXAMPLE_BOARDS = ['promise-phone.html', 'promise-desktop.html'];
 
 const contract = loadContract();
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
@@ -33,6 +34,7 @@ function approvedRepo() {
   mkdirSync(join(repo, '.sbr/sketches/a'), { recursive: true });
   writeFileSync(join(repo, '.sbr/brief.md'), readFileSync(EXAMPLE_BRIEF, 'utf8').replace(/^reviewer: .*$/m, 'reviewer: approved'));
   copyFileSync(NEUTRAL, join(repo, '.sbr/sketches/a/tokens.json'));
+  EXAMPLE_BOARDS.forEach((name) => copyFileSync(join(PLUGIN_ROOT, 'templates/example', name), join(repo, '.sbr/sketches/a', name)));
   copyFileSync(EXAMPLE_COPY, join(repo, '.sbr/design/copy.es.json'));
   writeFileSync(join(repo, '.sbr/design/system.md'), '# Sistema\n');
   copyFileSync(SITE_CONNECTIONS, join(repo, '.sbr/connections.json'));
@@ -59,6 +61,15 @@ test('status sees an edit after the approval', () => {
   tokens.color.ink_muted = '#BBBBBB';
   writeJson(join(repo, '.sbr/design/tokens.json'), tokens);
   assert.equal(run(repo, 'status').json.choice.fingerprint_matches, false);
+});
+
+test('status sees an edit of an approved board', () => {
+  const repo = approvedRepo();
+  const board = join(repo, '.sbr/design/promise-phone.html');
+  writeFileSync(board, readFileSync(board, 'utf8').replace('gap: var(--spacing-item)', 'gap: var(--spacing-group)'));
+  const { json } = run(repo, 'status');
+  assert.equal(json.design_files.boards, true);
+  assert.equal(json.choice.fingerprint_matches, false);
 });
 
 test('status without a design reports nothing approved', () => {
@@ -114,6 +125,42 @@ test('canvas writes the five artboards, and compare finds an edit', () => {
   assert.equal(run(repo, 'compare', expected, live).code, 1);
 });
 
+test('compare ignores the height of a frame, which is measured or estimated', () => {
+  const repo = approvedRepo();
+  const expected = mkdtempSync(join(tmpdir(), 'sbr-expected-'));
+  const live = mkdtempSync(join(tmpdir(), 'sbr-live-'));
+  const { json } = run(repo, 'canvas', expected);
+  mkdirSync(join(live, 'project'));
+  json.files.forEach((file) => copyFileSync(join(expected, file), join(live, file)));
+  const main = join(live, 'project/Main.dc.html');
+  writeFileSync(main, readFileSync(main, 'utf8').replace(/min-height: \d+px/, 'min-height: 1234px').replace(/"height":\d+/, '"height":1234'));
+  assert.equal(compareArtboards(expected, live).matches, true);
+});
+
+test('match compares the texts of screen 1 with the approved board', () => {
+  const board = readFileSync(join(PLUGIN_ROOT, 'templates/example/promise-phone.html'), 'utf8');
+  const page = `<body class="bg-canvas text-body text-ink font-body">${board.replace(/ style="[^"]*"/g, '')}</body>`;
+  const plain = promiseMatch(board, page);
+  assert.equal(plain.matches, false);
+  assert.match(plain.difference.expected, /in button, ink on canvas/);
+  const styled = board
+    .replace(/<h1 ([^>]*) style="[^"]*"/, '<h1 $1 class="font-display text-title text-ink"')
+    .replace(/<p data-sbr="brand" style="[^"]*"/, '<p data-sbr="brand" class="text-button"');
+  const partial = promiseMatch(board, `<body class="bg-canvas text-body text-ink font-body">${styled.replace(/ style="[^"]*"/g, '')}</body>`);
+  assert.equal(partial.difference.position, 3);
+});
+
+test('match runs on the built page and the gate requires it', () => {
+  const repo = approvedRepo();
+  assert.equal(run(repo, 'match').code, 2);
+  mkdirSync(join(repo, 'landing/dist'), { recursive: true });
+  writeFileSync(join(repo, 'landing/dist/index.html'), '<body><section data-sbr="screen-promise"></section></body>');
+  const { code, json } = run(repo, 'match');
+  assert.equal(code, 1);
+  assert.equal(json.matches, false);
+  assert.equal(json.difference.position, 1);
+});
+
 test('the gate passes a requirement only when every tool that checks it passed', () => {
   const result = mergeGate(contract, { design: allRows('pass'), landing: allRows('pass'), capture: allRows('pass'), reviewer: null });
   assert.equal(result.failed.length, 0);
@@ -161,7 +208,9 @@ test('record refuses a gate with failures and writes landing.json otherwise', ()
   const work = mkdtempSync(join(tmpdir(), 'sbr-work-'));
   writeJson(join(work, 'failed.json'), { passed: [], failed: [{ id: 'R12' }], skipped: [] });
   assert.equal(run(repo, 'record', '--url', 'https://x.vercel.app', '--gate', join(work, 'failed.json')).code, 2);
-  writeJson(join(work, 'gate.json'), { passed: ['R1'], failed: [], skipped: ['R6'] });
+  writeJson(join(work, 'drifted.json'), { passed: ['R1'], failed: [], skipped: ['R6'], canvas_match: { matches: false } });
+  assert.equal(run(repo, 'record', '--url', 'https://x.vercel.app', '--gate', join(work, 'drifted.json')).code, 2);
+  writeJson(join(work, 'gate.json'), { passed: ['R1'], failed: [], skipped: ['R6'], canvas_match: { matches: true } });
   const { code } = run(repo, 'record', '--url', 'https://x.vercel.app/', '--gate', join(work, 'gate.json'));
   assert.equal(code, 0);
   const published = readJson(join(repo, '.sbr/landing.json'));

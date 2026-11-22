@@ -2,7 +2,7 @@
 
 How the `design` skill turns an approved brief and four answers into three directions that are different on purpose and that pass the gate before anything is drawn. The main thread reads sections 1 and 2; the agent that writes one direction reads the whole guide.
 
-A direction is one `tokens.json` ([tokens contract](../docs/contracts/tokens.md)). The anatomy of the landing never changes; everything the builder can change is in that file and in the copy. Numbers below repeat the contract so they are at hand; `templates/contract.json` is what the verifier reads.
+A direction is one `tokens.json` ([tokens contract](../docs/contracts/tokens.md)) and the two boards of its free screen 1 ([promise-screen.md](promise-screen.md)). Screens 2 to 4 never change; they take the skin of the tokens. Everything the builder can change is in those files and in the copy. Numbers below repeat the contract so they are at hand; `templates/contract.json` is what the verifier reads.
 
 Sources of these rules are in [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).
 
@@ -12,7 +12,8 @@ Sources of these rules are in [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).
 2. The one thing a visitor must remember.
 3. The personality traits, up to three.
 4. The brief: `persona`, `pain`, `current_solution`, `promise`.
-5. `market.md`, when the market look ran.
+5. `promise.md`: what the builder wants the promise screen to show of the problem, and how.
+6. `market.md`, when the market look ran.
 
 An earlier line beats a later one. An answer the builder left to the plugin is derived from the brief and written down as derived.
 
@@ -31,7 +32,7 @@ The main thread fills this table in `.sbr/design/concepts.md` and gives each age
 
 | Axis | Values | Rule across the three |
 |---|---|---|
-| Composition | `centered`, `split`, `editorial` | All three different |
+| Layout idea | One line: where the headline sits, how the pains are shown, what leads the eye after the button | All three different: no two share their blocks order, grouping, layout and fills |
 | Scheme | `light`, `dark` | From the scene of use; may repeat |
 | Accent hue | A hue in degrees | At least 40° apart from the other two, or a different scheme |
 | Type pairing | Kind of pair and the two families | No pair repeated |
@@ -62,7 +63,7 @@ Color added to a hierarchy that already works in gray makes it stronger. Color u
 | `surface` | Fields, cards, debug panel | |
 | `ink` | Primary text | 7:1 on `canvas` and `surface` |
 | `ink_muted` | Secondary text, labels, placeholders | 4.5:1 on both |
-| `accent` | Fill of the one filled button, the checkbox, decor | 3:1 on both |
+| `accent` | Fill of the one filled button, the checkbox, figures | 3:1 on both |
 | `on_accent` | Text on the button | 4.5:1 on `accent` |
 | `line` | Field and card borders, dividers | 3:1 on both |
 | `focus` | Focus ring | 3:1 on both |
@@ -144,10 +145,10 @@ Tighten the tracking of large display type a little (−0.01 to −0.03 em) and 
 - Corners say character: 0 to 4 reads exact and serious, 8 to 12 neutral, 16 and above warm and friendly.
 - A shadow is depth, so it has an offset. A soft shadow stays faint; a hard one (`blur: 0`) may be solid. Opacity 0 is a flat page.
 
-## 8. Composition and decor
+## 8. The free screen
 
-- `composition` is one of the three layouts approved for the template. Their look is in `docs/design/compositions.md`.
-- `decor` is `none`, `shapes` or `grid`: a flat motif in the hero, drawn only with tokens. `none` is always a valid answer. A motif never fixes an empty section; better copy does.
+- Screen 1 is designed freely for each direction, as two boards: [promise-screen.md](promise-screen.md) is how, and what it always has. Screens 2 to 4 have no layout to decide.
+- Its layout follows the direction's layout idea and the builder's answers in `promise.md`. Drawings are optional `figure` elements, flat and drawn only with tokens. A drawing never fixes an empty section; better copy and grouping do.
 
 These never appear, so no concept promises them: gradients on text or buttons, glows, emoji as icons, glass panels, decorative blobs, icons inside colored circles, a pill label above the headline, a menu, prices, testimonials, logos, counters.
 
@@ -194,10 +195,11 @@ The reviewer looks for what a list cannot hold: verbs that would sell any produc
 2. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-design.mjs" <tokens.json> <copy.json>`.
 3. Exit 1: change what each `fail` row names and run it again. Exit 2: the call or a file is wrong, not the design. Reading the rows is explained in [landing-requirements.md](landing-requirements.md#reading-the-output).
 4. A direction is drawn only after exit 0 (criterion B2).
-5. With the three files passing, the main thread checks B1 on the values themselves: three compositions, no repeated pair of families, accents 40° apart or different schemes.
+5. Then the boards of screen 1 are written and checked the same way, with the two boards added to the call.
+6. With the three directions passing, the main thread checks B1: no shared composition between the boards, no repeated pair of families, accents 40° apart or different schemes.
 
 Every change the builder asks for during iteration goes through the same loop before the canvas is repainted.
 
 ## 11. `system.md`
 
-Written at the final approval, in the builder's language. One short section per decision: the world, scheme, palette, type, scale, space and shape, composition and decor. Each one states the value and quotes the line of the brief that justifies it. The reviewer checks those quotes against the brief (R31).
+Written at the final approval, in the builder's language. One short section per decision: the world, scheme, palette, type, scale, space and shape, and the free screen (what it shows of the problem and how). Each one states the value and quotes the line of the brief that justifies it. The reviewer checks those quotes against the brief (R31).
