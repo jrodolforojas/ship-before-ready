@@ -35,7 +35,7 @@ export function pageText(html) {
     .trim()
 }
 
-const comparable = (text) =>
+export const comparable = (text) =>
   text
     .normalize('NFKC')
     .toLowerCase()
