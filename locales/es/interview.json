@@ -172,7 +172,10 @@
     },
     "invited_pending": "Lo dejo pendiente; no detiene nada.",
     "builder_only_saved": "Anotado tal como lo dijo, solo para usted.",
-    "written": "El canvas quedó en .sbr/lean-canvas.md."
+    "written": "El canvas quedó en .sbr/lean-canvas.md.",
+    "draft_offer": "Con lo que usted ya me dijo, se podría decir así: «{draft}». Son sus palabras, reordenadas. ¿Le sirve, la cambia o la dejamos pendiente?",
+    "required_pending": "Dejo {block} pendiente y sigo. Hay que volver a este bloque antes de cerrar el brief.",
+    "required_left": "Quedan pendientes {blocks}. Sin ellos el brief no se puede aprobar. ¿Los respondemos ahora, uno a la vez, o lo deja aquí? Todo quedó guardado y la entrevista retoma desde este punto."
   },
   "brief": {
     "title": "Brief: {name}",
