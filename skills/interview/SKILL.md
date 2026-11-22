@@ -292,6 +292,18 @@ A round is one answer of the reviewer. There are at most three rounds.
 
 ## 8. Close
 
-Say `done.title`, `done.detail` and `done.files`, show the four lines of the header (`persona`, `pain`, `current_solution`, `promise`), and close with `done.next`. Do not commit; the builder decides when.
+Say `done.title`, `done.detail` and `done.files`.
+
+Then show the summary of the Lean Canvas, read from `.sbr/lean-canvas.md` as it is now:
+
+1. Say `summary.title`.
+2. One line per block, in the order of the canvas, with its name from `canvas.sections` in bold and its content in one sentence. Use the builder's words; shorten, do not rewrite. For the segments, list them all and mark the chosen one with `canvas.chosen_mark`. For the alternatives, keep one frustration between double quotes, as the person would say it.
+3. A block that is pending shows `canvas.pending`. A block the builder did not fill does not appear.
+4. Costs and revenue appear only if the builder gave them, under their own names, which already say they are for the builder alone. No comment on them.
+5. Close the summary with `summary.sources`, with the number of claims of `.sbr/problem.md` in each status.
+
+The summary is a reading of the files, not a new version: if a line does not fit, shorten it, never change what it says.
+
+Close with `done.next`. Do not commit; the builder decides when.
 
 The ten questions of the problem module, the list of accepted sources and the rule of the statement are the plugin author's. The Lean Canvas is Ash Maurya's adaptation of the Business Model Canvas. The pushes of the canvas questions are adapted from the `/office-hours` skill of gstack (MIT, Garry Tan).
