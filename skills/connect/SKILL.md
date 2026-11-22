@@ -120,11 +120,11 @@ The plugin declares PostHog's MCP server under the name `posthog` in its `.mcp.j
    LIMIT 1
    ```
 
-   A 200 from PostHog means the request arrived, not that the event was stored, and storing takes a few seconds. If the query returns no row, wait 10 seconds and run it again, up to six times. If it still returns nothing, say `probe.event_missing` and wait. The connection is verified only when the row appears.
+   A 200 from PostHog means the request arrived, not that the event was stored, and storing takes a few seconds. If the query returns no row, wait 10 seconds and run it again, up to three times. If the row appears, the event is seen. If it still returns nothing, say `probe.event_pending` and go on: PostHog accepted the event and can take minutes to show it. Do not make the builder wait for it; `landing` checks the five real events after it publishes.
 
 ## 5. Save
 
-Only when the page answered and the event appeared:
+When the page answered and PostHog accepted the probe event, whether or not the row was seen yet:
 
 ```bash
 node "${CLAUDE_SKILL_DIR}/scripts/probe.mjs" save . \
@@ -139,4 +139,4 @@ node "${CLAUDE_SKILL_DIR}/scripts/probe.mjs" save . \
 
 The script writes `.sbr/connections.json` with the keys of the contract and `verified_at`, and refuses any key that is not a public project key. Do not write that file by hand and do not add keys to it.
 
-Close with the phrases of `done`: `done.title`, `done.page`, `done.event`, `done.saved` and `done.next`. Do not commit; the builder decides when.
+Close with the phrases of `done`: `done.title`, `done.page`, then `done.event` if the row was seen or `done.event_pending` if it was not, then `done.saved` and `done.next`. Do not commit; the builder decides when.

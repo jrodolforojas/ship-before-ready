@@ -103,7 +103,7 @@
     "reviewing": "Antes de cerrar, un revisor que no conoce esta conversación lee el texto, los valores y el design system contra el brief.",
     "rejected": "El revisor encontró esto:",
     "done": "Diseño aprobado. Quedó en .sbr/design/: los valores, el texto, el design system y su elección con la huella de lo aprobado.",
-    "next": "Nada se instaló en su repo. Cuando quiera la página publicada, corra /ship-before-ready:landing."
+    "next": "Nada se instaló en su repo. Lo que sigue: /ship-before-ready:connect, para conectar Vercel y PostHog, y después /ship-before-ready:landing."
   },
   "fallback": {
     "node": "Para mostrarle la página real necesito Node 22.23.4 o superior y tengo {version}. Actualícelo y vuelva a correr /ship-before-ready:design.",

@@ -18,10 +18,10 @@ Los comandos van en inglés; lo que el plugin le dice al builder va en español.
 | Comando | Qué hace |
 |---|---|
 | `/ship-before-ready:start` | Punto de entrada: mira en qué fase va la idea y corre la que sigue, una a la vez. |
-| `/ship-before-ready:connect` | Verifica las cuentas del builder, pregunta el gestor de paquetes y guarda las conexiones. |
 | `/ship-before-ready:interview` | Hace las preguntas y produce el brief. |
 | `/ship-before-ready:rules` | Sella las varas y la fecha de veredicto. |
 | `/ship-before-ready:design` | Lleva el brief a un diseño final aprobado en Claude Design, elegido entre tres direcciones. |
+| `/ship-before-ready:connect` | Conecta Vercel y PostHog y pregunta el gestor de paquetes, justo antes de publicar. |
 | `/ship-before-ready:landing` | Programa y publica la landing a partir del diseño aprobado. |
 | `/ship-before-ready:video-scripts` | Escribe tres guiones de video con link rastreado. |
 | `/ship-before-ready:verdict` | Lee los números y da el veredicto. |

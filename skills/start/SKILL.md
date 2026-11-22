@@ -23,13 +23,15 @@ Read the files below in the current directory and take the first phase, in this 
 
 | # | Phase | Skill | It is done when |
 |---|---|---|---|
-| 1 | `connect` | `ship-before-ready:connect` | `.sbr/connections.json` exists and has `verified_at` |
-| 2 | `interview` | `ship-before-ready:interview` | `.sbr/brief.md` has `reviewer: approved` in its header |
-| 3 | `rules` | `ship-before-ready:rules` | `.sbr/rules.md` and `.sbr/seal.json` both exist |
-| 4 | `design` | `ship-before-ready:design` | `.sbr/design/choice.md` has `approved` in its header |
+| 1 | `interview` | `ship-before-ready:interview` | `.sbr/brief.md` has `reviewer: approved` in its header |
+| 2 | `rules` | `ship-before-ready:rules` | `.sbr/rules.md` and `.sbr/seal.json` both exist |
+| 3 | `design` | `ship-before-ready:design` | `.sbr/design/choice.md` has `approved` in its header |
+| 4 | `connect` | `ship-before-ready:connect` | `.sbr/connections.json` exists and has `verified_at` |
 | 5 | `landing` | `ship-before-ready:landing` | `.sbr/landing.json` exists and has `url` |
 | 6 | `video-scripts` | `ship-before-ready:video-scripts` | `.sbr/video-scripts.md` has `reviewer: approved` in its header |
 | 7 | `verdict` | `ship-before-ready:verdict` | It is never done for good: it can run again whenever there are new numbers |
+
+The accounts come late on purpose: the builder connects Vercel and PostHog only when there is an approved design to publish, never before defining the problem.
 
 A file that exists but does not meet its condition means the phase was started and not finished: the next phase is still that one, and its skill knows how to resume.
 
