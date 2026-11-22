@@ -76,14 +76,15 @@
     "publishing": "Publico una página mínima que dice \"Pronto\" para comprobar la conexión con Vercel.",
     "page_failed": "La página de prueba no respondió en {url}. Revise en vercel.com que el proyecto {project} exista y que su dominio de producción sea público, y avíseme para reintentar.",
     "event_sent": "Envié el evento de prueba sbr_probe a PostHog. Lo busco con su sesión.",
-    "event_missing": "PostHog recibió el evento de prueba pero todavía no aparece en el proyecto {name}. Puede tardar un par de minutos; avíseme y lo vuelvo a buscar."
+    "event_pending": "PostHog aceptó el evento de prueba; puede tardar unos minutos en aparecer en el proyecto {name}. No hace falta esperar: se comprueba de nuevo al publicar la landing."
   },
   "done": {
     "title": "Conexiones verificadas",
     "page": "La página de prueba responde en {url}.",
     "event": "El evento de prueba apareció en el proyecto {name} de PostHog.",
+    "event_pending": "PostHog aceptó el evento de prueba. Su aparición en el proyecto {name} se confirma al publicar la landing.",
     "saved": "Guardé las conexiones en .sbr/connections.json, sin secretos.",
-    "next": "Lo que sigue: /ship-before-ready:interview."
+    "next": "Lo que sigue: /ship-before-ready:landing."
   },
   "probe_page": {
     "title": "Pronto",

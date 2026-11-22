@@ -3,19 +3,19 @@
   "journey": {
     "title": "El recorrido tiene siete fases:",
     "phases": {
-      "connect": "Conexiones",
       "interview": "Problema e idea",
       "rules": "Reglas",
       "design": "Diseño",
+      "connect": "Conexiones",
       "landing": "Landing",
       "video-scripts": "Guiones de video",
       "verdict": "Veredicto"
     },
     "about": {
-      "connect": "comprobar su gestor de paquetes, Vercel y PostHog",
       "interview": "definir el problema con fuentes y armar el Lean Canvas",
       "rules": "fijar y sellar las varas y la fecha del veredicto antes de lanzar",
       "design": "elegir e iterar el diseño de la landing en Claude Design",
+      "connect": "conectar Vercel y PostHog, ahora que hay un diseño que publicar",
       "landing": "programar, verificar y publicar la landing aprobada",
       "video-scripts": "escribir tres guiones de video, cada uno con su link",
       "verdict": "leer los números y ver qué dicen frente a las varas"
