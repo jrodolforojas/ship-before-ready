@@ -66,6 +66,8 @@ const BOARD_DEFECTS = [
   { name: 'a hand-written color', ids: ['R14'], edit: replaceIn('<header style="', '<header style="border-bottom: 1px solid #DDDDDD; ') },
   { name: 'a weight outside its style', ids: ['R14'], edit: replaceIn('font-weight: var(--text-lead--font-weight)', 'font-weight: 700') },
   { name: 'a grid of unequal fractions', ids: ['R14'], edit: replaceIn('<ol data-sbr="steps" style="', '<ol data-sbr="steps" style="grid-template-columns: 7fr 5fr; ') },
+  { name: 'a button with its own padding', ids: ['R14'], edit: (html) => html.replaceAll('padding: var(--spacing-item) var(--spacing-group); border: 0', 'padding: var(--spacing-group) var(--spacing-block); border: 0') },
+  { name: 'a stroke width by hand', ids: ['R14'], edit: replaceIn('</header>', '</header>\n<div data-sbr="figure" aria-hidden="true"><svg><line style="stroke: var(--color-line); stroke-width: 2"></line></svg></div>') },
   { name: 'a gradient', ids: ['R15'], edit: replaceIn('<header style="', '<header style="background-image: linear-gradient(var(--color-canvas), var(--color-surface)); ') },
   { name: 'motion', ids: ['R23'], edit: replaceIn('<header style="', '<header style="transition: opacity var(--motion-duration); ') },
   { name: 'a missing block', ids: ['R28'], edit: (html) => html.replace(/<ol data-sbr="steps"[\s\S]*?<\/ol>\n/, '') },
@@ -80,7 +82,7 @@ for (const defect of BOARD_DEFECTS) {
 }
 
 test('a figure may draw with opacity and shapes, and the step numbers may be hidden digits', () => {
-  const figure = '<div data-sbr="figure" aria-hidden="true" style="opacity: 0.2"><svg style="width: 100%"><circle style="fill: var(--color-accent)"></circle></svg></div>';
+  const figure = '<div data-sbr="figure" aria-hidden="true" style="opacity: 0.2"><svg style="width: 100%"><circle style="fill: var(--color-accent); stroke: var(--color-line); stroke-width: var(--line-width)"></circle></svg></div>';
   assert.deepEqual(boardFailures(replaceIn('</header>', `</header>\n${figure}`)), []);
   assert.deepEqual(boardFailures(replaceIn('<header style="', '<header style="opacity: 0.5; ')), ['R14']);
 });

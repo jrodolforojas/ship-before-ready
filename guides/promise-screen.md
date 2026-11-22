@@ -63,9 +63,10 @@ The plugin wraps it in the artboard: the fonts, the token variables of the direc
 - **Inline styles only.** No `<style>`, no classes, no scripts, no event attributes.
 - **Text styles** are set with their four variables together: `font-size: var(--text-<style>); line-height: var(--text-<style>--line-height); font-weight: var(--text-<style>--font-weight); letter-spacing: var(--text-<style>--letter-spacing)`, plus `font-family: var(--font-display)` or `var(--font-body)`.
 - **Colors:** `var(--color-<token>)`, `transparent` or `currentColor`. Backgrounds with `background-color`.
+- **Buttons:** `cta` and `cta-closing` keep the padding of the filled button, `var(--spacing-item) var(--spacing-group)`, and its `min-height: var(--spacing-block)`; only their width is free.
 - **Lengths:** `var(--spacing-section|block|group|item)`, `var(--container-prose|page)`, `var(--radius-control|card)`, `var(--line-width)`, `0`, `auto`, and percentages that are simple fractions (50%, 33.333%, 25%, 41.667%). Borders: `var(--line-width) solid var(--color-line)`. Shadow: `var(--shadow-card)` or `none`. Round shapes: `border-radius: 50%`.
 - **Layout:** flex freely; grids only as `grid-template-columns: repeat(<n>, minmax(0, 1fr))` with `grid-column: span <n> / span <n>`. A 12-column grid gives any split (7 and 5, 8 and 4).
-- **Figures.** A decorative drawing goes inside `<div data-sbr="figure" aria-hidden="true">`. There may be several. A figure holds no text; only inside one may `opacity` be used. Draw with token colors only.
+- **Figures.** A decorative drawing goes inside `<div data-sbr="figure" aria-hidden="true">`. There may be several. A figure holds no text; only inside one may `opacity` be used. Draw with token colors only; a stroke is `stroke: var(--color-line)` or `var(--color-accent)` with `stroke-width: var(--line-width)`.
 
 A board that fails is fixed and checked again before it reaches the canvas:
 
@@ -81,6 +82,8 @@ Every `fail` row names the board, the element or the declaration.
 
 - Texts come from `copy` (`import { copy } from '../lib/copy'`): `{copy.hero.title}`, `{copy.pains.map(…)}`. No visible phrase is written in a component. Step numbers are computed from the position: `{String(index + 1).padStart(2, '0')}` inside `aria-hidden="true"`.
 - The two buttons are the template's `FilledButton`: `<FilledButton hook="cta" label={copy.cta} />` and `hook="cta-closing"`. Its `class` prop sets only the width (`w-full`, `w-auto`, `md:w-auto`). The brand is the template's `<Brand />`, unless the board draws the brand in another style: then a `<p data-sbr="brand">` with the classes of the board.
+- `margin: 0` and `padding: 0` need no class: the template already resets them. Never write `m-0` or `p-0`.
+- The phone and desktop boards may nest their blocks differently. Then add a wrapper with layout classes only (no fill, border, spacing token of its own or text) so one structure serves both; never add anything that shows.
 - The phone board is the base classes; what the desktop board changes is the same class with the `md:` prefix (768 px, where the text sizes switch). Use `lg:` (1024 px) instead when the 768 px capture overflows.
 - No `style` attribute, no `<style>`, no `<script>`, no `set:html`, no other file type: only Tailwind classes of the tokens.
 
@@ -99,7 +102,7 @@ Every `fail` row names the board, the element or the declaration.
 | `width: 50%`, `41.667%`, `100%` | `w-1/2`, `w-5/12`, `w-full` |
 | `grid-template-columns: repeat(3, minmax(0, 1fr))`; `grid-column: span 7 / span 7` | `grid grid-cols-3`; `col-span-7` |
 | `text-wrap: balance`; `text-align: center` | `text-balance`; `text-center` |
-| `opacity: 0.2` inside a figure; `fill: var(--color-accent)` | `opacity-20`; `fill-accent` |
+| `opacity: 0.2` inside a figure; `fill: var(--color-accent)`; `stroke: var(--color-line)`; `stroke-width: var(--line-width)` | `opacity-20`; `fill-accent`; `stroke-line`; `stroke-line-width` |
 | `position: absolute; inset: 0` | `absolute inset-0` |
 
 After building, `landing.mjs match` compares the page with the phone board: the texts of screen 1 in order, each with its style, color and fill. A difference names the first text that differs. The layout is compared by eye: the builder sees the page next to the canvas before publishing.

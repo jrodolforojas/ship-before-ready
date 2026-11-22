@@ -192,7 +192,7 @@ function utilityProblem(utility, vocabulary) {
   if (prefix === 'border' && value && !value.startsWith('spacing')) return r14(borderUtilityProblem(value, vocabulary));
   if (prefix === 'outline') return r14(OUTLINE_UTILITIES.has(utility) ? null : 'is outside the fixed focus ring');
   if (prefix === 'fill' && value) return r14(value === 'none' || vocabulary.colorUtilities.has(utility) ? null : 'is not a fill token');
-  if (prefix === 'stroke' && value) return r14(value === 'none' || /^\d+$/.test(value) || vocabulary.colorUtilities.has(utility) ? null : 'is not a stroke token');
+  if (prefix === 'stroke' && value) return r14(['none', 'line-width'].includes(value) || /^\d+$/.test(value) || vocabulary.colorUtilities.has(utility) ? null : 'is not a stroke token');
   if (prefix === 'accent' && value) return r14(vocabulary.colorUtilities.has(utility) ? null : 'is not accent-accent');
   if (prefix === 'font' && value) return r14(value === 'display' || value === 'body' ? null : 'is not font-display or font-body');
   if (prefix === 'shadow') return r14(utility === 'shadow-card' ? null : 'is not shadow-card');

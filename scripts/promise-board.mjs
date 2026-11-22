@@ -21,6 +21,7 @@ const GRID_TEMPLATE = /^(none|repeat\(\s*\d+\s*,\s*minmax\(\s*0\s*,\s*1fr\s*\)\s
 const GRID_PLACEMENT = /^(auto|\d+|span \d+ \/ span \d+|-?\d+ \/ -?\d+)$/;
 const NAVIGATION_TAGS = new Set(['a', 'nav', 'area']);
 const TEXT_ATTRIBUTES = ['aria-label', 'title', 'alt', 'placeholder'];
+const FILLED_PADDING = 'var(--spacing-item) var(--spacing-group)';
 
 const problem = (id, message) => ({ id, message });
 const collapseSpaces = (text) => text.replace(/\s+/g, ' ').trim();
@@ -108,6 +109,7 @@ function declarationProblems(property, value, names, onDrawing) {
   if (property === 'text-align' && value.includes('justify')) return [problem('R10', 'text-align: justify')];
   if (property === 'font-family') return singleVariable(value)?.startsWith('--font-') ? [] : [problem('R11', `font-family: ${value} is not --font-display or --font-body`)];
   if (property === 'font-style' && value !== 'normal') return [problem('R11', `font-style: ${value}: only upright styles are served`)];
+  if (property === 'stroke-width') return value === 'var(--line-width)' ? [] : [problem('R14', `stroke-width: ${value} is not --line-width`)];
   if (property === 'box-shadow') return ['none', 'var(--shadow-card)'].includes(value) ? [] : [problem('R14', `box-shadow: ${value} is not --shadow-card`)];
   if (property === 'opacity' && !onDrawing) return [problem('R14', 'opacity outside a figure')];
   if (/url\(/i.test(value)) return [problem('R14', `${property}: ${value} loads a file`)];
@@ -279,6 +281,9 @@ function actionProblems(board, contract) {
     ...buttons.filter((button) => !filled.includes(hookOf(button))).map(() => problem('R1', 'a button other than cta and cta-closing')),
     ...buttons.filter((button) => filled.includes(hookOf(button)) && !isFilled(button)).map((button) => problem('R1', `${hookOf(button)} is not filled with accent and on-accent`)),
     ...buttons.filter((button) => filled.includes(hookOf(button)) && button.attrs.type !== 'button').map((button) => problem('R1', `${hookOf(button)} must be type="button"`)),
+    ...buttons
+      .filter((button) => filled.includes(hookOf(button)) && ![undefined, FILLED_PADDING].includes(stylesOf(button).padding))
+      .map((button) => problem('R14', `${hookOf(button)} has padding: ${stylesOf(button).padding}; the filled button keeps ${FILLED_PADDING}`)),
     ...accentPanels.map(() => problem('R1', 'text on an accent fill reads as a second filled button')),
   ];
 }

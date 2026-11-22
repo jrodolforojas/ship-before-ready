@@ -185,14 +185,14 @@ test('token utilities pass and values outside the system fail', () => {
     'bg-canvas', 'text-ink-muted', 'placeholder:text-ink-muted', 'text-title', 'text-balance', 'font-display', 'border', 'border-t', 'border-line',
     'aria-invalid:border-danger', 'border-t-line', 'rounded-control', 'rounded-t-card', 'shadow-card', 'py-section', 'md:py-section', '-mt-item',
     'gap-x-group', 'size-block', 'max-w-prose', 'max-w-page', 'w-full', 'w-1/2', 'min-h-dvh', 'mx-auto', 'focus-visible:outline-2',
-    'focus-visible:outline-offset-2', 'outline-focus', 'transition-opacity', 'transition-transform', 'accent-accent', 'fill-accent', 'stroke-line',
+    'focus-visible:outline-offset-2', 'outline-focus', 'transition-opacity', 'transition-transform', 'accent-accent', 'fill-accent', 'stroke-line', 'stroke-line-width',
     'flex', 'grid-cols-2', 'opacity-0', 'hover:opacity-90', 'sr-only', 'touch-target', 'form-column', 'dock-bottom', 'z-10', 'items-start',
   ];
   const forbidden = [
     'text-[13px]', 'bg-[#fff]', '[mask-type:luminance]', 'data-[state=open]:flex', 'text-accent', 'text-canvas', 'text-xl', 'text-gray-500', 'bg-white',
     'bg-red-500', 'bg-gradient-to-r', 'border-2', 'border-t-4', 'border-gray-200', 'outline-none', 'outline-4', 'duration-200', 'delay-150', 'ease-in',
     'leading-tight', 'tracking-wide', 'font-bold', 'font-sans', 'rounded-lg', 'rounded-full', 'shadow-md', 'p-4', 'mt-8', 'gap-6', 'max-w-md', 'inset-0',
-    'ring-2', 'bg-accent/50', 'text-ink/70', 'transition', 'transition-all', 'animate-spin', 'text-justify',
+    'ring-2', 'm-0', 'stroke-(length:--line-width)', 'bg-accent/50', 'text-ink/70', 'transition', 'transition-all', 'animate-spin', 'text-justify',
   ];
   assert.deepEqual(allowed.filter((token) => classTokenProblem(token, vocabulary)), []);
   assert.deepEqual(forbidden.filter((token) => !classTokenProblem(token, vocabulary)), []);

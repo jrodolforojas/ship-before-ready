@@ -111,3 +111,8 @@
 @utility circle {
   border-radius: 50%;
 }
+
+/* The line width of drawings in a figure: SVG strokes have no token utility of their own. */
+@utility stroke-line-width {
+  stroke-width: var(--line-width);
+}
