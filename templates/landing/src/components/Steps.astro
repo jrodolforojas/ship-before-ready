@@ -1,7 +1,23 @@
 ---
 import { copy } from '../lib/copy';
+import { tokens } from '../lib/tokens';
+
+const layout = {
+  centered: {
+    list: 'flex flex-col gap-group md:grid md:grid-cols-3',
+    item: 'step-number flex items-center gap-group md:flex-col md:items-start before:flex before:size-block before:shrink-0 before:items-center before:justify-center before:circle before:border before:border-line before:font-body before:text-button before:text-ink',
+  },
+  split: {
+    list: 'flex flex-col gap-group lg:grid lg:grid-cols-3 lg:gap-block',
+    item: 'step-number-padded flex flex-col gap-item border-t border-line pt-group before:font-body before:text-label before:text-ink-muted',
+  },
+  editorial: {
+    list: 'flex max-w-prose flex-col gap-group text-body',
+    item: 'step-number flex items-start gap-group before:w-block before:shrink-0 before:font-display before:text-heading before:text-ink',
+  },
+}[tokens.composition];
 ---
 
-<ol data-sbr="steps" class="mx-auto flex w-full max-w-prose list-inside list-decimal flex-col gap-group">
-  {copy.steps.map((step) => <li class="font-body text-body text-ink">{step}</li>)}
+<ol data-sbr="steps" class:list={['step-counter', layout.list]}>
+  {copy.steps.map((step) => <li class:list={['font-body text-body text-ink', layout.item]}>{step}</li>)}
 </ol>

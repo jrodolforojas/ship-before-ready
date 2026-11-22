@@ -5,7 +5,9 @@ import ScreenTitle from './ScreenTitle.astro';
 ---
 
 <Screen hook="screen-done" titleHook="done-title">
-  <ScreenTitle hook="done-title" text={copy.done.title} />
-  <p data-sbr="notice" class="rounded-card border border-line bg-surface p-group font-body text-body text-ink shadow-card">{copy.done.notice}</p>
-  <p data-sbr="next-steps" class="font-body text-body text-ink">{copy.done.next}</p>
+  <div class="flex flex-col gap-group pt-section pb-block">
+    <ScreenTitle hook="done-title" text={copy.done.title} />
+    <p data-sbr="notice" class="rounded-card border border-line bg-surface p-group font-body text-body text-ink shadow-card">{copy.done.notice}</p>
+    <p data-sbr="next-steps" class="font-body text-body text-ink">{copy.done.next}</p>
+  </div>
 </Screen>

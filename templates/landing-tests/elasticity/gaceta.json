@@ -1,0 +1,39 @@
+{
+  "name": "Gaceta",
+  "scheme": "light",
+  "composition": "editorial",
+  "decor": "shapes",
+  "palette_source": "derived",
+  "fonts": {
+    "display": { "family": "Playfair Display", "weights": [700], "fallback": "serif" },
+    "body": { "family": "Source Serif 4", "weights": [400, 600], "fallback": "serif" }
+  },
+  "color": {
+    "canvas": "#F6F1E7",
+    "surface": "#FFFDF8",
+    "ink": "#1F1A14",
+    "ink_muted": "#5B5247",
+    "accent": "#A33A12",
+    "on_accent": "#FFFFFF",
+    "line": "#857A6B",
+    "focus": "#1F1A14",
+    "danger": "#A4161A"
+  },
+  "text": {
+    "title": { "size": 32, "size_desktop": 61, "line_height": 1.1, "font_weight": 700, "letter_spacing": -0.01 },
+    "heading": { "size": 24, "size_desktop": 31, "line_height": 1.2, "font_weight": 700, "letter_spacing": 0 },
+    "lead": { "size": 18, "size_desktop": 20, "line_height": 1.55, "font_weight": 400, "letter_spacing": 0 },
+    "body": { "size": 18, "size_desktop": 20, "line_height": 1.6, "font_weight": 400, "letter_spacing": 0 },
+    "small": { "size": 16, "size_desktop": 16, "line_height": 1.5, "font_weight": 400, "letter_spacing": 0 },
+    "button": { "size": 18, "size_desktop": 18, "line_height": 1.2, "font_weight": 600, "letter_spacing": 0.04 },
+    "label": { "size": 14, "size_desktop": 14, "line_height": 1.4, "font_weight": 600, "letter_spacing": 0.06 }
+  },
+  "spacing": { "section": 64, "block": 32, "group": 16, "item": 4 },
+  "shape": {
+    "radius_control": 0,
+    "radius_card": 2,
+    "shadow_card": { "x": 0, "y": 0, "blur": 0, "opacity": 0 },
+    "line_width": 1
+  },
+  "measure": { "prose": 68, "page": 960, "motion_duration": 120 }
+}

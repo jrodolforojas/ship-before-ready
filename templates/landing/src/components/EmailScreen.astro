@@ -9,25 +9,27 @@ import ScreenTitle from './ScreenTitle.astro';
 
 <Screen hook="screen-email" titleHook="email-title">
   <Progress step={1} />
-  <ScreenTitle hook="email-title" text={copy.email.title} />
-  <form data-sbr="email-form" novalidate class="flex flex-col gap-group">
-    <Field
-      hook="email-field"
-      name="email"
-      label={copy.email.label}
-      type="email"
-      required
-      autocomplete="email"
-      inputmode="email"
-      maxlength="254"
-      placeholder={copy.email.placeholder}
-      spellcheck="false"
-      autocapitalize="none"
-      autocorrect="off"
-    >
-      <p data-sbr="email-error" id="email-error" role="alert" hidden class="font-body text-small text-danger">{copy.email.error}</p>
-    </Field>
-    <p data-sbr="privacy" class="font-body text-small text-ink-muted">{copy.email.privacy}</p>
-    <FilledButton hook="email-submit" type="submit" label={copy.email.submit} sendingLabel={copy.status.sending} />
-  </form>
+  <div class="flex flex-col gap-group py-block">
+    <ScreenTitle hook="email-title" text={copy.email.title} />
+    <form data-sbr="email-form" novalidate class="flex flex-col gap-group">
+      <Field
+        hook="email-field"
+        name="email"
+        label={copy.email.label}
+        type="email"
+        required
+        autocomplete="email"
+        inputmode="email"
+        maxlength="254"
+        placeholder={copy.email.placeholder}
+        spellcheck="false"
+        autocapitalize="none"
+        autocorrect="off"
+      >
+        <p data-sbr="email-error" id="email-error" role="alert" hidden class="font-body text-small text-danger">{copy.email.error}</p>
+        <p data-sbr="privacy" class="font-body text-small text-ink-muted">{copy.email.privacy}</p>
+      </Field>
+      <FilledButton hook="email-submit" type="submit" label={copy.email.submit} sendingLabel={copy.status.sending} />
+    </form>
+  </div>
 </Screen>

@@ -7,6 +7,6 @@ interface Props {
 const { hook, titleHook } = Astro.props;
 ---
 
-<section data-sbr={hook} aria-labelledby={titleHook} hidden class="mx-auto flex form-column flex-col gap-block px-group py-block">
+<section data-sbr={hook} aria-labelledby={titleHook} hidden class="mx-auto flex form-column flex-col px-group">
   <slot />
 </section>

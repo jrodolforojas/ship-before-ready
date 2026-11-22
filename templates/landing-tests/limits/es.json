@@ -1,0 +1,56 @@
+{
+  "lang": "es",
+  "brand": "Constructores Responsables Lab",
+  "hero": {
+    "title": "Antes de escribir una sola línea de código, averigua si alguien lo usa",
+    "subtitle": "Una herramienta de línea de comandos que acompaña a quien construye desde la idea hasta sus primeros interesados, con una página publicada y tres guiones listos"
+  },
+  "cta": "Quiero entrar a la lista",
+  "pains": [
+    "Pasaste semanas construyendo una aplicación completa que al final ninguna persona abrió",
+    "Tus amigos y tu familia dijeron que la idea era buena y ninguno de ellos llegó a usarla",
+    "Construir con inteligencia artificial es rápido, pero construir lo equivocado cuesta meses"
+  ],
+  "steps": [
+    "Respondes tres preguntas incómodas sobre tu idea, tu público y la promesa que les haces",
+    "Recibes una página publicada con tu promesa y tres guiones de video listos para grabar hoy",
+    "Lees el veredicto con los datos de tus visitas y decides tú mismo si vale la pena seguirla"
+  ],
+  "closing": "Averigua si alguien de verdad lo quiere antes de construirlo por meses",
+  "footer": {
+    "author": "Hecho por alguien que construyó muchas cosas que ninguna persona llegó a usar",
+    "privacy": "El correo electrónico se usa solamente para avisarte del lanzamiento y para hacerte una pregunta corta; no se comparte con nadie y puedes pedir que lo borremos."
+  },
+  "progress": "Paso {current} de {total} casi",
+  "status": {
+    "sending": "Enviando tu información…"
+  },
+  "email": {
+    "title": "¿A qué dirección de correo electrónico te avisamos cuando esté lista?",
+    "label": "Tu dirección de correo electrónico, aquí",
+    "placeholder": "nombre.apellidos@correo-de-ejemplo.co.cr",
+    "submit": "Guardar mi correo ahora…",
+    "privacy": "El correo electrónico se usa solamente para avisarte del lanzamiento y para hacerte una pregunta corta; no se comparte con nadie y puedes pedir que lo borremos.",
+    "error": "No pudimos guardar tu correo electrónico. Revisa que esté bien escrito, con su arroba y su dominio, e inténtalo otra vez"
+  },
+  "questions": {
+    "title": "Dos preguntas cortas sobre cómo trabajas hoy al empezar un proyecto ya",
+    "saved": "Tu correo electrónico ya quedó guardado; estas respuestas nos ayudan a entender tu caso",
+    "current_solution": "¿Qué haces hoy, paso a paso, antes de empezar a programar una idea nueva que se te acaba de ocurrir durante la semana?",
+    "last_time": "¿Cuál fue el último proyecto que construiste y que nadie usó, y cuántas semanas o meses de trabajo te tomó terminarlo?",
+    "wants_call": "¿Te parece si hablamos quince minutos por videollamada esta misma semana para conocer mejor tu caso y tus proyectos?",
+    "whatsapp": "Tu número de WhatsApp con código de país",
+    "time_slot": "Un horario que te quede bien esta semana",
+    "submit": "Enviar ambas respuestas.",
+    "error": "No pudimos enviar tus respuestas. Revisa que no falte ninguna de las dos preguntas e inténtalo de nuevo en un momento."
+  },
+  "done": {
+    "title": "Listo, ya estás en la lista de las primeras personas que van a probar.",
+    "notice": "Todavía no existe: se está construyendo este fin de semana y esta misma página es su propia prueba de demanda; si suficientes personas se anotan, se construye y te avisamos primero a ti y a los demás.",
+    "next": "Te avisaremos por correo cuando se lance; si pediste la llamada, te escribimos por WhatsApp durante esta misma semana."
+  },
+  "meta": {
+    "title": "Constructores Responsables: de la idea a los interesados ya",
+    "description": "Herramienta que lleva tu idea a sus primeros interesados antes de escribir código: una página publicada, tres guiones de video y un veredicto con sus datos"
+  }
+}

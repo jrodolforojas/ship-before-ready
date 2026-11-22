@@ -1,11 +1,26 @@
 ---
 import { copy } from '../lib/copy';
+import { tokens } from '../lib/tokens';
+
+const CARD = 'rounded-card border border-line bg-surface shadow-card';
+const DESKTOP_COLUMNS = ['md:grid-cols-1', 'md:grid-cols-2', 'md:grid-cols-3'];
+
+const layout = {
+  centered: {
+    list: `grid gap-group ${DESKTOP_COLUMNS[copy.pains.length - 1]}`,
+    item: `${CARD} p-group`,
+  },
+  split: {
+    list: `flex flex-col ${CARD}`,
+    item: 'border-line p-group not-first:border-t',
+  },
+  editorial: {
+    list: 'flex max-w-prose flex-col gap-group text-body',
+    item: '',
+  },
+}[tokens.composition];
 ---
 
-<ul data-sbr="pains" class="mx-auto flex w-full max-w-prose flex-col gap-group">
-  {
-    copy.pains.map((pain) => (
-      <li class="rounded-card border border-line bg-surface p-group font-body text-body text-ink shadow-card">{pain}</li>
-    ))
-  }
+<ul data-sbr="pains" class={layout.list}>
+  {copy.pains.map((pain) => <li class:list={['font-body text-body text-ink', layout.item]}>{pain}</li>)}
 </ul>

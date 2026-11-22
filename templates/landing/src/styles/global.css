@@ -7,6 +7,7 @@
 @theme {
   --*: initial;
   --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
 
   --color-canvas: #FAFAFA;
   --color-surface: #FFFFFF;
@@ -89,9 +90,10 @@
   box-shadow: var(--shadow-card);
 }
 
-/* Template measures that no token covers: the 44 px touch target (R18) and the 300 to 500 px form (R20). */
+/* Template measures that no token covers: the 44 px touch target (R18) and the 300 to 500 px form (R20).
+   Controls take their height from --spacing-block, which may be under 44 px. */
 @utility touch-target {
-  min-block-size: 2.75rem;
+  min-block-size: max(2.75rem, var(--spacing-block));
   min-inline-size: 2.75rem;
 }
 
@@ -103,4 +105,32 @@
 @utility dock-bottom {
   position: sticky;
   inset-block-end: 0;
+}
+
+@utility circle {
+  border-radius: 50%;
+}
+
+/* The two columns of split: 7/12 and 5/12 of what is left after the gap. */
+@utility grid-cols-split {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+}
+
+/* Step numbers are the position of each li, not copy (R32), so they are drawn as a counter and hidden from assistive technology. */
+@utility step-counter {
+  counter-reset: step;
+}
+
+@utility step-number {
+  counter-increment: step;
+  &::before {
+    --tw-content: counter(step) / "";
+  }
+}
+
+@utility step-number-padded {
+  counter-increment: step;
+  &::before {
+    --tw-content: counter(step, decimal-leading-zero) / "";
+  }
 }
