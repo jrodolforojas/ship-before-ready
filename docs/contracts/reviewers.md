@@ -73,7 +73,7 @@ The skill writes the answer to `.sbr/sketches/<letter>/critique.txt`. A rejected
 |---|---|
 | `hierarchy` | The headline does not lead, the button is not next, or the lists read as loud as the headline |
 | `message` | What `structure.md` says the visitor must understand is hidden or out of order |
-| `first_view` | Headline, subtitle or button below the first view, or the first view ends on something cut in half |
+| `first_view` | Headline, subtitle or button below the first view, or the fold slices a card, a box or a drawing |
 | `edges` | Blocks do not share their edges |
 | `centred` | Running text or lists centred, or a centred block wider than half the page |
 | `space` | Space does not group, or a short block floats alone |

@@ -114,13 +114,13 @@ Before the builder sees a direction, a critic who knows nothing else looks at sc
 
 - **Hierarchy.** The headline leads the first view; the button is the next thing the eye lands on; the pains and steps step back. Size, weight and contrast together only on the headline.
 - **The message.** What `structure.md` says the visitor must understand shows, in its order, not hidden under a drawing.
-- **The first view.** Headline, subtitle and the whole button inside it, and the fold never slices a card, an item or a drawing in half.
+- **The first view.** Headline, subtitle and the whole button inside it, and the fold never slices a filled card, a bordered box or a drawing in half; a list may simply continue below it.
 - **Edges.** Blocks start on at most two left lines and share their right edges. Running text and lists are never centred; only the headline group may be, and no centred block is wider than half the page on desktop.
 - **Space.** More space between groups than inside them; no short block alone in an empty band; no dead space beside a short text.
 - **No template.** Not a centred headline over three equal cards, icons in colored circles, a pill above the headline, a stack of identical bands, or the phone layout simply stretched on desktop.
 - **Drawings mean something.** A figure shows something `structure.md` asks for; it never fills space, illustrates the subject literally or sits under text.
 - **The accent stays small.** On the two buttons and a few marks; color never makes the hierarchy.
-- **Type.** No tracked capitals or small caps; one quieter level of small text in the headline group at most; running text under about 62 characters a line; the headline never ends on a single word alone.
+- **Type.** No tracked capitals or small caps; one quieter level of small text in the headline group at most; running text under about 75 characters a line, the widest `measure.prose` allows; the headline never ends on a single word alone.
 - **One box deep, nothing broken.** No box in a box in a box, no cards in cards; nothing overlaps, touches, tilts or is cut at an edge.
 
 These come from the Taste Skill and Refactoring UI, restated for one screen with a fixed anatomy: [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).

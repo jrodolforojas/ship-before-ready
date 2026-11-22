@@ -92,7 +92,7 @@ order: <the nine blocks, comma-separated>
 ```
 
 - **What the visitor must understand:** three to five points, in reading order, each one traced to `promise.md` or a field of the brief. Nothing new: no claim that the copy does not make.
-- **`order`** names the nine blocks of the free screen once each: `brand`, `title`, `subtitle`, `cta`, `pains`, `steps`, `closing`, `cta-closing`, `footer`. `brand` opens, `footer` closes, `subtitle` comes after `title` and `cta-closing` after `closing`. What `promise.md` says must stand out after the headline comes right after the button.
+- **`order`** names the nine blocks of the free screen once each: `brand`, `title`, `subtitle`, `cta`, `pains`, `steps`, `closing`, `cta-closing`, `footer`. `brand` opens, `footer` closes, `subtitle` comes after `title` and `cta-closing` after `closing`. When the builder gave (not derived) what must stand out after the headline in `promise.md`, that block comes right after the button; otherwise the order follows what they said the visitor should see first.
 - **The outline** repeats `order`, one line per block, with its element: `h1` for `title` only, `ul` for `pains`, `ol` for `steps`, `h2` for `closing`, `button` for the two buttons, `p` for the rest, `footer` for the footer.
 
 Run `status`: the `problems` of its `structure` must be an empty list. If not, fix the file and run it again. Then say `structure.intro` and the points in a few lines, then `structure.later`, and go on: the builder reacts to the design on the canvas.
