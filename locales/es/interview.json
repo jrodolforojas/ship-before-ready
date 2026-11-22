@@ -149,7 +149,8 @@
       },
       "alternatives": {
         "ask": "Pensando en {segment}: ¿qué hace hoy esa persona para resolverlo, aunque sea mal? Para cada alternativa dígame qué le cuesta (horas, dinero, errores) y qué la frustra, con las palabras que ella usaría.",
-        "push": "Me falta {missing}. Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. Describa el arreglo actual, por malo que sea, un costo que se pueda contar y una queja tal como ella la diría."
+        "push": "Me falta {missing}. Describa el arreglo actual, por malo que sea, un costo que se pueda contar y una queja tal como ella la diría.",
+        "push_nothing": "Si de verdad no hace nada, es probable que el problema no le duela lo suficiente. ¿Qué hace cuando le pasa, aunque sea aguantarse o resolverlo mal, y qué le cuesta?"
       },
       "uvp": {
         "ask": "¿Qué cambia para esa persona? Dígalo en una frase que ella misma repetiría, con sus palabras y no con las de un folleto.",

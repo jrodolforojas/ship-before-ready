@@ -120,7 +120,7 @@ Follow [sources.md](sources.md) step by step. In short:
    ```
 
 5. Show the builder the table exactly as it is in the file, every row and every sentence whole, with `sources.table_intro`, the notes that apply (`sources.contradicted_note`, `sources.no_source_note`, `sources.unreachable_note`) and `sources.confirm`. **Stop and wait.**
-6. Apply what they ask: a corrected claim is checked against its source again, a removed claim loses its row, a new link is opened like any other. Show the changed rows and ask again.
+6. Apply what they ask: a corrected claim is checked against its source again, a removed claim loses its row, a new link is opened like any other. Show the changed rows and ask again. A claim's wording never changes between what was shown and what is in the file.
 7. Only when the builder confirms, add the component to `confirmed` in the header and start the next component. After `viability`, go to step 4.
 
 ## 4. The problem statement
@@ -162,10 +162,10 @@ Say `canvas.intro`. One block at a time, in this order; write `.sbr/lean-canvas.
 | 9 | `unfair_advantage` | `canvas.questions.unfair_advantage.ask` | Invited | Never |
 | 10 | `cost_structure`, `revenue_streams` | `canvas.questions.builder_only.ask` | The builder's alone | Never |
 
-- **Required blocks: push once, and only once.** When an answer is not enough, say the `push` phrase of that question (`{vague}` is the builder's own words, `{missing}` is what is missing) and take the second answer as it comes: the reviewer decides, not you.
+- **Required blocks: push once, and only once.** When an answer is not enough, say the `push` phrase of that question (`{vague}` is the builder's own words, `{missing}` is what is missing) and take the second answer as it comes: the reviewer decides, not you. For `alternatives`, say `push_nothing` instead only when the builder says the person does nothing today.
 - **Invited blocks never block.** Ask once. With "no sé", "después" or no answer, say `canvas.invited_pending` and write `canvas.pending` in the section.
 - **Costs and revenue.** One question for both. If the builder gives them, write each under its section exactly as said and answer only `canvas.builder_only_saved`: no opinion, no question back, no number of your own. If not, leave both sections out.
-- What the builder said about the solution during the problem module counts: do not ask it again, confirm it in one line.
+- What the builder said about the solution during the problem module is a start, not the answer: say in one line what you noted and still ask `canvas.questions.solution.ask`, so they say what it is and what it does in their own words.
 - Frustrations are written between double quotes, as the person would say them. If the builder gave them in their own voice ("es tedioso coordinar"), keep their words; do not polish them into copy.
 
 ```markdown
@@ -273,7 +273,7 @@ A round is one answer of the reviewer. There are at most three rounds.
 
    The script checks the format of the contract and prints `{"result": …, "findings": […], "reviewer": …}`. With `approved` it writes `reviewer: approved`; with `rejected` it leaves `reviewer: pending`. If it exits with code 2 the answer did not follow the format: call the agent again once, with the same prompt, and do not count that as a round. If the format fails twice in a row, stop and show the builder the agent's answer.
 3. `approved`: go to step 8.
-4. `rejected`, in round one or two: say `review.rejected`, then one line per finding with its `review.fields.<code>` and the reviewer's sentence. Say `review.ask_again` and fix each finding as the table says, one at a time, without pushing again. Then rewrite what changed, run the checks, leave the brief with `reviewer: pending`, and start the next round.
+4. `rejected`, in round one or two: say `review.rejected`, then one line per finding with its `review.fields.<code>` and the reviewer's sentence. Fix each finding as the table says, without pushing again; when a fix needs an answer from the builder, say `review.ask_again` and ask one thing at a time. Then rewrite what changed, run the checks, leave the brief with `reviewer: pending`, and start the next round.
 5. `rejected` in round three: stop. Say `review.stopped`, list the findings the same way, and close with `review.stopped_next`. The brief stays `reviewer: pending`. Do not offer to approve it another way.
 
 | Finding | How it is fixed |

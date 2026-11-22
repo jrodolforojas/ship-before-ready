@@ -68,6 +68,7 @@ Under the component, after its answers:
 - Status and type are written with their phrases of the locale, exactly.
 - `supported`, `contradicted` and `other_context` rows carry type, link and sentence. `no_source` and `own_experience` rows carry `sources.no_type` in those three cells.
 - A `|` inside a cell is written `\|`. A cell is one line.
+- A note under the table follows the same rule as a row: it never repeats what a search result said about a page you could not open.
 
 ## 5. Check before showing
 
