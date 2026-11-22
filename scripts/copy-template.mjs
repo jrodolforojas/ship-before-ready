@@ -10,11 +10,12 @@ const pluginRoot = fileURLToPath(new URL('..', import.meta.url));
 const templateFolder = join(pluginRoot, 'templates', 'landing');
 const neutralTokens = join(pluginRoot, 'templates', 'neutral-design', 'tokens.json');
 const exampleCopy = join(pluginRoot, 'templates', 'example', 'es.json');
+const examplePromise = join(pluginRoot, 'templates', 'example', 'promise');
 const templateSources = join(templateFolder, 'src', 'scripts', 'sources.json');
 const contract = JSON.parse(readFileSync(join(pluginRoot, 'templates', 'contract.json'), 'utf8'));
 
 const NEVER_COPIED = new Set(['node_modules', 'dist', '.astro', '.vercel', '.DS_Store']);
-const BUILDER_FOLDERS = [join('src', 'data'), join('src', 'i18n')];
+const BUILDER_FOLDERS = [join('src', 'data'), join('src', 'i18n'), join('src', 'promise')];
 const LOCKFILE_MANAGER = { 'bun.lock': 'bun' };
 
 class UsageError extends Error {}
@@ -88,7 +89,7 @@ function belongsToSkeleton(source, manager) {
 function addWhenMissing(source, target, alreadyThere) {
   if (alreadyThere) return 'kept';
   mkdirSync(dirname(target), { recursive: true });
-  cpSync(source, target);
+  cpSync(source, target, { recursive: true });
   return 'added';
 }
 
@@ -100,9 +101,11 @@ function languageFiles(folder) {
 function addExample(target) {
   const tokens = join(target, 'src', 'data', 'tokens.json');
   const languageFolder = join(target, 'src', 'i18n');
+  const promiseFolder = join(target, 'src', 'promise');
   return [
     `src/data/tokens.json: ${addWhenMissing(neutralTokens, tokens, existsSync(tokens))}`,
     `src/i18n/es.json: ${addWhenMissing(exampleCopy, join(languageFolder, 'es.json'), languageFiles(languageFolder).length > 0)}`,
+    `src/promise/: ${addWhenMissing(examplePromise, promiseFolder, existsSync(promiseFolder))}`,
   ];
 }
 

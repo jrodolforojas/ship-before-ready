@@ -2,6 +2,7 @@
 import { readFileSync, realpathSync } from 'node:fs';
 import { basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { boardsProblems, readBoard } from './promise-board.mjs';
 
 export const EXIT_CODES = { ok: 0, requirementFailed: 1, usage: 2, noChrome: 3 };
 export const CONTRACT_PATH = fileURLToPath(new URL('../templates/contract.json', import.meta.url));
@@ -14,7 +15,7 @@ export const TOOLS = {
 };
 
 export const CHECKED_BY = {
-  R1: ['landing'],
+  R1: ['design', 'landing'],
   R2: ['design', 'landing'],
   R3: ['capture'],
   R4: ['design', 'landing'],
@@ -41,7 +42,7 @@ export const CHECKED_BY = {
   R25: ['landing', 'capture'],
   R26: ['design', 'landing'],
   R27: ['design', 'landing', 'reviewer'],
-  R28: ['landing'],
+  R28: ['design', 'landing'],
   R29: ['landing'],
   R30: ['design', 'landing'],
   R31: ['reviewer'],
@@ -424,7 +425,7 @@ function nameProblems(name, max) {
 }
 
 function enumProblems(tokens, enums) {
-  return ['scheme', 'composition', 'decor', 'palette_source']
+  return ['scheme', 'palette_source']
     .filter((key) => tokens[key] !== undefined && !enums[key].includes(tokens[key]))
     .map((key) => `${key} is ${JSON.stringify(tokens[key])}, must be one of ${enums[key].join(', ')}`);
 }
@@ -819,7 +820,7 @@ function checkCopyValues(copy, contract, report) {
   record(report, 'R27', priceProblems(entries), 'copy has no currency symbol, amount or price word');
 }
 
-export function checkDesign({ tokens, copy, locale, contract, report }) {
+export function checkDesign({ tokens, copy, locale, contract, report, boards = null }) {
   const tokenShape = tokenShapeProblems(tokens, contract.tokens);
   const copyShape = copyShapeProblems(copy, contract.copy, locale);
   record(report, 'R14', tokenShape, 'tokens.json has the closed key set, types and formats of the contract');
@@ -828,11 +829,46 @@ export function checkDesign({ tokens, copy, locale, contract, report }) {
   if (copyShape.length) COPY_ROWS.forEach((id) => report.skip(id, 'the language file does not have the shape of the contract: see R32'));
   if (tokenShape.length === 0) checkTokenValues(tokens, contract.tokens, report);
   if (copyShape.length === 0) checkCopyValues(copy, contract, report);
+  checkBoards({ boards, copy, copyShape, contract, report });
+}
+
+function checkBoards({ boards, copy, copyShape, contract, report }) {
+  if (!boards) return;
+  if (copyShape.length) return BOARD_ROWS.forEach((id) => report.skip(id, 'the boards are not checked until the language file has the shape of the contract: see R32'));
+  const problems = boardsProblems(boards, { copy, contract });
+  BOARD_ROWS.forEach((id) => record(report, id, [...new Set(problems.filter((found) => found.id === id).map((found) => found.message))], BOARD_PASS[id]));
+}
+
+const BOARD_PASS = {
+  R1: 'the free screen has one h1, two filled buttons that are cta and cta-closing, and no links',
+  R5: 'only the title uses the title style and ink; every block uses a style allowed for it',
+  R10: 'the free screen never justifies text and balances its headings',
+  R11: 'the free screen uses the two font tokens, upright, each style in its family',
+  R12: 'every text of the free screen sits on an allowed color pair',
+  R14: 'the boards use only token values',
+  R15: 'the boards have no gradient, glow or effect',
+  R23: 'the boards carry no motion',
+  R28: 'the boards have the hooks of the promise screen, and phone and desktop show the same texts in the same styles',
+  R32: 'every text of the free screen comes from the copy',
+};
+
+const BOARD_ROWS = Object.keys(BOARD_PASS);
+const BOARD_ONLY_ROWS = ['R1', 'R28'];
+
+export function readBoards(phonePath, desktopPath, contract) {
+  const read = (path) => {
+    try {
+      return readBoard(readFileSync(path, 'utf8'), contract);
+    } catch {
+      throw new UsageError(`board: cannot read ${path}`);
+    }
+  };
+  return { phone: read(phonePath), desktop: read(desktopPath) };
 }
 
 function main(args) {
-  if (args.length !== 2) throw new UsageError('usage: verify-design.mjs <tokens.json> <copy.json>');
-  const [tokensPath, copyPath] = args;
+  if (![2, 4].includes(args.length)) throw new UsageError('usage: verify-design.mjs <tokens.json> <copy.json> [<promise-phone.html> <promise-desktop.html>]');
+  const [tokensPath, copyPath, phonePath, desktopPath] = args;
   const contract = loadContract();
   const report = createReport(contract, 'design');
   checkDesign({
@@ -841,7 +877,9 @@ function main(args) {
     locale: localeOfFile(copyPath, contract),
     contract,
     report,
+    boards: phonePath ? readBoards(phonePath, desktopPath, contract) : null,
   });
+  if (!phonePath) BOARD_ONLY_ROWS.forEach((id) => report.skip(id, 'the two boards of the free screen were not given'));
   return printReport(report);
 }
 

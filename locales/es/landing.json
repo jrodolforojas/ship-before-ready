@@ -1,5 +1,5 @@
 {
-  "intro": "Voy a programar el diseño que usted aprobó, revisarlo sobre la página real, mostrárselo y, con su visto bueno, publicarlo. Aquí no se decide nada de diseño: si la página real falla algo, se lo digo y volvemos a /ship-before-ready:design.",
+  "intro": "Voy a programar el diseño que usted aprobó: la primera pantalla a partir de sus bocetos y las pantallas fijas con sus colores y tipografías. Después la reviso sobre la página real, se la muestro y, con su visto bueno, la publico. Aquí no se decide nada de diseño: si la página real se aparta del lienzo o falla algo, se lo digo y volvemos a /ship-before-ready:design.",
   "missing": {
     "choice": "No encuentro un diseño aprobado (.sbr/design/choice.md). Corra primero /ship-before-ready:design.",
     "approval": "El diseño todavía no está aprobado por escrito. Termine /ship-before-ready:design y apruébelo; sin esa aprobación no programo nada.",
@@ -10,20 +10,20 @@
     "package_manager": "No encontré {manager}, el gestor que eligió en /ship-before-ready:connect. Instálelo y avíseme, o corra /ship-before-ready:connect para elegir otro.",
     "vercel": "No encontré la CLI de Vercel o no tiene la sesión iniciada. Corra /ship-before-ready:connect, que la deja lista, y avíseme."
   },
-  "fingerprint_changed": "Los valores o el texto del diseño cambiaron después de su aprobación: ya no coinciden con lo que usted aprobó. Corra /ship-before-ready:design para revisarlo y aprobarlo de nuevo.",
+  "fingerprint_changed": "Los valores, el texto o los bocetos de la primera pantalla cambiaron después de su aprobación: ya no coinciden con lo que usted aprobó. Corra /ship-before-ready:design para revisarlo y aprobarlo de nuevo.",
   "republish": "Ya hay una landing publicada en {url}. La vuelvo a publicar en la misma dirección con el diseño aprobado.",
   "canvas": {
     "checking": "Releo el lienzo de Claude Design para confirmar que es el que usted aprobó.",
     "unchanged": "El lienzo es el mismo que usted aprobó.",
     "none": "Su diseño se aprobó sin Claude Design, así que no hay lienzo que releer.",
     "unreadable": "No pude leer el lienzo ({reason}). Los archivos del diseño sí coinciden con su aprobación.",
-    "changed": "El lienzo cambió después de su aprobación: {boards}. Esos cambios no están en los valores aprobados y no se programarían.",
+    "changed": "El lienzo cambió después de su aprobación: {boards}. Esos cambios no están en lo aprobado y no se programarían.",
     "unreadable_question": "¿Sigo con el diseño aprobado sin releer el lienzo?",
     "question": "¿Qué hago con esos cambios del lienzo?",
     "options": {
       "back": {
         "label": "Volver a diseño",
-        "description": "Llevamos los cambios a los valores en /ship-before-ready:design y usted aprueba de nuevo."
+        "description": "Llevamos los cambios a los bocetos y los valores en /ship-before-ready:design y usted aprueba de nuevo."
       },
       "ignore": {
         "label": "Programar lo aprobado",
@@ -39,7 +39,7 @@
       "description": "No programo nada todavía."
     },
     "ignored": "Programo lo aprobado; los cambios del lienzo no van a estar en la página.",
-    "back_to_design": "Corra /ship-before-ready:design: ahí se llevan los cambios del lienzo a los valores y se aprueban de nuevo."
+    "back_to_design": "Corra /ship-before-ready:design: ahí se llevan los cambios del lienzo a los bocetos y los valores y se aprueban de nuevo."
   },
   "install": {
     "copying": "Copio la plantilla en landing/ y la instalo con {manager}.",
@@ -51,7 +51,7 @@
     "build_failed": "La página no compila. Le muestro el error; no publico.",
     "capturing": "Abro la página en Chrome sin ventana: capturas de las cuatro pantallas y medidas sobre la página dibujada.",
     "reviewing": "Un revisor sin contexto mira las capturas: si la jerarquía se sostiene en grises y si en cinco segundos se entiende para quién es y qué promete.",
-    "fixing": "Lo que falló era de la instalación, no de su diseño ({requirements}). Lo corregí y repito la revisión.",
+    "fixing": "Lo que falló era de la instalación o de cómo programé la primera pantalla, no de su diseño ({requirements}). Lo corregí y repito la revisión.",
     "template_broken": "La plantilla del plugin falla {requirements} aun recién copiada. No es su diseño: es un error del plugin. No publico.",
     "passed": "La página real cumple los requisitos: {passed} comprobados, {skipped} sin comprobar en esta corrida.",
     "design_failed": "No publico. La página real no cumple {requirement}: {detail}",
@@ -73,7 +73,7 @@
     "unconfirmed": "Lo que no confirmó queda anotado como no comprobado, nunca como cumplido."
   },
   "preview": {
-    "ready": "Esta es su página, todavía en su máquina y sin enviar ningún dato: {url}. Las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4. Compárela con el lienzo que aprobó: {canvas}",
+    "ready": "Esta es su página, todavía en su máquina y sin enviar ningún dato: {url}. Las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4. Compárela con el lienzo que aprobó, sobre todo la primera pantalla: {canvas}",
     "ready_no_canvas": "Esta es su página, todavía en su máquina y sin enviar ningún dato: {url}. Las pantallas 2 a 4 abren con ?screen=2, ?screen=3 y ?screen=4.",
     "question": "¿La publico así?",
     "options": {
@@ -83,7 +83,7 @@
       },
       "change": {
         "label": "Algo no está bien",
-        "description": "Dígame qué; si es del diseño, se cambia en /ship-before-ready:design."
+        "description": "Dígame qué; si la página se aparta del lienzo lo corrijo aquí, y si es del diseño, se cambia en /ship-before-ready:design."
       }
     },
     "change_is_design": "Ese cambio es del diseño, y aquí no se cambia un diseño aprobado. Corra /ship-before-ready:design, hágalo en el lienzo y apruébelo de nuevo.",
@@ -113,5 +113,11 @@
     "saved": "Lo anoté en .sbr/landing.json: la dirección, la fecha, la huella del diseño y el resultado de la revisión.",
     "skipped": "Quedó sin comprobar en esta corrida: {requirements}.",
     "next": "Lo siguiente es /ship-before-ready:video-scripts, que escribe tres guiones con un link de esta landing para cada uno."
+  },
+  "promise": {
+    "programming": "Programo la primera pantalla a partir de los bocetos aprobados, como componentes de su proyecto en landing/src/promise/.",
+    "matched": "La primera pantalla programada coincide con sus bocetos: los mismos textos, en el mismo orden, con los mismos estilos y fondos.",
+    "fixing": "La página se apartaba del boceto en {difference}. Lo corregí en el código y vuelvo a comparar.",
+    "drifted": "No publico. No logré que la primera pantalla coincidiera con su boceto: {difference}. Puede ser algo del boceto que la página no puede reproducir con los tokens; corra /ship-before-ready:design para ajustarlo y aprobarlo de nuevo."
   }
 }

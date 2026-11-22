@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="[[lang]]">
+<head>
+<meta charset="utf-8">
+<title>[[name]] · [[frame.width]]</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="[[fonts.href]]" rel="stylesheet">
+<style>
+body{margin:0}
+[[> tokens.css]]
+</style>
+</helmet>
+<div class="sbr" data-sbr="page" data-scheme="[[scheme]]" data-screen="1" style="box-sizing: border-box; width: [[frame.width]]px; min-height: [[frame.height]]px; display: flex; flex-direction: column; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-body); line-height: var(--text-body--line-height); font-weight: var(--text-body--font-weight); letter-spacing: var(--text-body--letter-spacing)">
+[[board]]
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":[[frame.width]],"height":[[frame.height]]}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

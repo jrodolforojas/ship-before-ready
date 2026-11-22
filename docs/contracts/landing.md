@@ -9,17 +9,17 @@ Edit this file only on `main`.
 
 ## Anatomy
 
-Four fixed screens in one HTML document. The design changes how they look; never which blocks exist or their order. Each block is one Astro component.
+Four screens in one HTML document. Screen 1, the promise, is designed freely for each builder: its layout, the order and grouping of its blocks and its drawings belong to the approved boards, while its hooks and the rules of [the free screen](../../guides/promise-screen.md) are fixed. Screens 2 to 4 are fixed: the design changes only their skin (the tokens), never their blocks or their order.
 
 | Screen | Block | Hooks | Contains | Presence |
 |---|---|---|---|---|
-| 1 · Promise | Brand | `brand` | Product name. No menu | Required |
+| 1 · Promise (free) | Brand | `brand` | Product name. No menu | Required |
 | | Hero | `title`, `subtitle`, `cta` | Headline (the promise), subtitle (who it is for and what changes) and the early-access button. Fits whole in the first view | Required |
-| | Figure | `figure`, `decor-1`, `decor-2` | Decorative motif of the hero | Optional: rendered when `decor` is not `none` |
-| | Pains | `pains` | One to three situations the user recognizes, taken from the brief | Required |
+| | Pains | `pains` | One to three situations the user recognizes, taken from the brief: the problem, shown | Required |
 | | How it works | `steps` | Three steps of what the visitor will get | Required |
 | | Closing | `closing`, `cta-closing` | The promise in one line and the same button | Required |
 | | Footer | `footer` | Who is behind it and the privacy line | Required |
+| | Figures | `figure` | Decorative drawings of the free design, drawn with tokens, without text | Optional, any number |
 | 2 · Email | Progress | `progress`, `brand` | Brand and "step 1 of 2" | Required |
 | | Signup | `email-title`, `email-form`, `email-field`, `privacy`, `email-submit` | Title, email field with its label, privacy line, submit button | Required |
 | | Error | `email-error` | Under the field, only when something fails | Conditional |
@@ -37,9 +37,9 @@ Four fixed screens in one HTML document. The design changes how they look; never
 
 ## Document rules
 
-- `page` is the `<body>`. It carries `data-composition`, `data-scheme` and `data-decor` with the values from `tokens.json`, and `data-screen` with the number of the visible screen (`1` to `4`).
+- `page` is the `<body>`. It carries `data-scheme` with the value from `tokens.json` and `data-screen` with the number of the visible screen (`1` to `4`).
 - Each screen is a `<section>`. Exactly one is visible; the others carry the `hidden` attribute. In the built HTML screen 1 is visible and `data-screen` is `1`.
-- A hook is unique inside its screen. `brand` occurs three times (screens 1, 2 and 3) and `progress` twice (screens 2 and 3); every other hook occurs once in the document. Select them through their screen: `[data-sbr="screen-email"] [data-sbr="brand"]`.
+- A hook is unique inside its screen. `brand` occurs three times (screens 1, 2 and 3), `progress` twice (screens 2 and 3) and `figure` any number of times inside screen 1; every other hook occurs once in the document. Select them through their screen: `[data-sbr="screen-email"] [data-sbr="brand"]`.
 - One `h1` in the document: `title`. The other titles are `h2` and carry `tabindex="-1"`; when the screen changes, focus moves to the title of the new screen.
 - One filled button per screen: `cta` (repeated as `cta-closing`), `email-submit`, `questions-submit`. Screen 4 has none. There are no links.
 - A text hook contains exactly the string of its copy key and nothing else. No component or script holds a visible phrase.
@@ -47,7 +47,7 @@ Four fixed screens in one HTML document. The design changes how they look; never
 
 ## Hooks (`data-sbr`)
 
-38 hooks. "Required" means the element must be in the built HTML.
+36 hooks. "Required" means the element must be in the built HTML.
 
 ### Structure
 
@@ -56,13 +56,9 @@ Four fixed screens in one HTML document. The design changes how they look; never
 | `page` | `body` | Whole document | Yes | The attributes above |
 | `brand` | `p` | 1, 2, 3 | Yes | Copy key `brand`. On screens 2 and 3 it sits inside `progress` |
 | `progress` | `div` | 2, 3 | Yes | `brand`, the `progress` text with its placeholders filled, and on screen 3 `questions.saved` |
-| `figure` | `div` | 1 | No | `decor-1` and `decor-2`. `aria-hidden="true"` |
-| `decor-1` | `div` | 1 | No | Inside `figure`. See [tokens.md](tokens.md#composition-and-decor) |
-| `decor-2` | `div` | 1 | No | Inside `figure` |
+| `figure` | `div` | 1 | No | A decorative drawing of the free screen. `aria-hidden="true"`, no text, any number. Opacity modifiers are allowed inside it ([tokens.md](tokens.md#utilities)) |
 | `footer` | `footer` | 1 | Yes | `footer.author` and `footer.privacy` |
 | `debug-panel` | `aside` | Outside the screens | Yes | Hidden unless `?debug=1`. One `<li data-event="<event>">` per emitted event, in order, with the event name and its properties as JSON |
-
-`figure`, `decor-1` and `decor-2` are all present or all absent.
 
 ### Screen 1 · Promise
 
@@ -173,7 +169,7 @@ The language file `src/i18n/<locale>.json` holds every visible string. `.sbr/des
 | `meta.title` | `<title>`, `og:title` | ≤ 60 |
 | `meta.description` | `<meta name="description">`, `og:description` | 70 to 160 |
 
-The limits of `hero.title`, `hero.subtitle`, the three buttons, `pains` and `steps` come from R2; `meta.*` from R30. The rest are fixed here so that step 1c can test every composition with the longest text allowed. Copy also follows R26 (`email.privacy` is a real privacy line) and R27 (no currency symbols, amounts or price words; no invented figures or testimonials).
+The limits of `hero.title`, `hero.subtitle`, the three buttons, `pains` and `steps` come from R2; `meta.*` from R30. The rest are fixed here so that `templates/landing-tests/` can build the template with the longest text allowed. Copy also follows R26 (`email.privacy` is a real privacy line) and R27 (no currency symbols, amounts or price words; no invented figures or testimonials).
 
 Reference file: [`templates/example/es.json`](../../templates/example/es.json).
 
@@ -184,12 +180,14 @@ The project lives in `landing/` at the root of the builder's repo.
 | File | Changes per builder | Written by |
 |---|---|---|
 | The whole Astro project: `package.json`, `astro.config.mjs`, `src/layouts`, `src/components`, `src/scripts`, `src/styles`, `src/pages` | No | `scripts/copy-template.mjs` |
+| `src/promise/*.astro`: the free screen, entry `Promise.astro` | Yes | Skill `landing`, from the approved boards ([guide](../../guides/promise-screen.md#4-from-the-boards-to-astro)) |
 | `src/i18n/<locale>.json` | Yes | Skill `landing`, from the approved copy |
 | `src/data/tokens.json` | Yes | Skill `landing`, from the approved design |
 | `src/data/config.json` and `vercel.json` | Yes; they do not exist until publishing | `scripts/configure-landing.mjs` |
 
-- Everything except `src/data/`, `src/i18n/`, `vercel.json` and the lockfile is identical to `templates/landing/` (R28). `--pm` therefore never edits `package.json`.
-- Named files inside the skeleton: `src/styles/global.css`, `src/layouts/Base.astro`, `src/pages/index.astro`, `src/scripts/flow.ts`, `src/scripts/events.ts`, and the components `Brand`, `Hero`, `Pains`, `Steps`, `Closing`, `Footer`, `EmailScreen`, `QuestionsScreen`, `DoneScreen`, `DebugPanel`.
+- Everything except `src/data/`, `src/i18n/`, `src/promise/`, `vercel.json` and the lockfile is identical to `templates/landing/` (R28). `--pm` therefore never edits `package.json`.
+- `src/promise/` holds only `.astro` components written with token classes: no `style` attribute, `<style>`, `<script>`, `set:html` or `is:inline` (R14). `src/pages/index.astro` renders `src/promise/Promise.astro` as screen 1 and fails the build without it.
+- Named files inside the skeleton: `src/styles/global.css`, `src/layouts/Base.astro`, `src/pages/index.astro`, `src/scripts/flow.ts`, `src/scripts/events.ts`, and the components `Brand`, `FilledButton`, `EmailScreen`, `QuestionsScreen`, `DoneScreen`, `DebugPanel`. The free screen uses `Brand` and `FilledButton` for the brand and the two buttons.
 - Package scripts: `dev`, `build`, `preview`, run as `<manager> run <script>`. The build output is `dist/`; the page is `dist/index.html`.
 - Publishing always uses `--cwd landing`. Publishing from the repo root would publish `.sbr/`.
 
@@ -223,9 +221,9 @@ All live in `scripts/`, are `.mjs` with no dependencies, and are called from ski
 
 | Script | Usage | What it does | Owner |
 |---|---|---|---|
-| `fill-artboards.mjs` | `fill-artboards.mjs <tokens.json> <copy.json> <output>` | Fills the artboard templates of `templates/canvas/` with values and text and writes them into the `<output>` folder | 0c |
-| `copy-template.mjs` | `copy-template.mjs <destination> [--pm <manager>] [--example]` | Copies `templates/landing/` without `node_modules` and never overwrites `src/data/` or `src/i18n/`. `--pm` is `bun` (default), `pnpm`, `npm` or `yarn`. `--example` adds `templates/neutral-design/tokens.json` as `src/data/tokens.json` and `templates/example/es.json` as `src/i18n/es.json` | 1 |
-| `verify-design.mjs` | `verify-design.mjs <tokens.json> <copy.json>` | Design requirements over values and text | 1b |
+| `fill-artboards.mjs` | `fill-artboards.mjs <tokens.json> <copy.json> <promise-phone.html> <promise-desktop.html> <output>` | Wraps the two boards of the free screen in artboards with the direction's values, fills the templates of the fixed screens 2 to 4 of `templates/canvas/`, and writes them into the `<output>` folder | 0c |
+| `copy-template.mjs` | `copy-template.mjs <destination> [--pm <manager>] [--example]` | Copies `templates/landing/` without `node_modules` and never overwrites `src/data/`, `src/i18n/` or `src/promise/`. `--pm` is `bun` (default), `pnpm`, `npm` or `yarn`. `--example` adds `templates/neutral-design/tokens.json` as `src/data/tokens.json`, `templates/example/es.json` as `src/i18n/es.json` and `templates/example/promise/` as `src/promise/` | 1 |
+| `verify-design.mjs` | `verify-design.mjs <tokens.json> <copy.json> [<promise-phone.html> <promise-desktop.html>]` | Design requirements over values and text, and over the two boards of the free screen when they are given | 1b |
 | `verify-landing.mjs` | `verify-landing.mjs <folder>` | The full gate over the project and its `dist/` | 1b |
 | `capture.mjs` | `capture.mjs <url> <output> [--measure] [--gray]` | Screenshots with Chrome of the four screens at 375×667 and 1440×900, and with `--measure` the measurements on the drawn page. `--gray` takes them without color | 1b |
 | `configure-landing.mjs` | `configure-landing.mjs <folder> --connections <json>` | Writes `src/data/config.json` and `vercel.json` for the region in `connections.json` | 2 |

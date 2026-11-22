@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { CHECKED_BY } from '../verify-design.mjs';
@@ -41,7 +41,7 @@ const edited = (from, to) => ({ html: page((html) => replaceOnce(html, from, to)
 const withCss = (extra) => ({ css: `${PAGE_CSS}${extra}` });
 
 const PAGE_DEFECTS = [
-  { name: 'a second h1', ids: ['R1'], ...edited('</main>', '<h1 class="font-display text-title text-balance text-ink"></h1></main>') },
+  { name: 'a second h1', ids: ['R1', 'R5'], ...edited('</main>', '<h1 class="font-display text-title text-balance text-ink"></h1></main>') },
   { name: 'a link out of the page', ids: ['R1'], ...edited('</main>', '<a href="https://example.com"></a></main>') },
   { name: 'a button that is not filled', ids: ['R1'], ...edited('data-sbr="cta" type="button" class="inline-flex touch-target items-center justify-center rounded-control bg-accent', 'data-sbr="cta" type="button" class="inline-flex touch-target items-center justify-center rounded-control bg-surface') },
   { name: 'a field typed in small text', ids: ['R8'], ...edited('data-sbr="email-field" id="email-field" name="email" type="email" required autocomplete="email" inputmode="email" maxlength="254" placeholder="tu@correo.com" spellcheck="false" autocapitalize="none" autocorrect="off" class="touch-target w-full rounded-control border border-line bg-surface px-group py-item font-body text-body', 'data-sbr="email-field" id="email-field" name="email" type="email" required autocomplete="email" inputmode="email" maxlength="254" placeholder="tu@correo.com" spellcheck="false" autocapitalize="none" autocorrect="off" class="touch-target w-full rounded-control border border-line bg-surface px-group py-item font-body text-small') },
@@ -54,7 +54,8 @@ const PAGE_DEFECTS = [
   { name: 'a numeric border width', ids: ['R14'], ...edited('data-sbr="subtitle" class="max-w-prose', 'data-sbr="subtitle" class="border-2 max-w-prose') },
   { name: 'a spacing value outside the four tokens', ids: ['R14'], ...edited('data-sbr="subtitle" class="max-w-prose', 'data-sbr="subtitle" class="p-4 max-w-prose') },
   { name: 'accent as a text color', ids: ['R14'], ...edited('data-sbr="subtitle" class="max-w-prose', 'data-sbr="subtitle" class="text-accent max-w-prose') },
-  { name: 'an opacity modifier outside decor', ids: ['R14'], ...edited('data-sbr="subtitle" class="max-w-prose', 'data-sbr="subtitle" class="bg-accent/50 max-w-prose') },
+  { name: 'an opacity modifier outside a figure', ids: ['R14'], ...edited('data-sbr="subtitle" class="max-w-prose', 'data-sbr="subtitle" class="bg-accent/50 max-w-prose') },
+  { name: 'the title style on another text', ids: ['R5'], ...edited('data-sbr="subtitle" class="max-w-prose font-body text-lead', 'data-sbr="subtitle" class="max-w-prose font-body text-title') },
   { name: 'a gradient', ids: ['R15'], ...withCss('.hero{background-image:linear-gradient(#fff,#000)}') },
   { name: 'an error without its text', ids: ['R16', 'R32'], ...edited('No pudimos guardar tu correo. Revisa que esté bien escrito e inténtalo de nuevo.</p>', '</p>') },
   { name: 'a blocked zoom', ids: ['R17'], ...edited('width=device-width, initial-scale=1', 'width=device-width, initial-scale=1, user-scalable=no') },
@@ -116,23 +117,34 @@ test('a broken anatomy fails R28 and leaves the page rows unchecked', () => {
   }
 });
 
-test('decor adds the figure and its two motifs', () => {
-  const tokens = withChange(neutralTokens(), 'decor', 'shapes');
-  assert.deepEqual(failuresOf({ tokens }), []);
-  assert.deepEqual(failuresOf({ tokens, html: renderPage() }), ['R28']);
+test('figures are optional, may repeat, hold no text and may carry opacity modifiers', () => {
+  const figure = (inside = '') => `<div data-sbr="figure" aria-hidden="true" class="bg-accent/20">${inside}</div>`;
+  const twice = page((html) => replaceOnce(html, '<ul data-sbr="pains"', `${figure()}${figure()}<ul data-sbr="pains"`));
+  assert.deepEqual(failuresOf({ html: twice }), []);
+  const withText = page((html) => replaceOnce(html, '<ul data-sbr="pains"', `${figure('01')}<ul data-sbr="pains"`));
+  assert.deepEqual(failuresOf({ html: withText }), ['R28']);
+  const outside = page((html) => replaceOnce(html, '<aside data-sbr="debug-panel"', `${figure()}<aside data-sbr="debug-panel"`));
+  assert.deepEqual(failuresOf({ html: outside }), ['R28']);
 });
 
-test('an opacity modifier is allowed on decor only', () => {
-  const tokens = withChange(neutralTokens(), 'decor', 'shapes');
-  const html = renderPage({ tokens }).replace('<div data-sbr="decor-1">', '<div data-sbr="decor-1" class="bg-accent/50">');
-  assert.deepEqual(failuresOf({ tokens, html }), []);
+test('the free screen is written in src/promise as .astro files with classes only', () => {
+  assert.deepEqual(failuresOf({ files: { 'src/promise/Steps.astro': '<ol data-sbr="steps" class="flex flex-col gap-group"></ol>\n' } }), []);
+  const styled = verify({ files: { 'src/promise/Promise.astro': '<section data-sbr="screen-promise" style="padding: 24px"></section>\n' } });
+  assert.deepEqual(idsWithStatus(styled, 'fail'), ['R14']);
+  assert.match(rowOf(styled, 'R14').detail, /src\/promise\/Promise\.astro sets a style attribute/);
+  assert.deepEqual(failuresOf({ files: { 'src/promise/extra.css': '.mine{color:red}' } }), ['R14']);
+  const projectDir = writeLanding();
+  rmSync(join(projectDir, 'src/promise/Promise.astro'));
+  const rows = verifyLanding({ projectDir, templateDir }).rows();
+  assert.deepEqual(idsWithStatus(rows, 'fail'), ['R28']);
+  assert.match(rowOf(rows, 'R28').detail, /src\/promise\/Promise\.astro is missing/);
 });
 
 test('the skeleton must be identical to the template', () => {
-  const changed = { 'src/components/Hero.astro': '<h1 data-sbr="title" class="font-display text-title text-ink">{copy.hero.title}</h1>\n' };
+  const changed = { 'src/components/Brand.astro': '<p data-sbr="brand" class="font-body text-small text-ink">{copy.brand}</p>\n' };
   const rowsWithChange = verify({ files: changed });
   assert.deepEqual(idsWithStatus(rowsWithChange, 'fail'), ['R28']);
-  assert.match(rowOf(rowsWithChange, 'R28').detail, /src\/components\/Hero\.astro differs from the template/);
+  assert.match(rowOf(rowsWithChange, 'R28').detail, /src\/components\/Brand\.astro differs from the template/);
   const rowsWithExtra = verify({ files: { 'src/styles/custom.css': '.mine{color:red}' } });
   assert.match(rowOf(rowsWithExtra, 'R28').detail, /src\/styles\/custom\.css is not part of the template/);
 });
@@ -155,10 +167,12 @@ test('without the template in the plugin R28 is skipped, not passed', () => {
 });
 
 test('classes are checked in the sources as well as in the built page', () => {
-  const source = { 'src/components/Hero.astro': '<h1 data-sbr="title" class="font-display text-title text-balance text-ink leading-tight">{copy.hero.title}</h1>\n' };
+  const source = { 'src/components/Brand.astro': '<p data-sbr="brand" class="font-body text-button text-ink leading-tight">{copy.brand}</p>\n' };
   const rows = verifyLanding({ projectDir: writeLanding({ files: source }), templateDir: writeTemplate(undefined, source) }).rows();
   assert.deepEqual(idsWithStatus(rows, 'fail'), ['R14']);
-  assert.match(rowOf(rows, 'R14').detail, /class leading-tight in src\/components\/Hero\.astro/);
+  assert.match(rowOf(rows, 'R14').detail, /class leading-tight in src\/components\/Brand\.astro/);
+  const inPromise = verify({ files: { 'src/promise/Promise.astro': '<h1 data-sbr="title" class="text-title leading-tight">{copy.hero.title}</h1>\n' } });
+  assert.match(rowOf(inPromise, 'R14').detail, /class leading-tight in src\/promise\/Promise\.astro/);
 });
 
 test('two language files fail R32', () => {
@@ -243,12 +257,14 @@ test('a copy made by copy-template.mjs --example, with the fixture page as its b
   assert.equal(verified.code, 0, verified.stdout);
   assert.equal(rowOf(verified.rows, 'R28').status, 'pass');
 
-  appendFileSync(join(projectDir, 'src/components/Hero.astro'), '\n');
+  appendFileSync(join(projectDir, 'src/promise/Promise.astro'), '\n');
+  assert.equal(runScript(SCRIPTS.landing, [projectDir]).code, 0);
+  appendFileSync(join(projectDir, 'src/components/Brand.astro'), '\n');
   const changed = runScript(SCRIPTS.landing, [projectDir]);
   assert.deepEqual(idsWithStatus(changed.rows, 'fail'), ['R28']);
-  assert.match(rowOf(changed.rows, 'R28').detail, /src\/components\/Hero\.astro differs from the template/);
+  assert.match(rowOf(changed.rows, 'R28').detail, /src\/components\/Brand\.astro differs from the template/);
 });
 
 test('the fixture skeleton stays free of per-builder files', () => {
-  assert.ok(Object.keys(SKELETON_FILES).every((path) => !path.startsWith('src/data/') && !path.startsWith('src/i18n/')));
+  assert.ok(Object.keys(SKELETON_FILES).every((path) => !['src/data/', 'src/i18n/', 'src/promise/'].some((folder) => path.startsWith(folder))));
 });

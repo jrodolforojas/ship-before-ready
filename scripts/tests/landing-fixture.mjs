@@ -172,13 +172,11 @@ function errorLine(hook, text) {
   return `<p data-sbr="${hook}" id="${hook}" role="alert" hidden class="font-body text-small text-danger">${escapeHtml(text)}</p>`;
 }
 
-function promiseScreen(tokens, copy) {
+function promiseScreen(copy) {
   const item = (text) => `<li class="rounded-card border border-line bg-surface p-group font-body text-body text-ink shadow-card">${escapeHtml(text)}</li>`;
-  const figure = tokens.decor === 'none' ? '' : '<div data-sbr="figure" aria-hidden="true"><div data-sbr="decor-1"></div><div data-sbr="decor-2"></div></div>';
   return `<section data-sbr="screen-promise" aria-labelledby="title" class="mx-auto flex w-full max-w-page flex-col gap-block px-group md:gap-section">
 <header class="flex justify-center pt-group"><p data-sbr="brand" class="font-body text-button text-ink">${escapeHtml(copy.brand)}</p></header>
 <div class="flex flex-col items-center gap-group text-center"><div class="flex flex-col items-center gap-item"><h1 data-sbr="title" id="title" tabindex="-1" class="font-display text-title text-balance text-ink">${escapeHtml(copy.hero.title)}</h1><p data-sbr="subtitle" class="max-w-prose font-body text-lead text-ink-muted">${escapeHtml(copy.hero.subtitle)}</p></div>${filledButton('cta', copy.cta)}</div>
-${figure}
 <ul data-sbr="pains" class="mx-auto flex w-full max-w-prose flex-col gap-group">${copy.pains.map(item).join('')}</ul>
 <ol data-sbr="steps" class="mx-auto flex w-full max-w-prose flex-col gap-group">${copy.steps.map(item).join('')}</ol>
 <div class="flex flex-col items-center gap-group text-center"><h2 data-sbr="closing" tabindex="-1" class="font-display text-heading text-balance text-ink">${escapeHtml(copy.closing)}</h2>${filledButton('cta-closing', copy.cta)}</div>
@@ -239,9 +237,9 @@ export function renderPage({ tokens = neutralTokens(), copy = exampleCopy() } = 
 <style>${tokenStyles(tokens)}</style>
 <link rel="stylesheet" href="./_astro/index.css">
 </head>
-<body data-sbr="page" data-composition="${tokens.composition}" data-scheme="${tokens.scheme}" data-decor="${tokens.decor}" data-screen="1" class="flex min-h-dvh flex-col bg-canvas font-body text-body text-ink">
+<body data-sbr="page" data-scheme="${tokens.scheme}" data-screen="1" class="flex min-h-dvh flex-col bg-canvas font-body text-body text-ink">
 <main class="grow">
-${promiseScreen(tokens, copy)}
+${promiseScreen(copy)}
 ${emailScreen(copy)}
 ${questionsScreen(copy)}
 ${doneScreen(copy)}
@@ -259,7 +257,7 @@ export const SKELETON_FILES = {
   'src/styles/global.css': '@import "tailwindcss";\n@theme { --*: initial; }\n',
   'src/layouts/Base.astro': '<html><body data-sbr="page" class="bg-canvas font-body text-body text-ink"><slot /></body></html>\n',
   'src/pages/index.astro': '<main class="grow"><slot /></main>\n',
-  'src/components/Hero.astro': `<h1 data-sbr="title" class="font-display text-title text-balance text-ink">{copy.hero.title}</h1>\n`,
+  'src/components/Brand.astro': `<p data-sbr="brand" class="font-body text-button text-ink">{copy.brand}</p>\n`,
   'src/components/Field.astro': `---\nconst controlClasses = '${CONTROL}';\n---\n<input class={controlClasses} />\n`,
   'src/scripts/flow.ts': "export const show = (button: HTMLElement) => button.classList.toggle('opacity-60');\n",
   'src/scripts/events.ts': `export const SOURCES = ${JSON.stringify(SOURCE_VALUES)};\n`,
@@ -269,7 +267,7 @@ export function writeTemplate(root = tempDir('sbr-template-'), files = {}) {
   return writeFiles(root, { ...SKELETON_FILES, 'bun.lock': 'template lock\n', ...files });
 }
 
-const PLUGIN_FILES_OF_THE_LANDING_VERIFIER = ['scripts/verify-design.mjs', 'scripts/verify-landing.mjs', 'templates/contract.json'];
+const PLUGIN_FILES_OF_THE_LANDING_VERIFIER = ['scripts/html.mjs', 'scripts/promise-board.mjs', 'scripts/verify-design.mjs', 'scripts/verify-landing.mjs', 'templates/contract.json'];
 
 export function landingVerifierWithFixtureTemplate() {
   const pluginRoot = tempDir('sbr-plugin-');
@@ -286,12 +284,18 @@ export function builtFiles({ tokens = neutralTokens(), copy = exampleCopy(), htm
   };
 }
 
+export const PROMISE_SOURCE = `<section data-sbr="screen-promise" class="flex flex-col gap-block px-group md:gap-section">
+  <h1 data-sbr="title" id="title" class="font-display text-title text-balance text-ink">{copy.hero.title}</h1>
+</section>
+`;
+
 export function writeLanding({ tokens = neutralTokens(), copy = exampleCopy(), html, css, script, files = {} } = {}) {
   return writeFiles(tempDir('sbr-landing-'), {
     ...SKELETON_FILES,
     'bun.lock': 'builder lock\n',
     'src/data/tokens.json': tokens,
     [`src/i18n/${copy.lang}.json`]: copy,
+    'src/promise/Promise.astro': PROMISE_SOURCE,
     ...builtFiles({ tokens, copy, html, css, script }),
     ...files,
   });

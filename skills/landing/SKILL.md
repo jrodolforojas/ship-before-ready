@@ -1,6 +1,6 @@
 ---
 name: landing
-description: Programa y publica la landing a partir del diseño final que el builder aprobó en design. Comprueba que el lienzo no cambió, instala la plantilla Astro con los valores y el texto aprobados, la pasa por la puerta de requisitos, la muestra en local, la publica en Vercel con su visto bueno y confirma en PostHog los cinco eventos de una visita de prueba. No decide ni cambia nada del diseño.
+description: Programa y publica la landing a partir del diseño final que el builder aprobó en design. Comprueba que el lienzo no cambió, instala la plantilla Astro con los valores y el texto aprobados, programa la primera pantalla a partir de los bocetos aprobados, la pasa por la puerta de requisitos, la muestra en local, la publica en Vercel con su visto bueno y confirma en PostHog los cinco eventos de una visita de prueba. No decide ni cambia nada del diseño.
 ---
 
 # landing
@@ -9,7 +9,7 @@ Take the design the builder approved in `design` to a public landing that passed
 
 ## Rules that hold for every step
 
-- **This skill decides nothing about the design.** It never writes CSS, never edits a component, never changes a value of `tokens.json` or a string of the copy, in `.sbr/design/` or in `landing/`. The approved files are copied unchanged. When the real page fails a design requirement, say which, propose the smallest change of values and send the builder back to `design`.
+- **This skill decides nothing about the design.** It never changes a value of `tokens.json`, a string of the copy or a board, in `.sbr/design/` or in `landing/`, and never edits a file of the template. The approved files are copied unchanged. The only code it writes is `landing/src/promise/`, the free screen 1, translated from the approved boards as [the free screen guide](../../guides/promise-screen.md#4-from-the-boards-to-astro) says: it follows the boards, it never adds, removes or rearranges anything they do not show. When the real page fails a design requirement, say which, propose the smallest change and send the builder back to `design`.
 - **Nothing is published with a `fail`.** Not with a failed gate, not without the builder's go-ahead on the preview.
 - **Previews send nothing.** `landing/src/data/config.json` does not exist while the page is built for the gate and the preview; it is written only right before publishing.
 - **Publish only with `--cwd landing`.** Never deploy or build on Vercel from the repo root: that would publish `.sbr/`. Never run `vercel link` or `vercel git connect`: linking connects the builder's GitHub repo, whose root holds `.sbr/`.
@@ -32,7 +32,7 @@ Stop at the first check that fails, with its phrase:
 |---|---|
 | `choice` is `null` | `missing.choice` |
 | `choice.approved` is `null` | `missing.approval` |
-| `design_files.tokens` false or `design_files.copy` null | `missing.design_files`, naming the missing file |
+| `design_files.tokens` false, `design_files.copy` null or `design_files.boards` false | `missing.design_files`, naming the missing file |
 | `connections` is `null` | `missing.connections` |
 | `connections.problems` not empty | `missing.connections_invalid` |
 | `node.recent_enough` false | `missing.node` |
@@ -42,7 +42,7 @@ Stop at the first check that fails, with its phrase:
 Then check the approved files against the design rules:
 
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-design.mjs" .sbr/design/tokens.json .sbr/design/copy.<locale>.json
+node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-design.mjs" .sbr/design/tokens.json .sbr/design/copy.<locale>.json .sbr/design/promise-phone.html .sbr/design/promise-desktop.html
 ```
 
 - `choice.fingerprint_matches` false: say `fingerprint_changed`. If `verify-design.mjs` exited 1, also say `gate.values_failed` and `gate.proposal` for every `fail` row, as in [When the design fails](#when-the-design-fails). Stop.
@@ -65,7 +65,7 @@ Otherwise say `canvas.checking` and read the canvas with the `Artifact` tool (lo
    ```
 
 - `matches` true: say `canvas.unchanged`.
-- `matches` false: the canvas was edited after the approval. Say `canvas.changed`, naming the artboards of `changed`, `missing` and `extra` in plain words (`Main` is the hero on a phone, `Promise-desktop` the hero on desktop, `Email-phone`, `Questions-phone` and `Done-phone` screens 2, 3 and 4). Ask `canvas.question` with AskUserQuestion, options `canvas.options.back` and `canvas.options.ignore`. Back: say `canvas.back_to_design` and stop. Ignore: say `canvas.ignored` and go on.
+- `matches` false: the canvas was edited after the approval. Say `canvas.changed`, naming the artboards of `changed`, `missing` and `extra` in plain words (`Main` is the first screen on a phone, `Promise-desktop` the first screen on desktop, `Email-phone`, `Questions-phone` and `Done-phone` screens 2, 3 and 4). Ask `canvas.question` with AskUserQuestion, options `canvas.options.back` and `canvas.options.ignore`. Back: say `canvas.back_to_design` and stop. Ignore: say `canvas.ignored` and go on.
 - The tool is missing or a call fails (no claude.ai session, no paid plan, Claude Design turned off): say `canvas.unreadable` with the reason, and ask `canvas.unreadable_question` with options `canvas.continue` and `canvas.stop`.
 
 ## 3. Install
@@ -83,6 +83,21 @@ node "${CLAUDE_SKILL_DIR}/scripts/landing.mjs" place <work>
 ```
 
 It copies `.sbr/design/tokens.json` to `landing/src/data/tokens.json` and the copy file to `landing/src/i18n/<locale>.json`, removes any other language file, refuses files whose fingerprint differs from `choice.md`, and moves a `config.json` left by an earlier publish into `<work>`, so the preview sends nothing. Say `install.placed`.
+
+### The free screen
+
+Say `promise.programming`. Read section 4 of `${CLAUDE_PLUGIN_ROOT}/guides/promise-screen.md` and the two approved boards, `.sbr/design/promise-phone.html` and `.sbr/design/promise-desktop.html`. Empty `landing/src/promise/` and write the screen there: `Promise.astro` renders the `<section data-sbr="screen-promise" aria-labelledby="title">` of the boards; split a block into its own component in the same folder only when it is repeated or long.
+
+- The phone board gives the base classes and the desktop board what changes from `md:`. Every inline declaration becomes the token class the guide's table gives; a declaration with no class there means the board needs a change in `design`, not a value invented here.
+- Texts come only from `copy`; the brand and the two buttons are the template's `Brand` and `FilledButton`; each hook, element and `aria-hidden` stays as in the board.
+
+Run `<manager> run build` in `landing/` (on failure, read the error, fix the component and build again), then compare the page with the boards:
+
+```bash
+node "${CLAUDE_SKILL_DIR}/scripts/landing.mjs" match
+```
+
+It prints `matches`, and on a difference its `position`, what the board shows (`expected`) and what the page shows (`actual`): the text, its style, its color and its fill. While `matches` is false, say `promise.fixing` with the difference, fix the component, build and match again, up to three times. Still different: say `promise.drifted` with the difference and stop; whenever you stop after the preview started, stop it first. With `matches` true, say `promise.matched`.
 
 ## 4. The gate
 
@@ -115,10 +130,11 @@ The reviewer needs the screenshots: without Chrome it does not run.
 node "${CLAUDE_SKILL_DIR}/scripts/landing.mjs" gate <work>
 ```
 
-It merges the rows of every tool with the rule of the requirements guide (a requirement passes when every tool that checks it passed), checks the approved files again with the design rules, and writes `<work>/gate.json`. Exit 0: say `gate.passed` with the counts and go to step 5. Exit 1: every entry of `failed` has an `origin`:
+It merges the rows of every tool with the rule of the requirements guide (a requirement passes when every tool that checks it passed), checks the approved files and boards again with the design rules, compares the page with the boards again (`canvas_match`), and writes `<work>/gate.json`. Exit 0: say `gate.passed` with the counts and go to step 5. Exit 1 with `canvas_match.matches` false: go back to [the free screen](#the-free-screen). Otherwise every entry of `failed` has an `origin`:
 
 | `origin` | Meaning | What you do |
 |---|---|---|
+| `landing` or `template`, with a detail that names `src/promise/` or a hook of screen 1 | The free screen was programmed apart from the boards or the guide | Fix the component in `landing/src/promise/`, rebuild, run `match` and repeat the gate |
 | `landing` | The approved files pass the rule and the installed page does not: the copy or the head of the page did not land as approved | Run `place` again, rebuild and repeat the gate |
 | `template` | The skeleton differs from the template, or the template is broken | Run `copy-template.mjs` and `place` again, delete the files that `R28` names as outside the template (inside `landing/` only), rebuild and repeat the gate |
 | `design` | The approved design fails it on the real page | [When the design fails](#when-the-design-fails) |
@@ -127,13 +143,13 @@ Say `gate.fixing` before repeating. Repeat once; if `landing` or `template` rows
 
 ### When the design fails
 
-For every `design` row, say `gate.design_failed` with its id and its detail, then `gate.proposal` with the smallest change of values that would pass, following the "Smallest change" table of the requirements guide: name the token, its current value and the value you propose. Check a proposed value with `verify-design.mjs` on a copy of the tokens in `<work>` before proposing it. Then say `gate.back_to_design` and stop. Do not apply the change, not in `.sbr/design/` and not in `landing/`.
+For every `design` row, say `gate.design_failed` with its id and its detail, then `gate.proposal` with the smallest change that would pass, following the "Smallest change" table of the requirements guide: a token, its current value and the value you propose, or the block of the first screen and how its board would change. Check a proposed value with `verify-design.mjs` on a copy of the tokens in `<work>` before proposing it. Then say `gate.back_to_design` and stop. Do not apply the change, not in `.sbr/design/` and not in `landing/`.
 
 ## 5. Preview and the builder's go-ahead
 
 1. Say `preview.ready` with `<preview>` and `choice.canvas` (`preview.ready_no_canvas` when the canvas is `none`).
 2. Ask `preview.question` with AskUserQuestion, options `preview.options.publish` and `preview.options.change`.
-3. Change: listen to what they say. A value, a text, a block or anything else visible is the design: say `preview.change_is_design`, stop the preview and stop. Only an installation problem (the page is not the approved design) is fixed here, by repeating steps 3 and 4.
+3. Change: listen to what they say. When the page does not look like the approved canvas (the first screen laid out or drawn apart from its boards, a screen that did not take the skin), it is fixed here: correct `landing/src/promise/` or repeat step 3, then repeat step 4. A value, a text, a block or anything else that the canvas also shows is the design: say `preview.change_is_design`, stop the preview and stop.
 4. Publish: stop the preview with `./node_modules/.bin/astro preview stop` in `landing/` and say `preview.stopped`.
 
 ## 6. Publish

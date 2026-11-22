@@ -5,7 +5,8 @@ import { createServer } from 'node:http';
 import { extname, join } from 'node:path';
 import { test } from 'node:test';
 import { findChrome } from '../capture.mjs';
-import { SCRIPTS, rowOf, runScript, runScriptAsync, tempDir } from './helpers.mjs';
+import { promiseMatch } from '../../skills/landing/scripts/landing.mjs';
+import { EXAMPLE_BOARDS, SCRIPTS, rowOf, runScript, runScriptAsync, tempDir } from './helpers.mjs';
 
 const manager = process.env.SBR_PACKAGE_MANAGER ?? 'bun';
 const notRequested = process.env.SBR_INTEGRATION !== '1' && 'set SBR_INTEGRATION=1 to install and build the real template (needs the network)';
@@ -54,6 +55,12 @@ test(`a real copy made by copy-template.mjs --example and built with ${manager}`
     const verified = runScript(SCRIPTS.landing, [projectDir]);
     assert.equal(verified.code, 0, verified.stdout + verified.stderr);
     assert.equal(rowOf(verified.rows, 'R28').status, 'pass');
+  });
+
+  await context.test('shows the texts of the example boards in their styles and fills', async () => {
+    const [board, page] = await Promise.all([readFile(EXAMPLE_BOARDS.phone, 'utf8'), readFile(join(projectDir, 'dist/index.html'), 'utf8')]);
+    const result = promiseMatch(board, page);
+    assert.equal(result.matches, true, JSON.stringify(result.difference));
   });
 
   await context.test('passes the measurements of the drawn page', { skip: chromeMissing }, async (subtest) => {

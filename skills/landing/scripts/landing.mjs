@@ -3,6 +3,8 @@ import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameS
 import { createHash } from 'node:crypto';
 import { dirname, join, relative } from 'node:path';
 import { fillDirection } from '../../../scripts/fill-artboards.mjs';
+import { parseHtml } from '../../../scripts/html.mjs';
+import { boardSignature, pageSignature, readBoard, signatureDifference } from '../../../scripts/promise-board.mjs';
 import { CHECKED_BY, checkDesign, createReport, EXIT_CODES, isMainModule, loadContract, readJson, runCli, UsageError } from '../../../scripts/verify-design.mjs';
 
 const STATE = '.sbr';
@@ -11,11 +13,15 @@ const CONNECTIONS = join(STATE, 'connections.json');
 const DESIGN = join(STATE, 'design');
 const CHOICE = join(DESIGN, 'choice.md');
 const APPROVED_TOKENS = join(DESIGN, 'tokens.json');
+const CONTRACT = loadContract();
+const BOARD_FILES = CONTRACT.promise_board.files;
+const APPROVED_BOARDS = Object.fromEntries(Object.entries(BOARD_FILES).map(([viewport, name]) => [viewport, join(DESIGN, name)]));
 const PUBLISHED = join(STATE, 'landing.json');
 const LANDING = 'landing';
 const LANDING_TOKENS = join(LANDING, 'src', 'data', 'tokens.json');
 const LANDING_CONFIG = join(LANDING, 'src', 'data', 'config.json');
 const LANDING_LANGUAGE = join(LANDING, 'src', 'i18n');
+const LANDING_PAGE = join(LANDING, CONTRACT.landing_files.built_page);
 const STASHED_CONFIG = 'config.json';
 const DEFAULT_LOCALE = 'es';
 const MIN_NODE = [22, 23, 4];
@@ -34,6 +40,7 @@ const USAGE = `Usage:
   landing.mjs canvas <folder>
   landing.mjs compare <expected folder> <live folder>
   landing.mjs place <work folder>
+  landing.mjs match
   landing.mjs unstash <work folder>
   landing.mjs checklist [--confirmed <ids>] [--failed <ids>]
   landing.mjs gate <work folder>
@@ -83,19 +90,20 @@ function parseOptions(args, names) {
 const localeOfBrief = () => headerOf(readText(BRIEF)).locale || DEFAULT_LOCALE;
 const approvedCopyPath = (locale) => join(DESIGN, `copy.${locale}.json`);
 
-export function fingerprintOf(tokensPath, copyPath) {
+export function fingerprintOf(paths) {
   const hash = createHash('sha256');
-  hash.update(readFileSync(tokensPath));
-  hash.update(readFileSync(copyPath));
+  paths.forEach((path) => hash.update(readFileSync(path)));
   return `sha256:${hash.digest('hex')}`;
 }
+
+const approvedPaths = (copyPath) => [APPROVED_TOKENS, copyPath, APPROVED_BOARDS.phone, APPROVED_BOARDS.desktop];
 
 function choiceStatus(copyPath) {
   const text = readText(CHOICE);
   if (text === null) return null;
   const header = headerOf(text);
-  const canCompare = existsSync(APPROVED_TOKENS) && existsSync(copyPath);
-  const current = canCompare ? fingerprintOf(APPROVED_TOKENS, copyPath) : null;
+  const paths = approvedPaths(copyPath);
+  const current = paths.every((path) => existsSync(path)) ? fingerprintOf(paths) : null;
   return {
     chosen: header.chosen ?? null,
     approved: header.approved ?? null,
@@ -144,7 +152,11 @@ function status(args) {
   print({
     locale,
     node: { version: process.version, recent_enough: nodeIsRecentEnough(process.version) },
-    design_files: { tokens: existsSync(APPROVED_TOKENS), copy: existsSync(copyPath) ? copyPath : null },
+    design_files: {
+      tokens: existsSync(APPROVED_TOKENS),
+      copy: existsSync(copyPath) ? copyPath : null,
+      boards: Object.values(APPROVED_BOARDS).every((path) => existsSync(path)),
+    },
     choice: choiceStatus(copyPath),
     connections: connectionsStatus(contract),
     landing: { exists: existsSync(join(LANDING, 'package.json')), config: existsSync(LANDING_CONFIG) },
@@ -156,19 +168,26 @@ function status(args) {
 function approvedDesign() {
   const locale = localeOfBrief();
   const copyPath = approvedCopyPath(locale);
-  const missing = [APPROVED_TOKENS, copyPath, CHOICE].filter((path) => !existsSync(path));
+  const missing = [...approvedPaths(copyPath), CHOICE].filter((path) => !existsSync(path));
   if (missing.length) throw new UsageError(`Missing: ${missing.join(', ')}`);
-  return { locale, copyPath, tokens: readJson(APPROVED_TOKENS, 'tokens'), copy: readJson(copyPath, 'copy'), choice: headerOf(readText(CHOICE)) };
+  return {
+    locale,
+    copyPath,
+    tokens: readJson(APPROVED_TOKENS, 'tokens'),
+    copy: readJson(copyPath, 'copy'),
+    boards: { phone: readText(APPROVED_BOARDS.phone), desktop: readText(APPROVED_BOARDS.desktop) },
+    choice: headerOf(readText(CHOICE)),
+  };
 }
 
 function canvas(args) {
   if (args.length !== 1) throw new UsageError(USAGE);
   const [folder] = args;
-  const { tokens, copy } = approvedDesign();
+  const { tokens, copy, boards: promise } = approvedDesign();
   const project = join(folder, 'project');
   rmSync(project, { recursive: true, force: true });
   mkdirSync(project, { recursive: true });
-  const boards = fillDirection(tokens, copy);
+  const boards = fillDirection(tokens, copy, promise);
   boards.forEach((board) => writeFileSync(join(project, board.file), board.html));
   print({ folder, files: boards.map((board) => `project/${board.file}`) });
   return EXIT_CODES.ok;
@@ -182,7 +201,13 @@ function artboardsIn(folder) {
     .sort();
 }
 
-const normalizedLines = (path) => readFileSync(path, 'utf8').replace(/\r\n/g, '\n').trimEnd();
+// Frame heights are measured in a browser when the canvas is drawn and estimated otherwise: they are not part of the design.
+const normalizedLines = (path) =>
+  readFileSync(path, 'utf8')
+    .replace(/\r\n/g, '\n')
+    .replace(/min-height: \d+px/g, 'min-height: <frame>px')
+    .replace(/"height":\d+/g, '"height":<frame>')
+    .trimEnd();
 
 export function compareArtboards(expectedFolder, liveFolder) {
   const expected = artboardsIn(expectedFolder);
@@ -202,8 +227,8 @@ function compare(args) {
   return result.matches ? EXIT_CODES.ok : EXIT_CODES.requirementFailed;
 }
 
-function requireMatchingFingerprint(choice, tokensPath, copyPath) {
-  const current = fingerprintOf(tokensPath, copyPath);
+function requireMatchingFingerprint(choice, copyPath) {
+  const current = fingerprintOf(approvedPaths(copyPath));
   if (current === choice.fingerprint) return current;
   throw new UsageError(`The files differ from the approved fingerprint (${current} instead of ${choice.fingerprint}): the design must be approved again`);
 }
@@ -213,7 +238,7 @@ function place(args) {
   const [work] = args;
   if (!existsSync(join(LANDING, 'package.json'))) throw new UsageError('landing/ is not installed: run copy-template.mjs first');
   const { locale, copyPath, choice } = approvedDesign();
-  requireMatchingFingerprint(choice, APPROVED_TOKENS, copyPath);
+  requireMatchingFingerprint(choice, copyPath);
   const languageFile = join(LANDING_LANGUAGE, `${locale}.json`);
   mkdirSync(dirname(LANDING_TOKENS), { recursive: true });
   mkdirSync(LANDING_LANGUAGE, { recursive: true });
@@ -230,6 +255,26 @@ function place(args) {
   }
   print({ tokens: LANDING_TOKENS, copy: languageFile, removed, stashed_config: stashed });
   return EXIT_CODES.ok;
+}
+
+export function promiseMatch(boardHtml, pageHtml) {
+  const expected = boardSignature(readBoard(boardHtml, CONTRACT));
+  const actual = pageSignature(parseHtml(pageHtml), CONTRACT);
+  const difference = signatureDifference(expected, actual);
+  return { matches: difference === null, texts: expected.length, difference };
+}
+
+function landingMatch() {
+  const { boards } = approvedDesign();
+  if (!existsSync(LANDING_PAGE)) throw new UsageError(`${LANDING_PAGE} does not exist: build the landing first`);
+  return promiseMatch(boards.phone, readFileSync(LANDING_PAGE, 'utf8'));
+}
+
+function match(args) {
+  if (args.length) throw new UsageError(USAGE);
+  const result = landingMatch();
+  print(result);
+  return result.matches ? EXIT_CODES.ok : EXIT_CODES.requirementFailed;
 }
 
 function unstash(args) {
@@ -281,9 +326,10 @@ export function reviewerExtras(text) {
 }
 
 function designRowsOfApproved(contract) {
-  const { tokens, copy, locale } = approvedDesign();
+  const { tokens, copy, locale, boards } = approvedDesign();
   const report = createReport(contract, 'design');
-  checkDesign({ tokens, copy, locale, contract, report });
+  const read = (html) => readBoard(html, contract);
+  checkDesign({ tokens, copy, locale, contract, report, boards: { phone: read(boards.phone), desktop: read(boards.desktop) } });
   return Object.fromEntries(report.rows().map((row) => [row.id, { status: row.status, detail: row.detail }]));
 }
 
@@ -328,10 +374,11 @@ function gate(args) {
     capture: rowsOf(readText(join(work, GATE_FILES.capture))),
     reviewer: rowsOf(reviewerText),
   };
-  const result = { ...mergeGate(contract, toolRows), ran: Object.keys(toolRows).filter((tool) => toolRows[tool]), ...reviewerExtras(reviewerText) };
+  const canvasMatch = landingMatch();
+  const result = { ...mergeGate(contract, toolRows), canvas_match: canvasMatch, ran: Object.keys(toolRows).filter((tool) => toolRows[tool]), ...reviewerExtras(reviewerText) };
   writeFileSync(join(work, 'gate.json'), `${JSON.stringify(result, null, 2)}\n`);
   print(result);
-  return result.failed.length ? EXIT_CODES.requirementFailed : EXIT_CODES.ok;
+  return result.failed.length || !canvasMatch.matches ? EXIT_CODES.requirementFailed : EXIT_CODES.ok;
 }
 
 function record(args) {
@@ -339,9 +386,10 @@ function record(args) {
   if (positional.length || !options.url || !options.gate) throw new UsageError(USAGE);
   if (!URL.canParse(options.url) || new URL(options.url).protocol !== 'https:') throw new UsageError(`${options.url} is not an https URL`);
   const { copyPath, choice } = approvedDesign();
-  const fingerprint = requireMatchingFingerprint(choice, APPROVED_TOKENS, copyPath);
+  const fingerprint = requireMatchingFingerprint(choice, copyPath);
   const gateResult = readJson(options.gate, 'gate');
   if (gateResult.failed.length) throw new UsageError(`The gate has failed requirements (${gateResult.failed.map((row) => row.id).join(', ')}): nothing is recorded`);
+  if (!gateResult.canvas_match?.matches) throw new UsageError('The page does not match the approved boards of the free screen: nothing is recorded');
   const url = new URL(options.url);
   const published = {
     url: `${url.origin}${url.pathname.replace(/\/$/, '')}`,
@@ -354,7 +402,7 @@ function record(args) {
   return EXIT_CODES.ok;
 }
 
-const COMMANDS = { status, canvas, compare, place, unstash, checklist, gate, record };
+const COMMANDS = { status, canvas, compare, place, match, unstash, checklist, gate, record };
 
 function main([command, ...args]) {
   const run = COMMANDS[command];

@@ -14,9 +14,9 @@ Edit this file only on `main`.
 | `.sbr/brief.md` | `interview` | `rules`, `design`, `video-scripts` | Header with the brief fields; body in the builder's language |
 | `.sbr/rules.md` | `rules` | `verdict`, gate | Thresholds, verdict date and the seal; the seal is a commit |
 | `.sbr/seal.json` | `rules` | `verdict` | Which commit sealed the rules, and when |
-| `.sbr/design/answers.md`, `.sbr/design/market.md`, `.sbr/design/concepts.md` | `design` | `design` | The four design answers (each marked given or derived), the market look, the three concepts |
-| `.sbr/sketches/{a,b,c}/tokens.json` and `.sbr/sketches/{a,b,c}/concept.md` | `design` | builder | One direction per letter |
-| `.sbr/design/tokens.json`, `.sbr/design/copy.<locale>.json`, `.sbr/design/system.md` | `design` | `landing` | The approved design system |
+| `.sbr/design/answers.md`, `.sbr/design/promise.md`, `.sbr/design/market.md`, `.sbr/design/concepts.md` | `design` | `design` | The four design answers (each marked given or derived), what the free screen shows of the problem, the market look, the three concepts |
+| `.sbr/sketches/{a,b,c}/tokens.json`, `concept.md`, `promise-phone.html` and `promise-desktop.html` | `design` | builder | One direction per letter: its values, its idea and the two boards of its free screen |
+| `.sbr/design/tokens.json`, `.sbr/design/copy.<locale>.json`, `.sbr/design/promise-phone.html`, `.sbr/design/promise-desktop.html`, `.sbr/design/system.md` | `design` | `landing` | The approved design system and the approved boards of the free screen |
 | `.sbr/design/choice.md` | `design` | `landing` | Which direction was chosen and its approval |
 | `landing/` and `.sbr/landing.json` | `landing` | `video-scripts`, `verdict` | The Astro project and the record of its publication |
 | `.sbr/video-scripts.md` | `video-scripts` | `verdict` | Three scripts, each with its link |
@@ -233,8 +233,9 @@ Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `
 - `tokens.json`: the approved direction, following [tokens.md](tokens.md).
 - `copy.<locale>.json`: the approved copy, following the copy keys of [landing.md](landing.md#copy-keys). `landing` copies both files unchanged to `landing/src/data/tokens.json` and `landing/src/i18n/<locale>.json`.
 - `system.md`: the design system in prose. Every decision cites a line of the brief (R31).
-- `answers.md`, `market.md`, `concepts.md`: Markdown working notes; only `design` writes and reads them, so their layout belongs to that skill.
-- `.sbr/sketches/<letter>/tokens.json` follows [tokens.md](tokens.md); `concept.md` is the concept in prose.
+- `promise-phone.html` and `promise-desktop.html`: the approved boards of the free screen 1, as [the free screen guide](../../guides/promise-screen.md#3-the-board-files) defines them. `landing` programs them as `landing/src/promise/`.
+- `answers.md`, `promise.md`, `market.md`, `concepts.md`: Markdown working notes; only `design` writes and reads them, so their layout belongs to that skill. `promise.md` holds what the builder wants the free screen to show of the problem, and how.
+- `.sbr/sketches/<letter>/tokens.json` follows [tokens.md](tokens.md); `concept.md` is the concept in prose; `promise-phone.html` and `promise-desktop.html` are the boards of that direction.
 
 ### `.sbr/design/choice.md`
 
@@ -246,7 +247,7 @@ Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `
 | `fingerprint` | `sha256:<hex>`, see below |
 | `reason` | Why the builder chose it, in their words, one line |
 
-**Fingerprint.** The SHA-256, in lowercase hex, of the bytes of `.sbr/design/tokens.json` followed directly by the bytes of `.sbr/design/copy.<locale>.json`. Same result as `cat .sbr/design/tokens.json .sbr/design/copy.<locale>.json | shasum -a 256`. `landing` recomputes it before installing and stops if it differs from `choice.md`.
+**Fingerprint.** The SHA-256, in lowercase hex, of the bytes of `.sbr/design/tokens.json`, `.sbr/design/copy.<locale>.json`, `.sbr/design/promise-phone.html` and `.sbr/design/promise-desktop.html`, in that order and directly one after the other. Same result as `cat .sbr/design/tokens.json .sbr/design/copy.<locale>.json .sbr/design/promise-phone.html .sbr/design/promise-desktop.html | shasum -a 256`. `landing` recomputes it before installing and stops if it differs from `choice.md`.
 
 ## `.sbr/landing.json`
 

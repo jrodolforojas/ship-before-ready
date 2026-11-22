@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { basename, extname, join, relative, sep } from 'node:path';
+import { basename, dirname, extname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   UsageError,
@@ -15,16 +15,14 @@ import {
   runCli,
   tokenShapeProblems,
 } from './verify-design.mjs';
+import { decodeEntities, isInside, parseHtml, textOf, visibleTextOf } from './html.mjs';
+
+export { decodeEntities, parseHtml, textOf };
 
 export const TEMPLATE_DIR = fileURLToPath(new URL('../templates/landing/', import.meta.url));
 
 const MAX_OWN_BYTES = 100 * 1024;
 const TOTAL_STEPS = 2;
-const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
-const RAW_TEXT_ELEMENTS = new Set(['script', 'style', 'textarea', 'title']);
-const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
-const START_TAG = /<([a-zA-Z][^\s/>]*)/y;
-const ATTRIBUTE = /\s*([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/y;
 
 const NAVIGATION_ELEMENTS = ['a', 'nav', 'area'];
 const NEVER_PRESENT_ELEMENTS = ['video', 'audio', 'iframe', 'dialog', 'embed', 'object', 'marquee'];
@@ -76,112 +74,9 @@ const valueAt = (object, path) => path.split('.').reduce((value, key) => value?.
 const hasLetters = (text) => /\p{L}/u.test(text);
 const toPosixPath = (path) => path.split(sep).join('/');
 
-export function decodeEntities(text) {
-  return text.replace(/&(#[xX][0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (match, body) => {
-    if (/^#[xX]/.test(body)) return String.fromCodePoint(parseInt(body.slice(2), 16));
-    if (body.startsWith('#')) return String.fromCodePoint(parseInt(body.slice(1), 10));
-    return ENTITIES[body] ?? match;
-  });
-}
-
-function endAfter(html, marker, from) {
-  const found = html.indexOf(marker, from);
-  return found === -1 ? html.length : found + marker.length;
-}
-
-function readAttributes(html, start) {
-  const attrs = {};
-  let position = start;
-  for (;;) {
-    ATTRIBUTE.lastIndex = position;
-    const match = ATTRIBUTE.exec(html);
-    if (!match) break;
-    attrs[match[1].toLowerCase()] = decodeEntities(match[2] ?? match[3] ?? match[4] ?? '');
-    position = ATTRIBUTE.lastIndex;
-  }
-  return { attrs, end: endAfter(html, '>', position) };
-}
-
-function closeElement(open, tag) {
-  for (let node = open; node.parent; node = node.parent) {
-    if (node.tag === tag) return node.parent;
-  }
-  return open;
-}
-
-function appendText(parent, raw) {
-  if (raw === '') return;
-  parent.children.push({ text: decodeEntities(raw), parent });
-}
-
-function readRawText(html, element, start) {
-  const closeStart = html.toLowerCase().indexOf(`</${element.tag}`, start);
-  const contentEnd = closeStart === -1 ? html.length : closeStart;
-  const content = html.slice(start, contentEnd);
-  element.raw = content;
-  if (element.tag === 'textarea' || element.tag === 'title') appendText(element, content);
-  return endAfter(html, '>', contentEnd);
-}
-
-export function parseHtml(html) {
-  const root = { tag: '#root', attrs: {}, children: [], parent: null };
-  const elements = [];
-  let open = root;
-  let position = 0;
-  while (position < html.length) {
-    const tagStart = html.indexOf('<', position);
-    appendText(open, html.slice(position, tagStart === -1 ? html.length : tagStart));
-    if (tagStart === -1) break;
-    if (html.startsWith('<!--', tagStart)) {
-      position = endAfter(html, '-->', tagStart);
-      continue;
-    }
-    if (html[tagStart + 1] === '!' || html[tagStart + 1] === '?') {
-      position = endAfter(html, '>', tagStart);
-      continue;
-    }
-    if (html[tagStart + 1] === '/') {
-      position = endAfter(html, '>', tagStart);
-      open = closeElement(open, html.slice(tagStart + 2, position - 1).trim().toLowerCase());
-      continue;
-    }
-    START_TAG.lastIndex = tagStart;
-    const startTag = START_TAG.exec(html);
-    if (!startTag) {
-      appendText(open, '<');
-      position = tagStart + 1;
-      continue;
-    }
-    const { attrs, end } = readAttributes(html, START_TAG.lastIndex);
-    const element = { tag: startTag[1].toLowerCase(), attrs, children: [], parent: open, index: elements.length };
-    elements.push(element);
-    open.children.push(element);
-    position = end;
-    if (VOID_ELEMENTS.has(element.tag) || html[end - 2] === '/') continue;
-    if (RAW_TEXT_ELEMENTS.has(element.tag)) {
-      position = readRawText(html, element, end);
-      continue;
-    }
-    open = element;
-  }
-  return { root, elements };
-}
-
-export function textOf(node) {
-  if (node.text !== undefined) return node.text;
-  return node.children.map(textOf).join('');
-}
-
 function textNodesOf(node) {
   if (node.text !== undefined) return [collapseSpaces(node.text)].filter(Boolean);
   return node.children.flatMap(textNodesOf);
-}
-
-function isInside(element, ancestor) {
-  for (let node = element.parent; node; node = node.parent) {
-    if (node === ancestor) return true;
-  }
-  return false;
 }
 
 function describe(element) {
@@ -316,7 +211,7 @@ export function classTokenProblem(token, vocabulary, { onDecor = false, checkMod
   const slash = utility.lastIndexOf('/');
   const base = slash === -1 ? utility : utility.slice(0, slash);
   if (slash === -1 || !vocabulary.colorUtilities.has(base)) return utilityProblem(utility, vocabulary);
-  if (checkModifiers && !onDecor) return { id: 'R14', reason: 'puts an opacity modifier on a color outside decor-1 and decor-2' };
+  if (checkModifiers && !onDecor) return { id: 'R14', reason: 'puts an opacity modifier on a color outside a figure' };
   return null;
 }
 
@@ -330,8 +225,9 @@ export function classVocabulary(contract) {
 }
 
 function classProblemsOfPage(page, vocabulary) {
+  const figures = page.byHook('figure');
   return page.elements.flatMap((element) => {
-    const onDecor = ['decor-1', 'decor-2'].includes(element.attrs['data-sbr']);
+    const onDecor = figures.some((figure) => figure === element || isInside(element, figure));
     return classesOf(element)
       .map((token) => ({ token, problem: classTokenProblem(token, vocabulary, { onDecor }) }))
       .filter(({ problem }) => problem)
@@ -378,6 +274,36 @@ function classProblemsOfSource(projectDir, vocabulary) {
     });
 }
 
+const HAND_WRITTEN_STYLE = [
+  [/<style\b/i, 'has a <style> block'],
+  [/\sstyle\s*=/i, 'sets a style attribute'],
+  [/<script\b/i, 'has a <script>'],
+  [/\bset:html\b/, 'injects HTML with set:html'],
+  [/\bis:inline\b/, 'inlines raw code with is:inline'],
+];
+
+function promiseSourceProblems(projectDir, contract) {
+  const folder = join(projectDir, dirname(contract.landing_files.promise_entry));
+  const files = listFiles(folder, (path, name) => SKELETON_IGNORED_NAMES.has(name));
+  const entry = basename(contract.landing_files.promise_entry);
+  return [
+    ...problemIf(!files.includes(entry), `${contract.landing_files.promise_entry} is missing: the free screen is programmed there`),
+    ...files.filter((file) => extname(file) !== '.astro').map((file) => ({ id: 'R14', message: `src/promise/${file}: the free screen is written only as .astro components` })),
+    ...files
+      .filter((file) => extname(file) === '.astro')
+      .flatMap((file) => {
+        const source = readFileSync(join(folder, file), 'utf8');
+        return HAND_WRITTEN_STYLE.filter(([pattern]) => pattern.test(source)).map(([, reason]) => ({ id: 'R14', message: `src/promise/${file} ${reason}` }));
+      }),
+  ].map((found) => (typeof found === 'string' ? { id: 'R28', message: found } : found));
+}
+
+function titleStyleProblems(page) {
+  return page.elements
+    .filter((element) => classesOf(element).some((token) => token.split(':').at(-1) === 'text-title') && element.attrs['data-sbr'] !== 'title')
+    .map((element) => `${describe(element)} uses text-title, which only the title uses`);
+}
+
 function readLocalAsset(distDir, reference) {
   if (!reference || EXTERNAL_URL.test(reference) || reference.startsWith('data:')) return null;
   const path = join(distDir, reference.split(/[?#]/)[0].replace(/^\//, ''));
@@ -409,8 +335,8 @@ function readPage(distDir, contract) {
   };
 }
 
-function expectedHookCount(hook, tokens) {
-  if (hook.present_when) return tokens.decor === 'none' ? 0 : 1;
+function expectedHookCount(hook) {
+  if (hook.repeatable) return null;
   return Math.max(1, hook.screens.length);
 }
 
@@ -418,9 +344,12 @@ function hookPlacementProblems(hook, page, screenElements) {
   const found = page.byHook(hook.name);
   if (found.length === 0) return [];
   const isScreen = screenElements.some((screen) => found.includes(screen.element));
-  const outsideScreen = hook.screens
-    .filter((number) => !isScreen && found.filter((element) => isInside(element, screenElements[number - 1].element)).length !== 1)
-    .map((number) => `${hook.name} must occur once inside screen ${number}`);
+  const outsideScreen = hook.repeatable
+    ? found.filter((element) => !hook.screens.some((number) => isInside(element, screenElements[number - 1].element))).map(() => `${hook.name} must be inside screen ${hook.screens.join(', ')}`)
+    : hook.screens
+        .filter((number) => !isScreen && found.filter((element) => isInside(element, screenElements[number - 1].element)).length !== 1)
+        .map((number) => `${hook.name} must occur once inside screen ${number}`);
+  const textOnDrawing = found.filter((element) => hook.no_text && /[\p{L}\p{N}]/u.test(textOf(element))).map(() => `${hook.name} holds text: text is never drawn on a figure`);
   const outsideParent = found
     .filter((element) => hook.inside && !page.byHook(hook.inside).some((parent) => isInside(element, parent)))
     .map(() => `${hook.name} must be inside ${hook.inside}`);
@@ -428,6 +357,7 @@ function hookPlacementProblems(hook, page, screenElements) {
     ...found.filter((element) => element.tag !== hook.element).map((element) => `${hook.name} is a <${element.tag}>, must be a <${hook.element}>`),
     ...outsideScreen,
     ...outsideParent,
+    ...textOnDrawing,
     ...problemIf(hook.hidden_until && found.some((element) => !('hidden' in element.attrs)), `${hook.name} must carry hidden in the built page`),
   ];
 }
@@ -439,11 +369,11 @@ function anatomyProblems(page, tokens, contract) {
   const knownHooks = new Set(contract.hooks.map((hook) => hook.name));
   const hookProblems = contract.hooks.flatMap((hook) => {
     const found = page.byHook(hook.name).length;
-    const expected = expectedHookCount(hook, tokens);
-    if (found !== expected) return [`${hook.name} occurs ${found} times, expected ${expected}`];
+    const expected = expectedHookCount(hook);
+    if (expected !== null && found !== expected) return [`${hook.name} occurs ${found} times, expected ${expected}`];
     return hookPlacementProblems(hook, page, screens);
   });
-  const expectedAttributes = { 'data-composition': tokens.composition, 'data-scheme': tokens.scheme, 'data-decor': tokens.decor, 'data-screen': '1' };
+  const expectedAttributes = { 'data-scheme': tokens.scheme, 'data-screen': '1' };
   const debugPanel = page.one('debug-panel');
   return [
     ...hookProblems,
@@ -768,7 +698,7 @@ function hookTextProblems(page, copy, contract) {
     .flatMap((entry) => {
       const list = page.one(entry.key);
       if (!list) return [];
-      const items = list.children.filter((child) => child.tag === 'li').map((item) => collapseSpaces(textOf(item)));
+      const items = list.children.filter((child) => child.tag === 'li').map((item) => collapseSpaces(visibleTextOf(item)));
       return problemIf(JSON.stringify(items) !== JSON.stringify(valueAt(copy, entry.key)), `${entry.key} does not list the items of the language file in order`);
     });
   return [...direct, ...contained, ...lists];
@@ -816,12 +746,14 @@ function recordByRequirement(report, problems, passDetails) {
 function checkPage({ page, project, templateDir, contract, report }) {
   const { tokens, copy, projectDir } = project;
   const vocabulary = classVocabulary(contract);
-  const classProblems = [...classProblemsOfPage(page, vocabulary), ...classProblemsOfSource(projectDir, vocabulary)];
+  const promiseProblems = promiseSourceProblems(projectDir, contract);
+  const classProblems = [...classProblemsOfPage(page, vocabulary), ...classProblemsOfSource(projectDir, vocabulary), ...promiseProblems.filter((found) => found.id === 'R14')];
   const maxDuration = contract.tokens.measure.ranges.motion_duration[1];
-  const anatomy = anatomyProblems(page, tokens, contract);
+  const anatomy = [...anatomyProblems(page, tokens, contract), ...promiseProblems.filter((found) => found.id === 'R28').map((found) => found.message)];
   record(report, 'R28', anatomy, 'the built page has the hooks and screens of the contract');
   if (anatomy.length) return PAGE_ROWS.forEach((id) => report.skip(id, 'the built page does not have the anatomy of the contract: see R28'));
   record(report, 'R1', singleActionProblems(page, contract), 'one h1, one filled button per screen, no menu and no links');
+  record(report, 'R5', titleStyleProblems(page), 'only the title uses text-title');
   record(report, 'R8', fieldTextProblems(page, contract), 'fields are typed in the body style');
   record(report, 'R16', stateTextProblems(page, copy, contract), 'errors and the sending state carry text');
   record(report, 'R17', zoomProblems(page), 'zoom is not blocked');
@@ -841,10 +773,10 @@ function checkPage({ page, project, templateDir, contract, report }) {
     R23: 'motion is reduced on request, limited to opacity and transform, and short',
   });
   if (!existsSync(templateDir)) return report.skip('R28', 'templates/landing/ is not in this copy of the plugin: the project was not compared with the template');
-  record(report, 'R28', skeletonProblems(projectDir, templateDir, contract), 'the project is identical to the template outside src/data, src/i18n, vercel.json and the lockfile');
+  record(report, 'R28', skeletonProblems(projectDir, templateDir, contract), 'the project is identical to the template outside src/data, src/i18n, src/promise, vercel.json and the lockfile');
 }
 
-const PAGE_ROWS = ['R1', 'R8', 'R10', 'R11', 'R14', 'R15', 'R16', 'R17', 'R20', 'R21', 'R23', 'R24', 'R25', 'R26', 'R29', 'R30', 'R32'];
+const PAGE_ROWS = ['R1', 'R5', 'R8', 'R10', 'R11', 'R14', 'R15', 'R16', 'R17', 'R20', 'R21', 'R23', 'R24', 'R25', 'R26', 'R29', 'R30', 'R32'];
 
 function readProject(projectDir, contract) {
   const isFolder = existsSync(projectDir) && statSync(projectDir).isDirectory();

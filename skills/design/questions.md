@@ -36,20 +36,50 @@ Working notes, in the builder's language. One section per question with the answ
 
 ## Marca y referencias
 origin: given
-Colores #1F6F5C y #F2EEE6; no quiere parecerse a un banco.
+<what the builder said, colors as hex values>
 
 ## Lo memorable
 origin: derived
-"Antes de escribir código, averigua si alguien lo quiere." (promise del brief)
+"<the line of the brief, quoted>" (promise del brief)
 
 ## Personalidad
 origin: given
-Técnico y preciso; calmado y mínimo.
+<one to three traits, in the builder's words>
 
 ## Tono y prohibidos
 origin: derived
-Claro: lo lee de día, en su escritorio, entre dos tareas (persona del brief).
-Prohibido: nada.
+<light or dark, and the scene of use it comes from> (persona del brief)
+Prohibido: <what the builder does not want to look like, or nada>
 ```
 
 `origin` is `given` or `derived`. A derived answer quotes the line of the brief it came from.
+
+## The promise screen
+
+Three open questions, asked one at a time in plain text after the four above: `promise.show`, `promise.how`, `promise.emphasis`. They have no options, no examples and no suggested answer; the builder answers in their own words, or says to decide.
+
+| Question | Derived from, when the builder leaves it to the plugin |
+|---|---|
+| What moment of the problem the visitor sees first | The sharpest `pain` of the brief and the scene where it happens |
+| How it is shown | The scene of use and the personality traits: plain words, or words with a drawing made of shapes |
+| What stands out after the headline | The memorable answer, or the `promise` of the brief |
+
+### `.sbr/design/promise.md`
+
+Working notes, in the builder's language. One section per question with the answer and its origin, the given answers word for word:
+
+```markdown
+# Primera pantalla
+
+## Qué muestra primero
+origin: given
+<the builder's answer, word for word>
+
+## Cómo se ve
+origin: given
+<the builder's answer, word for word>
+
+## Qué destaca
+origin: derived
+"<the line of the brief, quoted>" (<the field it comes from>)
+```

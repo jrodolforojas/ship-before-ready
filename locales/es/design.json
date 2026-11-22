@@ -1,5 +1,5 @@
 {
-  "intro": "Vamos a decidir cómo se ve su landing. Primero cuatro preguntas, después el texto, luego tres direcciones lado a lado. Usted elige una y la ajustamos las veces que haga falta. No se instala ni se programa nada hasta que usted apruebe el diseño final.",
+  "intro": "Vamos a decidir cómo se ve su landing. Primero cuatro preguntas de diseño y tres sobre lo que la primera pantalla debe mostrar de su problema, después el texto, luego tres direcciones lado a lado. Usted elige una y la ajustamos las veces que haga falta. No se instala ni se programa nada hasta que usted apruebe el diseño final.",
   "missing": {
     "brief": "No encuentro .sbr/brief.md. Corra primero /ship-before-ready:interview.",
     "brief_pending": "El brief todavía no está aprobado por su revisor. Termine /ship-before-ready:interview antes de diseñar."
@@ -14,7 +14,7 @@
   },
   "mode": {
     "canvas": "Las tres direcciones se van a dibujar en Claude Design, en un lienzo que usted puede abrir y editar.",
-    "fallback": "No tengo Claude Design en esta sesión, así que le muestro las direcciones una por una sobre la página real, en su navegador."
+    "fallback": "No tengo Claude Design en esta sesión, así que le muestro las direcciones una por una como páginas en su navegador."
   },
   "questions": {
     "decide": "Decida usted",
@@ -63,57 +63,66 @@
     "changed": "Cambié el texto y volví a revisarlo."
   },
   "concepts": {
-    "intro": "Estas son las tres direcciones, en texto. Cada una difiere de las otras en composición, tipografía y color. Ninguna es la recomendada.",
+    "intro": "Estas son las tres direcciones, en texto. Cada una difiere de las otras en cómo arma la primera pantalla, en tipografía y en color. Ninguna es la recomendada.",
     "follows": "Sigue el código de la categoría.",
     "departs": "Se aparta del código de la categoría a propósito.",
     "ask": "¿Las dibujo así, o cambio alguna?"
   },
   "values": {
-    "working": "Estoy definiendo los valores de cada dirección y pasándolos por el verificador.",
+    "working": "Estoy definiendo los valores de cada dirección, diseñando su primera pantalla y pasando todo por el verificador.",
     "failed": "La dirección {letter} no pasó el verificador después de varios intentos, así que no la dibujo. Falla en: {requirements}."
   },
   "canvas": {
     "title": "{brand} · Diseño",
-    "ready": "Listo el lienzo con las tres direcciones, portada en teléfono y en escritorio: {url}",
+    "ready": "Listo el lienzo con las tres direcciones, primera pantalla en teléfono y en escritorio: {url}",
     "private": "El lienzo es privado: solo usted puede abrirlo hasta que lo comparta desde su menú Share.",
     "choose": {
       "header": "Dirección",
       "question": "¿Con cuál dirección seguimos?",
       "none": "Ninguna",
       "none_detail": "Volvemos a los conceptos y cambio lo que no le convence."
-    }
+    },
+    "first_view": "En {where} el titular, el subtítulo o el botón quedaban fuera de la primera vista; lo corregí antes de dibujarlo."
   },
   "iterate": {
-    "full": "Dibujé «{name}» completa, con las cuatro pantallas: {url}",
-    "ask": "Pida los cambios que quiera, uno o varios a la vez: colores, tipografía, tamaños, espacios, forma, composición, decoración o cualquier texto. Cuando esté conforme, dígame que lo aprueba.",
+    "full": "Dibujé «{name}» completa: su primera pantalla y las tres pantallas fijas con sus colores y tipografías: {url}",
+    "ask": "Pida los cambios que quiera, uno o varios a la vez: en la primera pantalla, cómo se arma, qué se destaca y cómo se muestra el problema; en todo, colores, tipografía, tamaños, espacios, forma o cualquier texto. Cuando esté conforme, dígame que lo aprueba.",
     "repainted": "Cambié {changes}. Pasó el verificador y el lienzo ya está repintado.",
     "verifier_moved": "Para que cumpla {requirement} tuve que ajustar {value}.",
     "out_of_range": "Eso queda fuera de lo permitido para {what}: el límite es {limit}. Lo dejé en {value}.",
-    "anatomy": "Eso no lo puedo cambiar en el diseño: {reason}. Las cuatro pantallas y sus bloques son fijos; cambia cómo se ven, no qué hay ni en qué orden.",
+    "anatomy": "Eso no lo puedo cambiar en el diseño: {reason}.",
     "anatomy_reasons": {
-      "block": "la página siempre tiene marca, portada, dolores, cómo funciona, cierre y pie, en ese orden",
+      "block": "la primera pantalla siempre tiene la marca, el titular con su subtítulo y el botón, los dolores, cómo funciona, el cierre con el mismo botón y el pie; su orden y su forma sí se pueden cambiar",
+      "fixed": "las pantallas del correo, las preguntas y el aviso final son iguales en todas las landings; solo toman los colores y las tipografías del diseño",
       "never": "una landing del plugin nunca lleva menú, precios, testimonios, logos de clientes, cifras inventadas, enlaces de salida, ventanas emergentes, chat, carruseles ni video de fondo",
       "screens": "el registro del correo va en su propia pantalla y las preguntas en otra, porque el veredicto mide cada paso por separado",
-      "cliche": "degradados en texto o botón, brillos y emojis quedan fuera de cualquier diseño"
+      "cliche": "degradados en texto o botón, brillos y emojis quedan fuera de cualquier diseño",
+      "text": "el texto de la página sale del archivo de texto aprobado; si quiere decir algo distinto, cambiamos el texto"
     },
-    "hand_edit": "Alguien editó a mano «{artboard}» en el lienzo. Si repinto, esa edición se pierde, porque lo que se programa sale de los valores y el texto. ¿Me dice qué cambió para pasarlo a los valores, o la descarto?"
+    "hand_edit": "Alguien editó a mano «{artboard}» en el lienzo. Si repinto, esa edición se pierde, porque lo que se programa sale de los valores, el texto y los bocetos guardados. ¿Me dice qué cambió para pasarlo a los bocetos, o la descarto?"
   },
   "approval": {
     "ask": "Para aprobar, dígame por escrito que aprueba este diseño y, en una línea, por qué eligió esta dirección.",
     "reviewing": "Antes de cerrar, un revisor que no conoce esta conversación lee el texto, los valores y el design system contra el brief.",
     "rejected": "El revisor encontró esto:",
-    "done": "Diseño aprobado. Quedó en .sbr/design/: los valores, el texto, el design system y su elección con la huella de lo aprobado.",
+    "done": "Diseño aprobado. Quedó en .sbr/design/: los valores, el texto, los bocetos de la primera pantalla, el design system y su elección con la huella de lo aprobado.",
     "next": "Nada se instaló en su repo. Lo que sigue: /ship-before-ready:connect, para conectar Vercel y PostHog, y después /ship-before-ready:landing."
   },
   "fallback": {
-    "node": "Para mostrarle la página real necesito Node 22.23.4 o superior y tengo {version}. Actualícelo y vuelva a correr /ship-before-ready:design.",
-    "installing": "Instalo la plantilla en una carpeta temporal fuera de su repo, solo para mostrarle las direcciones.",
-    "showing": "Abra {url}. Ahora ve la dirección {letter}, «{name}».",
+    "showing": "Abra {path} en su navegador. Ahora ve la dirección {letter}, «{name}».",
     "next": "Cuando la haya visto, dígame y le muestro la siguiente.",
-    "stopped": "Detuve la vista previa y borré la carpeta temporal."
+    "refresh": "Actualicé las páginas; recargue {path} para ver el cambio.",
+    "stopped": "Borré la carpeta temporal con las páginas de muestra."
   },
   "choice_file": {
     "title": "Elección: {name}",
-    "detail": "Diseño aprobado por el builder. Los valores están en tokens.json y el texto en el archivo de idioma; la huella de la cabecera es la de esos dos archivos tal como se aprobaron."
+    "detail": "Diseño aprobado por el builder. Los valores están en tokens.json, el texto en el archivo de idioma y la primera pantalla en promise-phone.html y promise-desktop.html; la huella de la cabecera es la de esos cuatro archivos tal como se aprobaron."
+  },
+  "promise": {
+    "intro": "Ahora tres preguntas sobre la primera pantalla, la que ve el visitante al llegar. Esa pantalla se diseña para su idea; las del correo, las preguntas y el aviso final son fijas. Responda con sus palabras; si prefiere que lo decida yo, dígame «decida usted».",
+    "show": "¿Qué momento de su problema quiere que el visitante vea primero?",
+    "how": "¿Cómo se imagina que se vea esa parte en la pantalla?",
+    "emphasis": "Después del titular, ¿qué debe saltar a la vista?",
+    "derived_note": "Lo que dejó en mis manos sobre la primera pantalla lo saqué del brief:"
   }
 }
