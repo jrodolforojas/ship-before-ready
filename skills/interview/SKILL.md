@@ -190,7 +190,7 @@ Every frustration of the alternatives block is checked against sources before th
    node "${CLAUDE_SKILL_DIR}/scripts/brief.mjs" verify-sources .sbr/lean-canvas.md pains
    ```
 
-7. Show the builder the table exactly as it is in the file with `canvas.pains.table_intro`, the notes of step 3 that apply and `canvas.pains.confirm`. **Stop and wait.** Apply what they ask as in step 3: a corrected pain is checked again, a new link is opened like any other.
+7. Show the builder the table exactly as it is in the file with `canvas.pains.table_intro`, then `sources.contradicted_note` or `sources.unreachable_note` when they apply, one line with `canvas.pains.unsupported` when a pain left the block, and `canvas.pains.confirm`. `sources.no_source_note` is not said here: it is about the statement. **Stop and wait.** Apply what they ask as in step 3: a corrected pain is checked again, a new link is opened like any other.
 8. If no pain is `supported`, say `canvas.pains.none_supported` and wait. A source or a new wording goes through items 2 to 7 again. If the builder does not know, the advisor proposes pains. With none at the end, `alternatives` counts as a required block left pending.
 9. Go on with the next block. On a run that resumed at `pains`, run `status` again and go where it says; a brief that already exists is rewritten in step 6 and goes to the reviewer again.
 
