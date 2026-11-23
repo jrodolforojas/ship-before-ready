@@ -123,7 +123,7 @@ El contrato completo está en [docs/contracts/events.md](docs/contracts/events.m
 
 ## Guiones de video
 
-La estructura de los guiones viene de la metodología que el autor aprendió personalmente de Guillermo «Guillie» Collado, que trabaja en TikTok. Es una enseñanza directa, no una fuente pública.
+La estructura de los guiones viene de la metodología que el autor aprendió personalmente de [Guillermo «Guille» Collado](https://www.instagram.com/guille.colladomk/), que trabaja en TikTok. Es una enseñanza directa, no una fuente pública.
 
 - **Una idea por video.** Cada guion tiene una frase que dice de qué trata y una lista corta de lo único que dirá. Si la idea necesita dos frases, son dos videos.
 - **Cuatro partes, en orden:** reveal, build up, value y call to action.
