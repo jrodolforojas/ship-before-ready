@@ -1,4 +1,5 @@
 import { isInside, parseHtml, visibleTextOf } from './html.mjs';
+import { boardOrderProblem, outlineProblems } from './outline.mjs';
 
 const LENGTH_WITH_UNIT = /(?<![\w.-])-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|ex|ch|lh|rlh|vh|vw|vmin|vmax|dvh|dvw|svh|svw|lvh|lvw|pt|pc|cm|mm|q|in)\b/i;
 const LITERAL_COLOR = /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i;
@@ -351,10 +352,22 @@ export function signatureDifference(expected, actual) {
   return null;
 }
 
-export function boardsProblems({ phone, desktop }, { copy, contract }) {
+function orderProblems(boards, order, contract) {
+  if (!order) return [];
+  const outline = outlineProblems(order, contract);
+  if (outline.length) return outline;
+  return Object.entries(boards)
+    .filter(([, board]) => board.screen)
+    .map(([viewport, board]) => [viewport, boardOrderProblem(board, order, contract)])
+    .filter(([, found]) => found)
+    .map(([viewport, found]) => ({ ...found, message: `${viewport} board: ${found.message}` }));
+}
+
+export function boardsProblems({ phone, desktop }, { copy, contract, order = null }) {
   const own = [
     ...boardProblems(phone, { copy, contract }).map((found) => ({ ...found, message: `phone board: ${found.message}` })),
     ...boardProblems(desktop, { copy, contract }).map((found) => ({ ...found, message: `desktop board: ${found.message}` })),
+    ...orderProblems({ phone, desktop }, order, contract),
   ];
   const difference = signatureDifference(boardSignature(phone), boardSignature(desktop));
   if (!difference) return own;

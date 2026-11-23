@@ -57,3 +57,28 @@ test('the reviewer agent is a plugin agent that covers the reviewer requirements
   const reviewed = contract.requirement_ids.filter((id) => CHECKED_BY[id].includes('reviewer'));
   assert.deepEqual(reviewed.filter((id) => !body.includes(`### ${id} `)), []);
 });
+
+const codesOfTable = (text, heading) => {
+  const section = text.slice(text.indexOf(heading));
+  const table = section.slice(0, section.indexOf('\n\n', section.indexOf('| Code |')));
+  return rowsStartingWith(table, /^\| `[a-z_]+` \|/).map(([code]) => code.replaceAll('`', ''));
+};
+
+test('the design critic is a plugin agent whose codes are the ones of the reviewers contract', () => {
+  const critic = read('agents/design-critic.md');
+  const [, frontmatter] = critic.split('---\n');
+  assert.match(frontmatter, /^name: design-critic$/m);
+  assert.match(frontmatter, /^tools: Read$/m);
+  const inAgent = codesOfTable(critic, '## The checks');
+  assert.ok(inAgent.length >= 10);
+  assert.deepEqual(codesOfTable(read('docs/contracts/reviewers.md'), '## Codes of `design-critic`'), inAgent);
+});
+
+test('every phrase the design skill names exists in its Spanish phrases file', () => {
+  const skill = read('skills/design/SKILL.md');
+  const phrases = JSON.parse(read('locales/es/design.json'));
+  const valueAt = (path) => path.split('.').reduce((value, key) => value?.[key], phrases);
+  const named = [...new Set([...skill.matchAll(/`([a-z_]+(?:\.[a-z_]+)+)`/g)].map(([, key]) => key))].filter((key) => key.split('.')[0] in phrases && !/\.(md|txt|json|html)$/.test(key));
+  assert.ok(named.length > 30);
+  assert.deepEqual(named.filter((key) => typeof valueAt(key) !== 'string' && typeof valueAt(key) !== 'object'), []);
+});

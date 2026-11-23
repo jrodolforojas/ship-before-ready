@@ -37,6 +37,7 @@ function approvedRepo() {
   EXAMPLE_BOARDS.forEach((name) => copyFileSync(join(PLUGIN_ROOT, 'templates/example', name), join(repo, '.sbr/sketches/a', name)));
   copyFileSync(EXAMPLE_COPY, join(repo, '.sbr/design/copy.es.json'));
   writeFileSync(join(repo, '.sbr/design/system.md'), '# Sistema\n');
+  writeFileSync(join(repo, '.sbr/design/structure.md'), '---\norder: brand, title, subtitle, cta, pains, steps, closing, cta-closing, footer\n---\n');
   copyFileSync(SITE_CONNECTIONS, join(repo, '.sbr/connections.json'));
   const approval = spawnSync(process.execPath, [DESIGN_SCRIPT, 'approve', '--chosen', 'a', '--canvas', 'none', '--reason', 'prueba'], { cwd: repo, encoding: 'utf8' });
   assert.equal(approval.status, 0, approval.stderr);

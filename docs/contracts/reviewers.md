@@ -9,6 +9,7 @@ Edit this file only on `main`.
 | `brief-reviewer` | `agents/brief-reviewer.md` | `.sbr/brief.md`, `.sbr/problem.md` and `.sbr/lean-canvas.md` | `interview` | Steps 3 and 3b |
 | `script-reviewer` | `agents/script-reviewer.md` | `.sbr/video-scripts.md` | `video-scripts` | Step 5 |
 | `verdict-reviewer` | `agents/verdict-reviewer.md` | Only the numbers and the thresholds of the verdict | `verdict` | Step 6 |
+| `design-critic` | `agents/design-critic.md` | `.sbr/design/structure.md` and the two screenshots of one direction's free screen written by `design.mjs shots` | `design` | Design taste |
 
 `design-reviewer` (`agents/design-reviewer.md`) is defined by step 1b and is not covered here.
 
@@ -63,6 +64,25 @@ The other seven are about `.sbr/problem.md` and `.sbr/lean-canvas.md`.
 | `claims_it_exists` | A script speaks as if the product already existed |
 | `price` | A script mentions a price |
 | `invented_figure` | A script uses a figure that nobody measured |
+
+## Codes of `design-critic`
+
+The skill writes the answer to `.sbr/sketches/<letter>/critique.txt`. A rejected direction is redone by its agent with the findings, at most twice; then it is shown with the findings still open.
+
+| Code | Finding |
+|---|---|
+| `hierarchy` | The headline does not lead, the button is not next, or the lists read as loud as the headline |
+| `message` | What `structure.md` says the visitor must understand is hidden or out of order |
+| `first_view` | Headline, subtitle or button below the first view, or the fold slices a card, a box or a drawing |
+| `edges` | Blocks do not share their edges |
+| `centred` | Running text or lists centred, or a centred block wider than half the page |
+| `space` | Space does not group, or a short block floats alone |
+| `template` | A composition anyone would get |
+| `decoration` | A drawing that is mood, not meaning |
+| `accent` | The accent spread beyond the buttons, or color carrying the hierarchy |
+| `type` | Tracked capitals, too many small levels, over-long lines, a single word alone on the headline's last line |
+| `nesting` | Boxes in boxes, cards in cards |
+| `broken` | Overlap, cut edges, tilt or touching elements |
 
 ## Codes of `verdict-reviewer`
 

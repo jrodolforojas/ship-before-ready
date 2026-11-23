@@ -57,4 +57,4 @@ For a page that is not a landing of the plugin the script writes `screen-1-375x6
 - One of the three directions follows the code of the category on purpose, and another departs from it on purpose: an accent at least 40° of hue away from the dominant one, or the opposite scheme. The third is free.
 - Each `concept.md` says which of the two it does and why, citing `market.md`.
 - The builder chooses knowing this. The skill does not choose for them and does not mark a direction as the safe one.
-- If every entry is `unverified`, say it when showing the concepts.
+- If every entry is `unverified`, say it when showing the canvas.

@@ -657,13 +657,23 @@ function boardBox(hooks) {
   return { height: Math.ceil(screen.getBoundingClientRect().bottom - top), bottoms };
 }
 
-async function measureBoard(client, { path, width }) {
-  await client.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false });
+async function shootBoard(client, { width, shot }, box) {
+  const height = Math.max(box?.height ?? 0, 1);
+  await client.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+  await evaluate(client, inPage(waitForPaint));
+  const { data } = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: { x: 0, y: 0, width, height, scale: 1 } });
+  writeFileSync(shot, Buffer.from(data, 'base64'));
+}
+
+async function measureBoard(client, board) {
+  await client.send('Emulation.setDeviceMetricsOverride', { width: board.width, height: 900, deviceScaleFactor: 1, mobile: false });
   const loaded = client.waitFor('Page.loadEventFired');
-  await client.send('Page.navigate', { url: pathToFileURL(path).href });
+  await client.send('Page.navigate', { url: pathToFileURL(board.path).href });
   await loaded;
   await evaluate(client, inPage(waitForPaint));
-  return evaluate(client, inPage(boardBox, ['title', 'subtitle', 'cta']));
+  const box = await evaluate(client, inPage(boardBox, ['title', 'subtitle', 'cta']));
+  if (board.shot) await shootBoard(client, board, box);
+  return box;
 }
 
 export async function measureBoards(boards) {

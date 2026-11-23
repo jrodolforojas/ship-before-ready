@@ -14,8 +14,10 @@ Edit this file only on `main`.
 | `.sbr/brief.md` | `interview` | `rules`, `design`, `video-scripts` | Header with the brief fields; body in the builder's language |
 | `.sbr/rules.md` | `rules` | `verdict`, gate | Thresholds, verdict date and the seal; the seal is a commit |
 | `.sbr/seal.json` | `rules` | `verdict` | Which commit sealed the rules, and when |
-| `.sbr/design/answers.md`, `.sbr/design/promise.md`, `.sbr/design/market.md`, `.sbr/design/concepts.md` | `design` | `design` | The four design answers (each marked given or derived), what the free screen shows of the problem, the market look, the three concepts |
-| `.sbr/sketches/{a,b,c}/tokens.json`, `concept.md`, `promise-phone.html` and `promise-desktop.html` | `design` | builder | One direction per letter: its values, its idea and the two boards of its free screen |
+| `.sbr/design/answers.md`, `.sbr/design/promise.md`, `.sbr/design/market.md`, `.sbr/design/axes.md` | `design` | `design` | The four design answers (each marked given or derived), what the free screen shows of the problem, the market look, the axes of the three directions |
+| `.sbr/design/structure.md` | `design` | `design`, `design-critic` | What the visitor must understand on the free screen, in order, and the order of its blocks |
+| `.sbr/design/type.json` | `design` | `design` | The three type systems dealt from the plugin's library, with the moods and words they answer |
+| `.sbr/sketches/{a,b,c}/tokens.json`, `concept.md`, `promise-phone.html`, `promise-desktop.html` and `critique.txt` | `design` | builder | One direction per letter: its values, its idea, the two boards of its free screen and the critic's answer |
 | `.sbr/design/tokens.json`, `.sbr/design/copy.<locale>.json`, `.sbr/design/promise-phone.html`, `.sbr/design/promise-desktop.html`, `.sbr/design/system.md` | `design` | `landing` | The approved design system and the approved boards of the free screen |
 | `.sbr/design/choice.md` | `design` | `landing` | Which direction was chosen and its approval |
 | `landing/` and `.sbr/landing.json` | `landing` | `video-scripts`, `verdict` | The Astro project and the record of its publication |
@@ -255,8 +257,10 @@ Every commit that touches `.sbr/rules.md` after `commit` is a change of rules. `
 - `copy.<locale>.json`: the approved copy, following the copy keys of [landing.md](landing.md#copy-keys). `landing` copies both files unchanged to `landing/src/data/tokens.json` and `landing/src/i18n/<locale>.json`.
 - `system.md`: the design system in prose. Every decision cites a line of the brief (R31).
 - `promise-phone.html` and `promise-desktop.html`: the approved boards of the free screen 1, as [the free screen guide](../../guides/promise-screen.md#3-the-board-files) defines them. `landing` programs them as `landing/src/promise/`.
-- `answers.md`, `promise.md`, `market.md`, `concepts.md`: Markdown working notes; only `design` writes and reads them, so their layout belongs to that skill. `promise.md` holds what the builder wants the free screen to show of the problem, and how.
-- `.sbr/sketches/<letter>/tokens.json` follows [tokens.md](tokens.md); `concept.md` is the concept in prose; `promise-phone.html` and `promise-desktop.html` are the boards of that direction.
+- `answers.md`, `promise.md`, `market.md`, `axes.md`: Markdown working notes; only `design` writes and reads them, so their layout belongs to that skill. `promise.md` holds what the builder wants the free screen to show of the problem, and how; `axes.md` the scene of use and one row of axes per direction, with the builder's words it answers.
+- `structure.md`: Markdown in the builder's language. Its header holds one key, `order`: the nine blocks of the free screen (`brand`, `title`, `subtitle`, `cta`, `pains`, `steps`, `closing`, `cta-closing`, `footer`), comma-separated, once each, with `brand` first, `footer` last, `subtitle` after `title` and `cta-closing` after `closing`. The body lists what the visitor must understand, in order, each point traced to `promise.md` or the brief, and the blocks in that order with their element. Every direction's boards follow `order`; `verify-design.mjs` checks it when given the file (R28).
+- `type.json`: written by `design.mjs type`. `seed` (from the brief), `excluded`, `moods` (weight per mood), `matched` (the builder's words and traits found, with their moods) and `systems`: one per letter, with `id`, `class`, `moods`, `answers`, `display` and `body` (`family`, `weights`, `fallback`; `display` also `tracking`) and `available` weights. `design.mjs distinct` refuses a direction whose families differ from its letter's.
+- `.sbr/sketches/<letter>/tokens.json` follows [tokens.md](tokens.md); `concept.md` is the concept in prose; `promise-phone.html` and `promise-desktop.html` are the boards of that direction; `critique.txt` is the last answer of `design-critic` on it, as [reviewers.md](reviewers.md#codes-of-design-critic) defines.
 
 ### `.sbr/design/choice.md`
 

@@ -22,6 +22,11 @@ const BOARD_VARIANTS = {
   c: (html) => html.replaceAll(CARD_FILL, 'border: var(--line-width) solid var(--color-line)'),
 };
 
+const ORDER = 'brand, title, subtitle, cta, pains, steps, closing, cta-closing, footer';
+const structureFile = (order) => `---\norder: ${order}\n---\n# Estructura\n`;
+const ANSWERS = '# Respuestas\n\n## Marca\norigin: given\nNada\n\n## Lo memorable\norigin: given\nAlgo\n\n## Personalidad\norigin: given\nCercano y cálido; enfoque\n\n## Tono y prohibidos\norigin: given\nOscuro\n';
+const PROMISE = '# Primera pantalla\n\n## Qué muestra primero\norigin: given\nEl problema\n\n## Cómo se ve\norigin: given\nMinimalista y con energía\n\n## Qué destaca\norigin: given\nLa promesa\n';
+
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
 const writeJson = (path, value) => writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
 
@@ -46,6 +51,9 @@ function makeRepo() {
   for (const letter of ['a', 'b', 'c']) mkdirSync(join(repo, '.sbr/sketches', letter), { recursive: true });
   writeFileSync(join(repo, '.sbr/brief.md'), readFileSync(EXAMPLE_BRIEF, 'utf8').replace('reviewer: pending', 'reviewer: approved'));
   copyFileSync(EXAMPLE_COPY, join(repo, '.sbr/design/copy.es.json'));
+  writeFileSync(join(repo, '.sbr/design/structure.md'), structureFile(ORDER));
+  writeFileSync(join(repo, '.sbr/design/answers.md'), ANSWERS);
+  writeFileSync(join(repo, '.sbr/design/promise.md'), PROMISE);
   copyFileSync(NEUTRAL, join(repo, '.sbr/sketches/a/tokens.json'));
   copyFileSync(CONTRAST, join(repo, '.sbr/sketches/b/tokens.json'));
   writeJson(join(repo, '.sbr/sketches/c/tokens.json'), thirdDirection());
@@ -204,3 +212,77 @@ test('approve refuses boards that break a rule of the free screen', () => {
   assert.equal(code, 1);
   assert.ok(json.failed.some((row) => row.id === 'R1'));
 });
+
+test('status reads the order of the structure and names what breaks it', () => {
+  const repo = makeRepo();
+  assert.deepEqual(run(repo, 'status').json.structure, { order: ORDER.split(', '), problems: [] });
+  writeFileSync(join(repo, '.sbr/design/structure.md'), structureFile('title, brand, subtitle, cta, pains, steps, closing, cta-closing'));
+  const { problems } = run(repo, 'status').json.structure;
+  assert.deepEqual(problems, ['structure: footer is missing: the outline names every block once']);
+  rmSync(join(repo, '.sbr/design/structure.md'));
+  assert.equal(run(repo, 'status').json.structure, null);
+});
+
+test('approve refuses boards that leave the order of the structure', () => {
+  const repo = makeRepo();
+  writeFileSync(join(repo, '.sbr/design/system.md'), '# Sistema\n');
+  writeFileSync(join(repo, '.sbr/design/structure.md'), structureFile('brand, title, subtitle, cta, steps, pains, closing, cta-closing, footer'));
+  const { code, json } = run(repo, 'approve', '--chosen', 'a', '--canvas', 'none', '--reason', 'x');
+  assert.equal(code, 1);
+  assert.match(json.failed.find((row) => row.id === 'R28').detail, /structure\.md asks for brand, title, subtitle, cta, steps, pains/);
+});
+
+const familiesOf = (system) => `${system.display.family} + ${system.body.family}`;
+
+test('type deals three different systems from the builder words, the same on every run', () => {
+  const repo = makeRepo();
+  const first = run(repo, 'type');
+  assert.equal(first.code, 0);
+  assert.deepEqual(first.json.systems.map(({ letter }) => letter), ['a', 'b', 'c']);
+  assert.equal(new Set(first.json.systems.map(familiesOf)).size, 3);
+  assert.equal(new Set(first.json.systems.map((system) => system.display.family)).size, 3);
+  assert.deepEqual(first.json.matched.map(({ word }) => word), ['Cercano y cálido', 'minimalista', 'enfoque', 'energia']);
+  assert.ok(first.json.systems.every((system) => system.answers.length > 0));
+  assert.deepEqual(readJson(join(repo, '.sbr/design/type.json')).systems, first.json.systems);
+  assert.deepEqual(run(repo, 'type').json.systems, first.json.systems);
+});
+
+test('type keeps every system within the font budget of the contract', () => {
+  const { json } = run(makeRepo(), 'type');
+  for (const system of json.systems) {
+    const pairs = new Set([...system.display.weights.map((weight) => `${system.display.family}/${weight}`), ...system.body.weights.map((weight) => `${system.body.family}/${weight}`)]);
+    assert.ok(new Set([system.display.family, system.body.family]).size <= 2, system.id);
+    assert.ok(pairs.size <= 4, system.id);
+    assert.ok(Math.max(...system.display.weights) >= Math.max(...system.body.weights), system.id);
+  }
+});
+
+test('type deals another seed for another brief, and leaves out excluded systems and unlisted families', () => {
+  const repo = makeRepo();
+  const first = run(repo, 'type').json;
+  const excluded = run(repo, 'type', '--exclude', first.systems.map(({ id }) => id).join(',')).json;
+  assert.ok(excluded.systems.every((system) => !first.systems.some(({ id }) => id === system.id)));
+  const listed = join(repo, 'fonts.json');
+  const library = readJson(join(PLUGIN_ROOT, 'templates/type-library.json')).systems;
+  writeJson(listed, [...new Set(library.filter(({ id }) => id !== first.systems[0].id).flatMap((system) => [system.display.family, system.body.family]))].filter((family) => family !== first.systems[0].display.family));
+  assert.ok(run(repo, 'type', '--fonts', listed).json.systems.every((system) => system.display.family !== first.systems[0].display.family));
+  writeFileSync(join(repo, '.sbr/brief.md'), readFileSync(join(repo, '.sbr/brief.md'), 'utf8').replace(/^promise: .*$/m, 'promise: "otra promesa"'));
+  assert.notEqual(run(repo, 'type').json.seed, first.seed);
+});
+
+test('distinct refuses a direction that does not use its dealt type', () => {
+  const repo = makeRepo();
+  const { json } = run(repo, 'type');
+  const result = run(repo, 'distinct');
+  assert.equal(result.code, 1);
+  assert.ok(result.json.problems.includes(`a uses Public Sans + Public Sans; its dealt type system is ${familiesOf(json.systems[0])}`));
+  for (const system of json.systems) {
+    const path = join(repo, '.sbr/sketches', system.letter, 'tokens.json');
+    const tokens = readJson(path);
+    tokens.fonts.display.family = system.display.family;
+    tokens.fonts.body.family = system.body.family;
+    writeJson(path, tokens);
+  }
+  assert.deepEqual(run(repo, 'distinct').json.problems.filter((problem) => /dealt/.test(problem)), []);
+});
+

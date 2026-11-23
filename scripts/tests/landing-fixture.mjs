@@ -267,7 +267,7 @@ export function writeTemplate(root = tempDir('sbr-template-'), files = {}) {
   return writeFiles(root, { ...SKELETON_FILES, 'bun.lock': 'template lock\n', ...files });
 }
 
-const PLUGIN_FILES_OF_THE_LANDING_VERIFIER = ['scripts/html.mjs', 'scripts/promise-board.mjs', 'scripts/verify-design.mjs', 'scripts/verify-landing.mjs', 'templates/contract.json'];
+const PLUGIN_FILES_OF_THE_LANDING_VERIFIER = ['scripts/html.mjs', 'scripts/outline.mjs', 'scripts/promise-board.mjs', 'scripts/verify-design.mjs', 'scripts/verify-landing.mjs', 'templates/contract.json'];
 
 export function landingVerifierWithFixtureTemplate() {
   const pluginRoot = tempDir('sbr-plugin-');

@@ -1,5 +1,5 @@
 {
-  "intro": "Vamos a decidir cómo se ve su landing. Primero cuatro preguntas de diseño y tres sobre lo que la primera pantalla debe mostrar de su problema, después el texto, luego tres direcciones lado a lado. Usted elige una y la ajustamos las veces que haga falta. No se instala ni se programa nada hasta que usted apruebe el diseño final.",
+  "intro": "Vamos a decidir cómo se ve su landing. Primero cuatro preguntas de diseño y tres sobre lo que la primera pantalla debe mostrar de su problema; después el texto y el orden en que se lee. Con eso dibujo tres direcciones distintas a partir de sus palabras, una revisión de diseño sin contexto las critica antes de que usted las vea, y usted elige una en el lienzo y la ajustamos las veces que haga falta. No se instala ni se programa nada hasta que usted apruebe el diseño final.",
   "missing": {
     "brief": "No encuentro .sbr/brief.md. Corra primero /ship-before-ready:interview.",
     "brief_pending": "El brief todavía no está aprobado por su revisor. Termine /ship-before-ready:interview antes de diseñar."
@@ -62,15 +62,21 @@
     "ask": "¿Lo aprueba así, o qué cambio?",
     "changed": "Cambié el texto y volví a revisarlo."
   },
-  "concepts": {
-    "intro": "Estas son las tres direcciones, en texto. Cada una difiere de las otras en cómo arma la primera pantalla, en tipografía y en color. Ninguna es la recomendada.",
-    "follows": "Sigue el código de la categoría.",
-    "departs": "Se aparta del código de la categoría a propósito.",
-    "ask": "¿Las dibujo así, o cambio alguna?"
+  "structure": {
+    "intro": "Así se va a leer la primera pantalla, en este orden. Las tres direcciones cambian el diseño, nunca el mensaje ni su orden:",
+    "later": "Si quiere cambiar ese orden, dígamelo cuando vea el lienzo.",
+    "file_title": "Estructura de la primera pantalla",
+    "file_understand": "Qué debe entender el visitante",
+    "file_outline": "Bloques en orden"
   },
   "values": {
     "working": "Estoy definiendo los valores de cada dirección, diseñando su primera pantalla y pasando todo por el verificador.",
-    "failed": "La dirección {letter} no pasó el verificador después de varios intentos, así que no la dibujo. Falla en: {requirements}."
+    "failed": "La dirección {letter} no pasó el verificador después de varios intentos, así que no la dibujo. Falla en: {requirements}. ¿Seguimos con las otras dos, o la replanteamos juntos?"
+  },
+  "critique": {
+    "done": "Antes de mostrárselas, las tres pasaron por una revisión de diseño que no conoce esta conversación; {passed} de 3 la aprobaron.",
+    "open": "Lo que la revisión todavía le marca a esta dirección:",
+    "no_chrome": "No tengo Chrome para tomar capturas, así que las direcciones no pasaron por la revisión de diseño antes de mostrárselas."
   },
   "canvas": {
     "title": "{brand} · Diseño",
@@ -80,9 +86,11 @@
       "header": "Dirección",
       "question": "¿Con cuál dirección seguimos?",
       "none": "Ninguna",
-      "none_detail": "Volvemos a los conceptos y cambio lo que no le convence."
+      "none_detail": "Me dice qué no le convenció y dibujo tres nuevas."
     },
-    "first_view": "En {where} el titular, el subtítulo o el botón quedaban fuera de la primera vista; lo corregí antes de dibujarlo."
+    "first_view": "En {where} el titular, el subtítulo o el botón quedaban fuera de la primera vista; lo corregí antes de dibujarlo.",
+    "answers": "responde a «{words}»",
+    "none_why": "¿Qué no le convenció de ninguna? Dígamelo con sus palabras: la forma de armar la pantalla, la tipografía, los colores o algo más."
   },
   "iterate": {
     "full": "Dibujé «{name}» completa: su primera pantalla y las tres pantallas fijas con sus colores y tipografías: {url}",

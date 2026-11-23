@@ -4,8 +4,10 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { measureBoards, NoChromeError } from '../../../scripts/capture.mjs';
 import { canvasIndex, fillDirection, fillPromise, placeInRow, PROMISE_FILES, titleNote, UsageError as FillUsageError, writeCanvas } from '../../../scripts/fill-artboards.mjs';
+import { outlineProblems, readOutline } from '../../../scripts/outline.mjs';
 import { boardStructure, readBoard } from '../../../scripts/promise-board.mjs';
-import { checkDesign, createReport, EXIT_CODES, hslOf, isMainModule, loadContract, readJson, runCli, UsageError } from '../../../scripts/verify-design.mjs';
+import { checkDesign, createReport, EXIT_CODES, hslOf, isMainModule, loadContract, readJson, readStructure, runCli, UsageError } from '../../../scripts/verify-design.mjs';
+import { budgetProblems, dealType, moodsFrom } from './type-deal.mjs';
 
 const EXIT_OK = 0;
 const EXIT_CHECK_FAILED = 1;
@@ -17,6 +19,10 @@ const SKETCHES = join(STATE, 'sketches');
 const CHOICE = join(DESIGN, 'choice.md');
 const APPROVED_TOKENS = join(DESIGN, 'tokens.json');
 const SYSTEM = join(DESIGN, 'system.md');
+const STRUCTURE = join(DESIGN, 'structure.md');
+const TYPE_DEAL = join(DESIGN, 'type.json');
+const PERSONALITY_SECTION = 2;
+const LOOK_SECTION = 1;
 const CONTRACT = loadContract();
 const BOARD_FILES = CONTRACT.promise_board.files;
 const VIEWPORTS = Object.keys(BOARD_FILES);
@@ -30,8 +36,10 @@ const PLUGIN_ROOT = new URL('../../../', import.meta.url);
 
 const USAGE = `Usage:
   design.mjs status
+  design.mjs type [--fonts <fonts.json>] [--exclude <id,id>]
   design.mjs distinct [--market-color <hex> --market-scheme <light|dark> --follows <letter> --departs <letter>]
   design.mjs canvas <work folder> <letter> [<letter> <letter>] [--title <text>] [--estimate]
+  design.mjs shots <work folder> <letter> [<letter> <letter>]
   design.mjs preview <work folder> <letter> [<letter> <letter>]
   design.mjs approve --chosen <a|b|c> --canvas <url|none> --reason <text>
   design.mjs reopen`;
@@ -76,6 +84,14 @@ function parseOptions(args, names) {
 }
 
 const localeOfBrief = () => headerOf(readText(BRIEF)).locale || DEFAULT_LOCALE;
+
+const sectionsOf = (text) => (text ?? '').split(/^## .*$/m).slice(1).map((body) => body.trim());
+
+function seedOfBrief() {
+  const header = headerOf(readText(BRIEF));
+  return createHash('sha256').update([header.persona, header.pain, header.promise].join('|')).digest('hex').slice(0, 16);
+}
+
 const copyPathFor = (locale) => join(DESIGN, `copy.${locale}.json`);
 
 export function fingerprintOf(paths) {
@@ -94,6 +110,7 @@ function sketchStatus(letter) {
     tokens: existsSync(join(folder, 'tokens.json')),
     concept: existsSync(join(folder, 'concept.md')),
     boards: boardPathsIn(folder).every((path) => existsSync(path)),
+    critique: existsSync(join(folder, 'critique.txt')),
   };
 }
 
@@ -111,6 +128,14 @@ function choiceStatus(copyPath) {
   };
 }
 
+function structureStatus() {
+  const text = readText(STRUCTURE);
+  if (text === null) return null;
+  const order = readOutline(text);
+  if (!order) return { order: null, problems: ['the header has no "order:" line'] };
+  return { order, problems: outlineProblems(order, CONTRACT).map(({ message }) => message) };
+}
+
 function status(args) {
   if (args.length) throw new UsageError(USAGE);
   const briefHeader = headerOf(readText(BRIEF));
@@ -123,7 +148,9 @@ function status(args) {
     market: existsSync(join(DESIGN, 'market.md')),
     copy: existsSync(copyPath) ? copyPath : null,
     promise_answers: existsSync(join(DESIGN, 'promise.md')),
-    concepts: existsSync(join(DESIGN, 'concepts.md')),
+    structure: structureStatus(),
+    type: existsSync(TYPE_DEAL),
+    axes: existsSync(join(DESIGN, 'axes.md')),
     sketches: Object.fromEntries(LETTERS.map((letter) => [letter, sketchStatus(letter)])),
     system: existsSync(SYSTEM),
     choice: choiceStatus(copyPath),
@@ -173,6 +200,63 @@ function marketProblems(directions, options) {
   return problems;
 }
 
+function phrasesFor(locale) {
+  const path = new URL(`locales/${locale}/design.json`, PLUGIN_ROOT);
+  const fallback = new URL(`locales/${DEFAULT_LOCALE}/design.json`, PLUGIN_ROOT);
+  return JSON.parse(readFileSync(existsSync(path) ? path : fallback, 'utf8'));
+}
+
+function lexiconFor(locale) {
+  const path = new URL(`locales/${locale}/moods.json`, PLUGIN_ROOT);
+  const fallback = new URL(`locales/${DEFAULT_LOCALE}/moods.json`, PLUGIN_ROOT);
+  return JSON.parse(readFileSync(existsSync(path) ? path : fallback, 'utf8')).words;
+}
+
+function type(args) {
+  const { options, positional } = parseOptions(args, ['fonts', 'exclude']);
+  if (positional.length) throw new UsageError(USAGE);
+  const excluded = new Set((options.exclude ?? '').split(',').map((id) => id.trim()).filter(Boolean));
+  const answers = readText(join(DESIGN, 'answers.md'));
+  const promise = readText(join(DESIGN, 'promise.md'));
+  if (!answers || !promise) throw new UsageError(`type needs ${join(DESIGN, 'answers.md')} and ${join(DESIGN, 'promise.md')}`);
+  const locale = localeOfBrief();
+  const { weights, matched } = moodsFrom({
+    traitText: sectionsOf(answers)[PERSONALITY_SECTION],
+    wordsText: sectionsOf(promise)[LOOK_SECTION],
+    traitLabels: phrasesFor(locale).questions.personality.traits,
+    lexicon: lexiconFor(locale),
+  });
+  const fonts = options.fonts ? new Set(readJson(options.fonts, 'fonts')) : null;
+  const catalog = JSON.parse(readFileSync(new URL('templates/type-library.json', PLUGIN_ROOT), 'utf8'));
+  const library = { ...catalog, systems: catalog.systems.filter((system) => !excluded.has(system.id)) };
+  const seed = seedOfBrief();
+  const systems = dealType({ library, weights, seed, fonts, count: LETTERS.length });
+  const problems = [
+    ...(systems.length < LETTERS.length ? [`only ${systems.length} type systems of the library are left to deal`] : []),
+    ...systems.flatMap((system) => budgetProblems(system, CONTRACT.tokens.fonts)),
+  ];
+  if (problems.length) {
+    print({ dealt: false, problems });
+    return EXIT_CHECK_FAILED;
+  }
+  const dealt = { seed, excluded: [...excluded], moods: weights, matched, systems: systems.map((system, index) => ({ letter: LETTERS[index], ...system })) };
+  writeFileSync(TYPE_DEAL, `${JSON.stringify(dealt, null, 2)}\n`);
+  print({ dealt: true, file: TYPE_DEAL, ...dealt });
+  return EXIT_OK;
+}
+
+function typeProblems(directions) {
+  const deal = readText(TYPE_DEAL);
+  if (!deal) return [];
+  const systems = Object.fromEntries(JSON.parse(deal).systems.map((system) => [system.letter, system]));
+  return directions.flatMap(({ letter, tokens }) => {
+    const system = systems[letter];
+    if (!system) return [`${letter} has no dealt type system in ${TYPE_DEAL}`];
+    const expected = `${system.display.family} + ${system.body.family}`;
+    return familyPair(tokens) === expected ? [] : [`${letter} uses ${familyPair(tokens)}; its dealt type system is ${expected}`];
+  });
+}
+
 function readSketch(letter) {
   const folder = sketchFolder(letter);
   const tokensPath = join(folder, 'tokens.json');
@@ -198,6 +282,7 @@ function distinct(args) {
   const builderPalette = directions.every(({ tokens }) => tokens.palette_source === 'builder');
   const checks = {
     compositions: compositionProblems(directions),
+    type_systems: typeProblems(directions),
     type_pairs: pairwise(directions, (first, second) =>
       familyPair(first.tokens) === familyPair(second.tokens) ? `${first.letter} and ${second.letter} repeat the pair ${familyPair(first.tokens)}` : null,
     ),
@@ -308,6 +393,33 @@ async function canvas(args) {
   return EXIT_OK;
 }
 
+async function shots(args) {
+  const [work, ...letters] = args;
+  if (!work || ![1, 3].includes(letters.length) || !letters.every((letter) => LETTERS.includes(letter))) throw new UsageError(USAGE);
+  const copy = readJson(copyPathFor(localeOfBrief()), 'copy');
+  const folder = join(work, 'shots');
+  rmSync(folder, { recursive: true, force: true });
+  mkdirSync(folder, { recursive: true });
+  const directions = letters.map(readSketch).map(requireBoards);
+  const pages = directions.flatMap(({ letter, tokens, boards }) =>
+    fillPromise(tokens, copy, boards).map((board) => {
+      const path = join(folder, `${letter}-${board.viewport}.html`);
+      writeFileSync(path, previewHtml(board.html));
+      return { letter, viewport: board.viewport, path, width: board.width, shot: join(folder, `${letter}-${board.viewport}.png`) };
+    }),
+  );
+  try {
+    await measureBoards(pages);
+  } catch (error) {
+    if (!(error instanceof NoChromeError)) throw error;
+    print({ shot: false, reason: error.message });
+    return EXIT_CHECK_FAILED;
+  }
+  pages.forEach(({ path }) => rmSync(path, { force: true }));
+  print({ shot: true, folder, shots: pages.map(({ letter, viewport, shot }) => ({ letter, viewport, path: shot })) });
+  return EXIT_OK;
+}
+
 const PREVIEW_ERROR_STATE = /<sc-if value="\{\{ error \}\}"[\s\S]*?<\/sc-if>\n?/g;
 const previewHtml = (html) => html.replace(PREVIEW_ERROR_STATE, '').replace(/<\/?sc-if[^>]*>\n?/g, '').replace('<script src="./support.js"></script>\n', '');
 
@@ -334,18 +446,13 @@ function preview(args) {
 function verifyRows(folder, copyPath, locale) {
   const report = createReport(CONTRACT, 'design');
   const boards = Object.fromEntries(VIEWPORTS.map((viewport) => [viewport, readBoard(readFileSync(join(folder, BOARD_FILES[viewport]), 'utf8'), CONTRACT)]));
-  checkDesign({ tokens: readJson(join(folder, 'tokens.json'), 'tokens'), copy: readJson(copyPath, 'copy'), locale, contract: CONTRACT, report, boards });
+  const order = readStructure(STRUCTURE);
+  checkDesign({ tokens: readJson(join(folder, 'tokens.json'), 'tokens'), copy: readJson(copyPath, 'copy'), locale, contract: CONTRACT, report, boards, order });
   return report.rows();
 }
 
 const headerValue = (value) => (/[:#"]/.test(value) ? JSON.stringify(value) : value);
 const nowStamp = () => new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
-
-function phrasesFor(locale) {
-  const path = new URL(`locales/${locale}/design.json`, PLUGIN_ROOT);
-  const fallback = new URL(`locales/${DEFAULT_LOCALE}/design.json`, PLUGIN_ROOT);
-  return JSON.parse(readFileSync(existsSync(path) ? path : fallback, 'utf8'));
-}
 
 function approve(args) {
   const { options, positional } = parseOptions(args, ['chosen', 'canvas', 'reason']);
@@ -354,7 +461,7 @@ function approve(args) {
   const folder = sketchFolder(options.chosen);
   const sketch = join(folder, 'tokens.json');
   const copyPath = copyPathFor(locale);
-  const missing = [sketch, ...boardPathsIn(folder), copyPath, SYSTEM].filter((path) => !existsSync(path));
+  const missing = [sketch, ...boardPathsIn(folder), copyPath, STRUCTURE, SYSTEM].filter((path) => !existsSync(path));
   if (missing.length) throw new UsageError(`Missing: ${missing.join(', ')}`);
   const failed = verifyRows(folder, copyPath, locale).filter((row) => row.status === 'fail');
   if (failed.length) {
@@ -395,7 +502,7 @@ function reopen(args) {
   return EXIT_OK;
 }
 
-const COMMANDS = { status, distinct, canvas, preview, approve, reopen };
+const COMMANDS = { status, type, distinct, canvas, shots, preview, approve, reopen };
 
 function main([command, ...args]) {
   const run = COMMANDS[command];

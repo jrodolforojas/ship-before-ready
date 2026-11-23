@@ -6,8 +6,8 @@ Read it with [design-system.md](design-system.md) (values) and the [landing cont
 
 ## 1. Design it like a designer
 
-1. **Start from what the builder wants to show.** `.sbr/design/promise.md` holds their answers: which moment of the problem the visitor should see first, how they imagine it shown, and what must stand out after the headline. When an answer was left to the plugin, it is derived from the brief and marked so.
-2. **One idea per direction.** The axes row of the direction names its layout idea in one line: where the headline sits, how the pains are shown, what leads the eye after the button. Build that idea, not a generic hero with three cards under it. The three directions must not share a composition: different blocks order or grouping, different layouts, different fills.
+1. **Start from the message, then the design.** `.sbr/design/structure.md` says what the visitor must understand, in what order, and the order of the blocks; it comes from `.sbr/design/promise.md`, where the builder said which moment of the problem the visitor should see first, how they imagine it shown, and what must stand out after the headline. The three directions share that structure and change only how it is designed.
+2. **One idea per direction, from the builder's words.** The axes row of the direction quotes the builder's words it answers and names its layout idea in one line: where the headline sits, how the pains are shown, what leads the eye after the button. Build that idea, not a generic hero with three cards under it, and never a literal picture of the subject. The three directions must not share a composition: different grouping, different layouts, different fills, in the same order.
 3. **The problem is visible.** The pains are not a list at the bottom: they are what the persona recognizes, shown with the weight the builder asked for. The headline is still the one thing that leads.
 4. **Design in gray first.** Lay out with `ink`, `ink-muted`, `canvas`, `surface` and `line`; add `accent` last, on the two buttons and, if you want, on a drawing.
 5. **Space before decoration.** Start with more space than feels necessary; group with `item` and `group`, separate with `block` and `section`. A drawing never fills an empty section; better grouping does.
@@ -22,6 +22,7 @@ These are not asked; every board meets them and the verifier checks them.
 | Two filled buttons, `cta` and `cta-closing`, both `type="button"`, filled with `accent` and `on-accent`; no other text on an `accent` fill | Script | R1 |
 | No links, no menu, no images, no video, no forms on this screen | Script | R1, R28 |
 | The hooks of the screen, once each: `brand`, `title`, `subtitle`, `cta`, `pains` (one `li` per pain, in order), `steps` (one `li` per step, in order), `closing`, `cta-closing`, `footer` (author and privacy) | Script | R28, R32 |
+| The hooks in the order of `order` in `structure.md`, on both boards | Script, with `structure.md` as the fifth argument | R28 |
 | Only the copy: every text comes from those copy keys; numbers alone (step numbers) may be drawn, inside `aria-hidden="true"` | Script | R32 |
 | The title alone uses the `title` style and `ink`; each block uses a style allowed for it (table below) | Script | R5 |
 | Each style is set in its own family: `title` and `heading` in `--font-display`, the rest in `--font-body`; upright only | Script | R11 |
@@ -71,7 +72,7 @@ The plugin wraps it in the artboard: the fonts, the token variables of the direc
 A board that fails is fixed and checked again before it reaches the canvas:
 
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-design.mjs" <tokens.json> <copy.json> <promise-phone.html> <promise-desktop.html>
+node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-design.mjs" <tokens.json> <copy.json> <promise-phone.html> <promise-desktop.html> <structure.md>
 ```
 
 Every `fail` row names the board, the element or the declaration.
@@ -106,3 +107,20 @@ Every `fail` row names the board, the element or the declaration.
 | `position: absolute; inset: 0` | `absolute inset-0` |
 
 After building, `landing.mjs match` compares the page with the phone board: the texts of screen 1 in order, each with its style, color and fill. A difference names the first text that differs. The layout is compared by eye: the builder sees the page next to the canvas before publishing.
+
+## 5. What the critic looks for
+
+Before the builder sees a direction, a critic who knows nothing else looks at screenshots of its two boards next to `structure.md` (`agents/design-critic.md`). Design so none of these holds:
+
+- **Hierarchy.** The headline leads the first view; the button is the next thing the eye lands on; the pains and steps step back. Size, weight and contrast together only on the headline.
+- **The message.** What `structure.md` says the visitor must understand shows, in its order, not hidden under a drawing.
+- **The first view.** Headline, subtitle and the whole button inside it, and the fold never slices a filled card, a bordered box or a drawing in half; a list may simply continue below it.
+- **Edges.** Blocks start on at most two left lines and share their right edges. Running text and lists are never centred; only the headline group may be, and no centred block is wider than half the page on desktop.
+- **Space.** More space between groups than inside them; no short block alone in an empty band; no dead space beside a short text.
+- **No template.** Not a centred headline over three equal cards, icons in colored circles, a pill above the headline, a stack of identical bands, or the phone layout simply stretched on desktop.
+- **Drawings mean something.** A figure shows something `structure.md` asks for; it never fills space, illustrates the subject literally or sits under text.
+- **The accent stays small.** On the two buttons and a few marks; color never makes the hierarchy.
+- **Type.** No tracked capitals or small caps; one quieter level of small text in the headline group at most; running text under about 75 characters a line, the widest `measure.prose` allows; the headline never ends on a single word alone.
+- **One box deep, nothing broken.** No box in a box in a box, no cards in cards; nothing overlaps, touches, tilts or is cut at an edge.
+
+These come from the Taste Skill and Refactoring UI, restated for one screen with a fixed anatomy: [ATTRIBUTIONS.md](../ATTRIBUTIONS.md).

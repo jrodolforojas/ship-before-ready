@@ -14,6 +14,7 @@ import {
   normalizeText,
   phrasesIn,
 } from '../verify-design.mjs';
+import { boardOrder, boardOrderProblem, outlineHooks, outlineProblems, readOutline } from '../outline.mjs';
 import { readBoard } from '../promise-board.mjs';
 import {
   EXAMPLE_BOARDS,
@@ -281,4 +282,35 @@ test('the command exits 2 on wrong usage and on unreadable input', () => {
 test('details never break the one-line format', () => {
   const rows = formatRows([{ id: 'R1', status: 'fail', detail: 'a\tb\nc' }]);
   assert.equal(rows, 'R1\tfail\ta b c');
+});
+
+const OUTLINE = ['brand', 'title', 'subtitle', 'cta', 'pains', 'steps', 'closing', 'cta-closing', 'footer'];
+const structureText = (order) => `---\norder: ${order.join(', ')}\n---\n# Estructura\n`;
+
+test('the outline names the nine blocks of the promise screen once, brand first and footer last', () => {
+  assert.deepEqual(outlineHooks(contract).sort(), [...OUTLINE].sort());
+  assert.deepEqual(readOutline(structureText(OUTLINE)), OUTLINE);
+  assert.equal(readOutline('# no header\n'), null);
+  assert.deepEqual(outlineProblems(OUTLINE, contract), []);
+  const messages = (order) => outlineProblems(order, contract).map(({ message }) => message);
+  assert.deepEqual(messages([...OUTLINE, 'title']), ['structure: title appears more than once']);
+  assert.deepEqual(messages(['menu', ...OUTLINE]), ['structure: menu is not a block of the promise screen']);
+  assert.deepEqual(messages(['title', 'brand', ...OUTLINE.slice(2)]), ['structure: brand opens the screen']);
+  assert.deepEqual(messages(['brand', 'subtitle', 'title', 'cta', 'pains', 'steps', 'cta-closing', 'closing', 'footer']), ['structure: subtitle comes after title', 'structure: cta-closing comes after closing']);
+});
+
+test('the boards follow the order of the structure, checked under R28', () => {
+  const board = readBoard(exampleBoardHtml().phone, contract);
+  assert.deepEqual(boardOrder(board, contract), OUTLINE);
+  assert.equal(boardOrderProblem(board, OUTLINE, contract), null);
+  const swapped = ['brand', 'title', 'subtitle', 'cta', 'steps', 'pains', 'closing', 'cta-closing', 'footer'];
+  assert.match(boardOrderProblem(board, swapped, contract).message, /structure\.md asks for brand, title, subtitle, cta, steps, pains/);
+  const folder = writeFiles(tempDir(), { 'in-order.md': structureText(OUTLINE), 'swapped.md': structureText(swapped), 'no-order.md': '# nada\n' });
+  const base = ['templates/neutral-design/tokens.json', 'templates/example/es.json'].map((path) => join(SCRIPTS.design, '../..', path));
+  const withStructure = (name) => runScript(SCRIPTS.design, [...base, EXAMPLE_BOARDS.phone, EXAMPLE_BOARDS.desktop, join(folder, name)]);
+  assert.equal(withStructure('in-order.md').code, 0);
+  const out = withStructure('swapped.md');
+  assert.equal(out.code, 1);
+  assert.deepEqual(idsWithStatus(out.rows, 'fail'), ['R28']);
+  assert.equal(withStructure('no-order.md').code, 2);
 });
