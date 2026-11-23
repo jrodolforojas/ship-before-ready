@@ -23,7 +23,7 @@ Read the files below in the current directory and take the first phase, in this 
 
 | # | Phase | Skill | It is done when |
 |---|---|---|---|
-| 1 | `interview` | `ship-before-ready:interview` | `.sbr/brief.md` has `reviewer: approved` in its header |
+| 1 | `interview` | `ship-before-ready:interview` | `node "${CLAUDE_PLUGIN_ROOT}/skills/interview/scripts/brief.mjs" status`, run in the repo, prints `"stage":"done"`. A brief with `reviewer: approved` is not enough: the canvas may need its pains checked again |
 | 2 | `rules` | `ship-before-ready:rules` | `.sbr/rules.md` and `.sbr/seal.json` both exist |
 | 3 | `design` | `ship-before-ready:design` | `.sbr/design/choice.md` has `approved` in its header |
 | 4 | `connect` | `ship-before-ready:connect` | `.sbr/connections.json` exists and has `verified_at` |
